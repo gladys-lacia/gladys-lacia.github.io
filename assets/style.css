@@ -390,3 +390,8 @@ a:hover {
     display: block !important;
   }
 }
+
+/* Added for Project 1: Pomodoro Timer button */
+.project-1 {
+  background-color: #2e2d2b;
+}
