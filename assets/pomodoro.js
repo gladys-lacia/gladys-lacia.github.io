@@ -1,7 +1,3 @@
-// JavaScript intentionally minimal
-
-
-
 /* Project 1: Pomodoro Timer */
 (function () {
   "use strict";
