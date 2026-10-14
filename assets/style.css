@@ -1,0 +1,392 @@
+
+/* Base Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Root */
+body {
+  background-color: #FFFEF2;
+  color: #2e2d2b;
+  font-family: 'Lato', sans-serif;
+  line-height: 1.7;
+}
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Document Container */
+.document {
+  max-width: 800px;
+  margin: 48px auto;
+  padding: 0 24px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.profile-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.header-text h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  color: #4A0404;
+}
+
+.role {
+  font-size: 1rem;
+  color: #274A04;
+  margin-top: 4px;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 32px;
+}
+
+.section h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.25rem;
+  color: #044A4A;
+  margin-bottom: 12px;
+}
+
+.section h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #27044A;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.section p {
+  margin-bottom: 8px;
+}
+
+.section ul {
+  margin-left: 20px;
+  margin-bottom: 8px;
+}
+
+.section li {
+  margin-bottom: 4px;
+}
+
+/* Links */
+a {
+  color: #4A0404;
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* https://weatherwidget.io */
+.misamis-occidental-weatherwidget-since102026 {
+  text-align: center;
+  pointer-events: none;
+}
+.zamboanga-del-norte-weatherwidget-since102026 {
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Footer */
+.footer {
+  margin-top: 48px;
+  font-size: 0.875rem;
+  color: #B0B0B0;
+}
+
+/* Version 2 */
+.bar-chart {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.bar-chart .section {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.bar-chart .section:first-child {
+  border-right: 1px solid #2e2d2b;
+  padding-right: 24px;
+}
+.disc-profile-print-only {
+  display: none;
+}
+.bar-chart-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+.d-i-s-c {
+  flex: 0 0 130px;
+  white-space: nowrap;
+}
+.disc-percent {
+  flex: 1;
+  min-width: 0;
+  background-color: #f7f7f7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.disc-percent-fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  box-sizing: border-box;
+  color: #FFFEF2;
+  font-weight: bold;
+  border-radius: 4px;
+}
+.d-bar-chart {
+  width: 41.67%;
+  background-color: #EF4444;
+}
+.i-bar-chart {
+  width: 50%;
+  background-color: #EAB308;
+}
+.s-bar-chart {
+  width: 41.67%;
+  background-color: #22C55E;
+}
+.c-bar-chart {
+  width: 66.67%;
+  background-color: #8B5CF6;
+}
+.pht-timezone {
+  text-align: center;
+}
+.pht-timezone iframe {
+  pointer-events: none;
+}
+.gdlc-qr-code-1 {
+  text-align: center;
+}
+
+/* Version 2 */
+.english-language-proficiency {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.english-language-proficiency .section {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.english-language-proficiency .section:first-child {
+  border-right: 1px solid #2e2d2b;
+  padding-right: 24px;
+}
+.four-core-communication-skills-print-only {
+  display: none;
+}
+.english-language-proficiency-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+.e-n-g-l-i-s-h {
+  flex: 0 0 100px;
+  overflow-wrap: break-word;
+}
+.band-english {
+  flex: 1;
+  min-width: 0;
+  background-color: #f7f7f7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.band-english-fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  box-sizing: border-box;
+  color: #FFFEF2;
+  font-weight: bold;
+  border-radius: 4px;
+}
+.reading-english-language-proficiency {
+  width: 71.43%;
+  background-color: #EF4444;
+}
+.listening-english-language-proficiency {
+  width: 50%;
+  background-color: #F97316;
+}
+.writing-english-language-proficiency {
+  width: 92.86%;
+  background-color: #EAB308;
+}
+.speaking-english-language-proficiency {
+  width: 57.14%;
+  background-color: #22C55E;
+}
+.overall-band-score {
+  width: 71.43%;
+  background-color: #8B5CF6;
+}
+.work-exp-portfolio-qr-code {
+  display: none;
+}
+.work-exp-portfolio-qr-code img {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Version 3 */
+.projects-certifications-buttons {
+  text-align: left;
+}
+.button-set-1 {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 6px 8px 0;
+  border-radius: 4px;
+  color: #FFFEF2;
+  text-decoration: none;
+}
+.Gladys-Lacia-VA-Work-Exp-Portfolio-Updated022026 {
+  background-color: #2e2d2b;
+}
+
+/* Projects */
+/* .project-1 {
+  background-color: #EF4444;
+}
+.project-2 {
+  background-color: #F15A38;
+}
+.project-3 {
+  background-color: #F97316;
+}
+.project-4 {
+  background-color: #F59E0B;
+}
+.project-5 {
+  background-color: #EAB308;
+}
+.project-6 {
+  background-color: #22C55E;
+}
+.project-7 {
+  background-color: #06B6D4;
+}
+.project-8 {
+  background-color: #3B82F6;
+}
+.project-9 {
+  background-color: #6366F1;
+}
+.project-10 {
+  background-color: #8B5CF6;
+} */
+
+/* Certifications */
+.certification-1 {
+  background-color: #EF4444;
+}
+/* .certification-2 {
+  background-color: #EF4444;
+} */
+
+/* Trainings */
+/* .training {
+  background-color: #2e2d2b;
+} */
+
+/* */
+/* */
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .header-text h1 {
+    font-size: 1.75rem;
+  }
+
+  /* Version 2 */
+  .disc-profile {
+    display: none;
+  }
+  .bar-chart .section:first-child {
+    border-right: none;
+    padding-right: 0px;
+  }
+
+  /* Version 2 */
+  .four-core-communication-skills {
+    display: none;
+  }
+  .english-language-proficiency .section:first-child {
+  border-right: none;
+  padding-right: 0px;
+  } 
+}
+
+/* Version 2 */
+@media print {
+  .misamis-occidental-weatherwidget-since102026 {
+    display: none !important;
+  }
+  .pht-timezone {
+    display: none !important;
+  }
+  .bar-chart > .disc-profile {
+    display: none !important;
+  }
+  .disc-profile-print-only {
+    display: block !important;
+  }
+  .work-exp-portfolio {
+    display: none !important;
+  }
+  .work-exp-portfolio-qr-code {
+    display: block !important;
+  }
+  .english-language-proficiency > .four-core-communication-skills {
+    display: none !important;
+  }
+  .four-core-communication-skills-print-only {
+    display: block !important;
+  }
+}
