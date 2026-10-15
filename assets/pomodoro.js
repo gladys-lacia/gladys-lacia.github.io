@@ -49,6 +49,16 @@
     let isPaused = false;
     let selectedLongBreakSeconds = 15 * 60;
 
+    /* test mode */
+    /* const FOCUS_SECONDS = 5;
+    const SHORT_BREAK_SECONDS = 2;
+    let pomodoroNumber = 1;
+    let phase = "ready";
+    let remainingSeconds = FOCUS_SECONDS;
+    let intervalId = null;
+    let isPaused = false;
+    let selectedLongBreakSeconds = 7; */
+
     let pomodoroSessionStarted = false;
 
     focusAudio.loop = true;
@@ -89,16 +99,9 @@
       if (!pomodoroSessionStarted) return;
 
       event.preventDefault();
-      /* event.returnValue = ""; */
       event.returnValue = true;
     });
 
-    /* function showOnly(panel) {
-      [readyPanel, focusControls, stopConfirmPanel, alarmPanel, nextPomodoroPanel,
-        doNotStartPanel, longBreakPanel, longBreakControls].forEach((element) => {
-        if (element) element.hidden = element !== panel;
-      });
-    } */
     function showOnly(panel) {
       [readyPanel, focusControls, stopConfirmPanel, alarmPanel, nextPomodoroPanel,
         doNotStartPanel, longBreakPanel, longBreakControls,
@@ -180,13 +183,19 @@
       playFocusSound();
       startCountdown(beginFocusAlarm);
     }
-
+    
     function beginFocusAlarm() {
       stopFocusAudio();
       phase = "focusAlarm";
       isPaused = false;
       showOnly(alarmPanel);
-      setStatus("Your 25-minute focus session is complete. Stop the alarm to begin the 5-minute short break.");
+
+      if (pomodoroNumber >= 4) {
+        setStatus("Pomodoro 4 is complete. Stop the alarm to choose your long break.");
+      } else {
+        setStatus("Your 25-minute focus session is complete. Stop the alarm to begin the 5-minute short break.");
+      }
+
       render();
       playAudio(alarmAudio, "Alarm sound");
     }
@@ -296,12 +305,19 @@
     });
 
     alarmStopButton.addEventListener("click", () => {
-      if (phase === "focusAlarm") {
+      if (phase === "focusAlarm" && pomodoroNumber >= 4) {
+        stopAlarmAudio();
+        phase = "longBreakChoice";
+        remainingSeconds = 0;
+        showOnly(longBreakPanel);
+        setStatus("Pomodoro 4 is complete. Choose a 15-minute or 30-minute long break.");
+        render();
+      } else if (phase === "focusAlarm") {
         startShortBreak();
       } else if (phase === "breakAlarm") {
         handleShortBreakComplete();
       } else if (phase === "longBreakAlarm") {
-        resetSession("Long break complete. Your Pomodoro session has reset to square one.");
+        resetSession("Long break complete. Your Pomodoro session has reset to Pomodoro 1.");
       }
     });
 
@@ -323,7 +339,7 @@
         setStatus("The phrase did not match. Type DO NOT START exactly to reset the session.");
         return;
       }
-      resetSession("You chose not to continue. Your Pomodoro session has reset to square one.");
+      resetSession("You chose not to continue. Your Pomodoro session has reset to Pomodoro 1.");
     });
 
     doNotStartCancel.addEventListener("click", () => {
@@ -340,6 +356,17 @@
       });
     });
 
+    function beginLongBreakAlarm() {
+      stopFocusAudio();
+      phase = "longBreakAlarm";
+      remainingSeconds = 0;
+      isPaused = false;
+      showOnly(alarmPanel);
+      setStatus("Your long break is complete. Click Stop Alarm to stop the alarm and reset your Pomodoro session.");
+      render();
+      playAudio(alarmAudio, "Alarm sound");
+    }
+
     longBreakStart.addEventListener("click", () => {
       if (phase !== "longBreakChoice") return;
       stopInterval();
@@ -351,14 +378,9 @@
       showOnly(longBreakControls);
       setStatus(`Long break started for ${selectedLongBreakSeconds / 60} minutes. You can stop it at any time.`);
       render();
-      startCountdown(() => {
-        resetSession("Long break complete. Your Pomodoro session has reset to square one.");
-      });
+      startCountdown(beginLongBreakAlarm);
     });
 
-    /* longBreakStop.addEventListener("click", () => {
-      resetSession("Long break stopped. Your Pomodoro session has reset to square one.");
-    }); */
     longBreakStop.addEventListener("click", () => {
       if (phase !== "longBreak") return;
 
@@ -375,7 +397,7 @@
         return;
       }
 
-      resetSession("Long break stopped. Your Pomodoro session has reset to square one.");
+      resetSession("Long break stopped. Your Pomodoro session has reset to Pomodoro 1.");
     });
 
     longBreakStopCancelButton.addEventListener("click", () => {
