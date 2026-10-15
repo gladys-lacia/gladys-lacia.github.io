@@ -145,6 +145,34 @@
       <div class="pomodoro-panel" data-long-break-controls hidden>
         <button class="pomodoro-button" type="button" data-long-break-stop>Stop Long Break</button>
       </div>
+
+      <!-- Stop Long Break Confirmation -->
+      <div data-long-break-stop-confirm-panel hidden>
+        <p>
+          To stop your long break and reset your Pomodoro session,
+          type <strong>STOP LONG BREAK</strong> in the text field.
+        </p>
+
+        <label for="long-break-stop-phrase">
+          Confirmation phrase:
+        </label>
+
+        <input
+          type="text"
+          id="long-break-stop-phrase"
+          data-long-break-stop-phrase
+          autocomplete="off"
+          placeholder="STOP LONG BREAK"
+        >
+
+        <button type="button" data-long-break-stop-confirm>
+          Confirm Stop Long Break
+        </button>
+
+        <button type="button" data-long-break-stop-cancel>
+          Cancel
+        </button>
+      </div>
     </section>
     <p style="text-align:center"><a class="pomodoro-back-link" href="../index.html" target="_blank" rel="noopener">Back to main page</a></p>
   </main>

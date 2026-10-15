@@ -31,6 +31,12 @@
     const longBreakStart = app.querySelector("[data-long-break-start]");
     const longBreakStop = app.querySelector("[data-long-break-stop]");
     const longBreakControls = app.querySelector("[data-long-break-controls]");
+    
+    const longBreakStopConfirmPanel = app.querySelector("[data-long-break-stop-confirm-panel]");
+    const longBreakStopPhraseInput = app.querySelector("[data-long-break-stop-phrase]");
+    const longBreakStopConfirmButton = app.querySelector("[data-long-break-stop-confirm]");
+    const longBreakStopCancelButton = app.querySelector("[data-long-break-stop-cancel]");
+
     const focusAudio = new Audio();
     const alarmAudio = new Audio("../assets/focus-sounds-pomodoro/alarm-clock.mp3");
 
@@ -42,6 +48,8 @@
     let intervalId = null;
     let isPaused = false;
     let selectedLongBreakSeconds = 15 * 60;
+
+    let pomodoroSessionStarted = false;
 
     focusAudio.loop = true;
     alarmAudio.loop = true;
@@ -77,9 +85,24 @@
       statusDisplay.textContent = message;
     }
 
-    function showOnly(panel) {
+    window.addEventListener("beforeunload", (event) => {
+      if (!pomodoroSessionStarted) return;
+
+      event.preventDefault();
+      /* event.returnValue = ""; */
+      event.returnValue = true;
+    });
+
+    /* function showOnly(panel) {
       [readyPanel, focusControls, stopConfirmPanel, alarmPanel, nextPomodoroPanel,
         doNotStartPanel, longBreakPanel, longBreakControls].forEach((element) => {
+        if (element) element.hidden = element !== panel;
+      });
+    } */
+    function showOnly(panel) {
+      [readyPanel, focusControls, stopConfirmPanel, alarmPanel, nextPomodoroPanel,
+        doNotStartPanel, longBreakPanel, longBreakControls,
+        longBreakStopConfirmPanel].forEach((element) => {
         if (element) element.hidden = element !== panel;
       });
     }
@@ -146,6 +169,7 @@
       stopAlarmAudio();
       stopFocusAudio();
       phase = "focus";
+      pomodoroSessionStarted = true;
       remainingSeconds = FOCUS_SECONDS;
       isPaused = false;
       showOnly(focusControls);
@@ -210,6 +234,7 @@
       stopInterval();
       stopFocusAudio();
       stopAlarmAudio();
+      pomodoroSessionStarted = false;
       pomodoroNumber = 1;
       phase = "ready";
       remainingSeconds = FOCUS_SECONDS;
@@ -331,8 +356,33 @@
       });
     });
 
-    longBreakStop.addEventListener("click", () => {
+    /* longBreakStop.addEventListener("click", () => {
       resetSession("Long break stopped. Your Pomodoro session has reset to square one.");
+    }); */
+    longBreakStop.addEventListener("click", () => {
+      if (phase !== "longBreak") return;
+
+      longBreakStopPhraseInput.value = "";
+      showOnly(longBreakStopConfirmPanel);
+      longBreakStopPhraseInput.focus();
+
+      setStatus("To stop the long break, type STOP LONG BREAK exactly. Your long break is still running.");
+    });
+
+    longBreakStopConfirmButton.addEventListener("click", () => {
+      if (longBreakStopPhraseInput.value.trim() !== "STOP LONG BREAK") {
+        setStatus("The phrase did not match. Type STOP LONG BREAK exactly. Your long break is still running.");
+        return;
+      }
+
+      resetSession("Long break stopped. Your Pomodoro session has reset to square one.");
+    });
+
+    longBreakStopCancelButton.addEventListener("click", () => {
+      longBreakStopPhraseInput.value = "";
+      showOnly(longBreakControls);
+
+      setStatus("You chose to continue your long break. The timer is still running.");
     });
 
     showOnly(readyPanel);
