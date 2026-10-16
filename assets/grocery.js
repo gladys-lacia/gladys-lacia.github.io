@@ -6,7 +6,8 @@
   "use strict";
 
   // Replace this with your deployed Worker URL, without a trailing slash.
-  const API_BASE_URL = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev";
+  /* const API_BASE_URL = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev"; */
+  const API_BASE_URL = "https://grocery-list.acct-gladyslacia.workers.dev/";
   const API_PATHS = {
     login: "/api/auth/login",
     list: "/api/grocery-list",
