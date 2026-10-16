@@ -212,6 +212,37 @@
     });
   }
 
+  async function replaceItemsAtomically(items) {
+    // Validate every item before changing local data.
+    const normalizedItems = items.map(normalizeItem);
+
+    // Replace all items in one IndexedDB transaction.
+    const tx = db.transaction(STORE_ITEMS, "readwrite");
+    const store = tx.objectStore(STORE_ITEMS);
+
+    store.clear();
+
+    for (const item of normalizedItems) {
+      store.put(item);
+    }
+
+    return new Promise((resolve, reject) => {
+      tx.oncomplete = () => resolve();
+
+      tx.onerror = () => {
+        reject(
+          tx.error || new Error("Could not replace local grocery items.")
+        );
+      };
+
+      tx.onabort = () => {
+        reject(
+          tx.error || new Error("Local grocery-item replacement was aborted.")
+        );
+      };
+    });
+  }
+
   function makeChangeId() {
     if (window.crypto && typeof crypto.randomUUID === "function") {
       return crypto.randomUUID();
@@ -591,7 +622,7 @@
     }
   }
 
-  async function refreshServerAfterSync() {
+  /* async function refreshServerAfterSync() {
     const result = await apiRequest(API_PATHS.list, { method: "GET" });
     const serverItems = Array.isArray(result) ? result : result.items;
     if (!Array.isArray(serverItems)) throw new Error("The Worker list response must contain the current items.");
@@ -600,6 +631,24 @@
     for (const rawItem of serverItems) {
       await putInStore(STORE_ITEMS, normalizeItem(rawItem));
     }
+    await renderLocalItems();
+  } */
+  async function refreshServerAfterSync() {
+    const result = await apiRequest(API_PATHS.list, {
+      method: "GET"
+    });
+
+    const serverItems = Array.isArray(result)
+      ? result
+      : result.items;
+
+    if (!Array.isArray(serverItems)) {
+      throw new Error(
+        "The Worker list response must contain the current items."
+      );
+    }
+
+    await replaceItemsAtomically(serverItems);
     await renderLocalItems();
   }
 
