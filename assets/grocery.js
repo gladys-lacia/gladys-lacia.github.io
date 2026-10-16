@@ -7,7 +7,7 @@
 
   // Replace this with your deployed Worker URL, without a trailing slash.
   /* const API_BASE_URL = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev"; */
-  const API_BASE_URL = "https://grocery-list.acct-gladyslacia.workers.dev/";
+  const API_BASE_URL = "https://grocery-list.acct-gladyslacia.workers.dev";
   const API_PATHS = {
     login: "/api/auth/login",
     list: "/api/grocery-list",
@@ -24,7 +24,8 @@
   const STORE_QUEUE = "pendingChanges";
   const STORE_AUTH = "offlineAuth";
   const CREDENTIAL_KEY = "ownerCredential";
-  const PBKDF2_ITERATIONS = 310000;
+  /* const PBKDF2_ITERATIONS = 310000; */
+  const PBKDF2_ITERATIONS = 100000;
   const QUAD_LABELS = {
     1: "A. Urgent and Important",
     2: "B. Not Urgent but Important",
