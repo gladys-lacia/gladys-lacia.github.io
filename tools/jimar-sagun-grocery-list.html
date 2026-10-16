@@ -306,7 +306,9 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("../service-worker-v1-pt1.js")
+        navigator.serviceWorker.register("../service-worker-v1-pt1.js", {
+          scope: "/tools/"
+        })
           .then((registration) => {
             console.log("Service worker registered:", registration.scope);
           })

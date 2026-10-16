@@ -514,7 +514,7 @@ async function handleGetList(env) {
    JIMAR SAGUN APP LIST
    ========================= */
 
-async function handleGetJimarSagunList(request, env) {
+/* async function handleGetJimarSagunList(request, env) {
   if (!env.DB) {
     return json({ error: "D1 binding DB is not configured." }, 500);
   }
@@ -525,6 +525,19 @@ async function handleGetJimarSagunList(request, env) {
     return json({
       error: "Your personal login has expired or is invalid. Log in online again."
     }, 401);
+  }
+
+  const result = await env.DB.prepare(`
+    SELECT rowid, grocery_item, quad_number, check_mark
+    FROM "jimar-sagun-grocery-list"
+    ORDER BY quad_number ASC, rowid ASC
+  `).all();
+
+  return json({ items: result.results || [] });
+} */
+async function handleGetJimarSagunList(env) {
+  if (!env.DB) {
+    return json({ error: "D1 binding DB is not configured." }, 500);
   }
 
   const result = await env.DB.prepare(`
@@ -925,7 +938,7 @@ export default {
         url.pathname === "/api/jimar-sagun-grocery-list" &&
         request.method === "GET"
       ) {
-        response = await handleGetJimarSagunList(request, env);
+        response = await handleGetJimarSagunList(env);
 
       } else if (
         url.pathname === "/api/jimar-sagun-grocery-list/sync" &&

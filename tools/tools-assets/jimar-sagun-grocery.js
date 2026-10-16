@@ -578,9 +578,9 @@
       }
 
       // Only clear offline data after the Worker confirms the sync has committed.
+      await refreshServerAfterSync();
       await clearStore(STORE_QUEUE);
       hasPendingChanges = false;
-      await refreshServerAfterSync();
       showMessage("Synced. Offline changes have been saved to the database.");
     } catch (error) {
       hasPendingChanges = true;
