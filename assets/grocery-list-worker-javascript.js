@@ -16,7 +16,6 @@
  *   or keep plaintext passwords in D1.
  */
 
-/* const PBKDF2_ITERATIONS = 310000; */
 const PBKDF2_ITERATIONS = 100000;
 const TOKEN_LIFETIME_SECONDS = 12 * 60 * 60;
 const ALLOWED_DEFAULT_ORIGIN = "https://gladys-lacia.github.io";
