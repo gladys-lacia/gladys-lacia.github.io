@@ -17,7 +17,7 @@
     sync: "/api/grocery-list/sync"
   };
 
-  const DB_NAME = "to-feed-your-mind-grocery";
+  const DB_NAME = "groceries";
   const DB_VERSION = 1;
   const STORE_ITEMS = "groceryItems";
   const STORE_META = "metadata";
