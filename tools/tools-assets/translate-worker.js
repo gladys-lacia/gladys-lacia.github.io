@@ -27,7 +27,7 @@
  *   CREATE INDEX IF NOT EXISTS idx_translate_msgs_tab ON "multi-user-translate-messages" (tab_id, user_name);
  *
  *   INSERT INTO "multi-user-translate-tool" (first_name, last_name, user_name, user_email, user_password)
- *   VALUES ('Gladys', 'Lacia', 'gladys', 'you@example.com', 'a-temporary-password');
+ *   VALUES ('Gladys', 'Lacia', 'gladyslacia', 'you@example.com', 'a-temporary-password');
  */
 
 // Confirm the exact model name your free API key can use in Google AI Studio.
