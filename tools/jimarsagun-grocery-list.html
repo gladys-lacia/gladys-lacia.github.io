@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grocery List &colon; To Feed Your Mind</title>
+  <link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css" />
+  <style>
+    .grocery-page {
+      max-width: 1000px;
+      margin: 24px auto 48px;
+      padding: 0 24px;
+    }
+    .grocery-top-status {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 18px;
+      margin-bottom: 18px;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .status-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-radius: 50%;
+      background: #777777;
+    }
+    .status-online, .status-logged-in, .status-synced { color: #27834A; }
+    .status-offline, .status-indexeddb { color: #777777; }
+    .status-disabled { color: #C0392B; }
+    .status-online .status-dot { background: #27834A; }
+    .status-offline .status-dot { background: #777777; }
+    .status-indexeddb .status-dot { background: #777777; }
+    .status-disabled .status-dot { background: #C0392B; }
+    .grocery-account-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 36px;
+      margin-bottom: 12px;
+    }
+    .grocery-account-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .grocery-account-status .status-synced { font-size: 0.76rem; }
+    .grocery-button {
+      display: inline-block;
+      border: 0;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: #FFFEF2;
+      background: #2e2d2b;
+    }
+    .grocery-button:hover { filter: brightness(1.12); }
+    .grocery-button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .grocery-button-danger { background: #C0392B; }
+    .grocery-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .grocery-heading-row h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.75rem;
+      color: #4A0404;
+    }
+    .grocery-message {
+      margin: 10px 0 16px;
+      padding: 9px 12px;
+      border-left: 3px solid #777777;
+      background: rgba(119, 119, 119, 0.08);
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+    }
+    .grocery-message[hidden], .grocery-login-panel[hidden], .grocery-editor[hidden] { display: none; }
+    .grocery-login-panel, .grocery-editor {
+      border: 1px solid #d8d5ca;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .grocery-login-panel h2, .grocery-editor h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      color: #044A4A;
+    }
+    .grocery-form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+    }
+    .grocery-field {
+      display: flex;
+      flex: 1 1 220px;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.9rem;
+    }
+    .grocery-field input, .grocery-field select {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #aaa69b;
+      border-radius: 4px;
+      padding: 8px;
+      background: #fffef9;
+      color: #2e2d2b;
+      font: inherit;
+    }
+    .grocery-categories {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+    .grocery-category {
+      min-width: 0;
+      border: 1px solid #d8d5ca;
+      border-radius: 6px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.42);
+    }
+    .grocery-category h2 {
+      padding: 12px 14px;
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      line-height: 1.45;
+      color: #FFFEF2;
+      background: #2e2d2b;
+      overflow-wrap: anywhere;
+    }
+    .grocery-category[data-quad="1"] h2 { background: #B94728; }
+    .grocery-category[data-quad="2"] h2 { background: #087F73; }
+    .grocery-category[data-quad="3"] h2 { background: #2856A6; }
+    .grocery-category[data-quad="4"] h2 { background: #6842A6; }
+    .grocery-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      min-height: 60px;
+    }
+    .grocery-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 10px;
+      border: 1px solid #dedbd1;
+      border-radius: 4px;
+      background: #FFFEF2;
+      overflow-wrap: anywhere;
+    }
+    .grocery-item input[type="checkbox"] {
+      flex: 0 0 auto;
+      width: 17px;
+      height: 17px;
+      margin-top: 4px;
+      accent-color: #27834A;
+    }
+    .grocery-item-text {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .grocery-item.is-checked .grocery-item-text {
+      color: #777777;
+      text-decoration: line-through;
+    }
+    .grocery-item button {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 4px;
+      padding: 3px 7px;
+      color: #C0392B;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+    }
+    .grocery-item button:disabled { display: none; }
+    .grocery-empty {
+      color: #777777;
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+    .grocery-editor .grocery-form-row { align-items: end; }
+    .grocery-footer-note {
+      margin-top: 16px;
+      color: #777777;
+      font-size: 0.82rem;
+    }
+    @media (max-width: 600px) {
+      .grocery-page { padding: 0 16px; margin-top: 16px; }
+      .grocery-categories { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .grocery-heading-row h1 { font-size: 1.45rem; }
+      .grocery-account-bar { margin-bottom: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="grocery-page">
+    <div class="grocery-top-status" aria-live="polite">
+      <span id="connectionStatus" class="status-item status-offline"><span class="status-dot"></span><span>Checking connection...</span></span>
+      <span id="indexedDBStatus" class="status-item status-indexeddb"><span class="status-dot"></span><span>Checking IndexedDB...</span></span>
+    </div>
+
+    <div class="grocery-account-bar">
+      <div id="accountStatus" class="grocery-account-status" aria-live="polite"></div>
+      <button id="showLoginButton" class="grocery-button" type="button">Log In</button>
+      <button id="logoutButton" class="grocery-button grocery-button-danger" type="button" hidden>Log Out</button>
+    </div>
+
+    <div class="grocery-heading-row">
+      <h1>Grocery List</h1>
+    </div>
+
+    <p id="pageMessage" class="grocery-message" role="status" hidden></p>
+
+    <section id="loginPanel" class="grocery-login-panel" hidden>
+      <h2>Log In</h2>
+      <form id="loginForm">
+        <div class="grocery-form-row">
+          <label class="grocery-field">
+            Username or email
+            <input id="loginIdentifier" name="identifier" type="text" autocomplete="username" required />
+          </label>
+          <label class="grocery-field">
+            Password
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button id="loginSubmitButton" class="grocery-button" type="submit">Log In</button>
+        </div>
+      </form>
+      <p class="grocery-footer-note">Offline login is available only after this browser has successfully logged in online at least once and saved its local verification record.</p>
+    </section>
+
+    <section id="groceryEditor" class="grocery-editor" hidden>
+      <h2>Add a Grocery Item</h2>
+      <form id="addGroceryForm">
+        <div class="grocery-form-row">
+          <label class="grocery-field">
+            Grocery item
+            <input id="newGroceryItem" name="groceryItem" type="text" maxlength="300" required />
+          </label>
+          <label class="grocery-field">
+            Category
+            <select id="newGroceryQuad" name="quadNumber" required>
+              <option value="1">A. Urgent and Important</option>
+              <option value="2">B. Not Urgent but Important</option>
+              <option value="3">C. Urgent but Not Important</option>
+              <option value="4">D. Not Urgent and Not Important</option>
+            </select>
+          </label>
+          <button class="grocery-button" type="submit">Add Item</button>
+        </div>
+      </form>
+    </section>
+
+    <div id="groceryCategories" class="grocery-categories" aria-live="polite">
+      <section class="grocery-category" data-quad="1">
+        <h2>A. Urgent and Important</h2>
+        <div class="grocery-items" data-items-for="1"><p class="grocery-empty">Loading grocery items...</p></div>
+      </section>
+      <section class="grocery-category" data-quad="2">
+        <h2>B. Not Urgent but Important</h2>
+        <div class="grocery-items" data-items-for="2"><p class="grocery-empty">Loading grocery items...</p></div>
+      </section>
+      <section class="grocery-category" data-quad="3">
+        <h2>C. Urgent but Not Important</h2>
+        <div class="grocery-items" data-items-for="3"><p class="grocery-empty">Loading grocery items...</p></div>
+      </section>
+      <section class="grocery-category" data-quad="4">
+        <h2>D. Not Urgent and Not Important</h2>
+        <div class="grocery-items" data-items-for="4"><p class="grocery-empty">Loading grocery items...</p></div>
+      </section>
+    </div>
+
+    <p class="grocery-footer-note">The list is visible to everyone. Editing controls are available only while logged in. Offline changes are stored in this browser until they can be synchronized.</p>
+  </main>
+  <script src="tools-assets/jimarsagun-grocery.js" defer></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("../service-worker-v1pt1.js", { scope: "./" })
+          .then((registration) => {
+            console.log("Service worker registered:", registration.scope);
+          })
+          .catch((error) => {
+            console.error("Service worker registration failed:", error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
