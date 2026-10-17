@@ -31,7 +31,7 @@
  */
 
 // Confirm the exact model name your free API key can use in Google AI Studio.
-const GEMINI_MODEL = "gemini-3.6-flash";
+const GEMINI_MODEL = "gemini-3.8-flash";
 
 const T_USERS = "multi-user-translate-tool";
 const T_TABS = "multi-user-translate-tabs";
