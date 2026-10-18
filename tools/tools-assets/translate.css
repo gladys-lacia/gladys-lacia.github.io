@@ -196,10 +196,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .msg { max-width: min(720px, 88%); padding: 10px 14px; border-radius: 8px; }
 .msg-user { align-self: flex-end; background: var(--teal); color: var(--cream); }
 .msg-assistant { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--maroon); }
-.msg-label { margin-bottom: 4px; font-size: 0.78rem; font-weight: 700; color: var(--maroon); }
+/* .msg-label { margin-bottom: 4px; font-size: 0.78rem; font-weight: 700; color: var(--maroon); } */
+.msg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.msg-label { font-size: 0.78rem; font-weight: 700; color: var(--maroon); }
 .msg-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
 .msg-pending .msg-body { font-style: italic; color: #666; }
 .msg-actions { display: flex; gap: 14px; margin-top: 6px; }
+.msg-head button,
 .msg-actions button {
   padding: 0;
   border: 0;
@@ -210,6 +213,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   opacity: 0.8;
   cursor: pointer;
 }
+.msg-head button:hover,
 .msg-actions button:hover { opacity: 1; text-decoration: none; }
 
 /* Composer stays at the bottom while messages scroll */

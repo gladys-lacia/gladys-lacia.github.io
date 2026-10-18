@@ -178,7 +178,7 @@
     if (tab) modeSelect.value = tab.mode_id;
   }
 
-  function messageNode(message) {
+/*   function messageNode(message) {
     const wrap = el("div", `msg msg-${message.role}`);
     if (message.role === "assistant" && message.mode_id) wrap.appendChild(el("div", "msg-label", modeLabel(message.mode_id)));
     wrap.appendChild(el("div", "msg-body", message.content));
@@ -198,6 +198,37 @@
       });
       actions.appendChild(copy);
     }
+    const remove = el("button", "", "Delete");
+    remove.type = "button";
+    remove.addEventListener("click", () => deleteMessage(message));
+    actions.appendChild(remove);
+    wrap.appendChild(actions);
+    return wrap;
+  } */
+  function messageNode(message) {
+    const wrap = el("div", `msg msg-${message.role}`);
+
+    if (message.role === "assistant") {
+      const head = el("div", "msg-head");
+      head.appendChild(el("span", "msg-label", modeLabel(message.mode_id)));
+      const copy = el("button", "", "Copy");
+      copy.type = "button";
+      copy.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(message.content);
+          copy.textContent = "Copied";
+        } catch {
+          copy.textContent = "Copy failed";
+        }
+        setTimeout(() => { copy.textContent = "Copy"; }, 1500);
+      });
+      head.appendChild(copy);
+      wrap.appendChild(head);
+    }
+
+    wrap.appendChild(el("div", "msg-body", message.content));
+
+    const actions = el("div", "msg-actions");
     const remove = el("button", "", "Delete");
     remove.type = "button";
     remove.addEventListener("click", () => deleteMessage(message));
