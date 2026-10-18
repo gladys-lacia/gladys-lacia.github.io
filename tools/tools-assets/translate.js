@@ -89,6 +89,11 @@
       throw new Error("Could not reach the server. Check your connection and try again.");
     }
 
+    const refreshed = response.headers.get("X-Refreshed-Token");
+    if (refreshed && state.token) {
+      state.token = refreshed;
+      localStorage.setItem("translateToken", refreshed);
+    }
     const data = await response.json().catch(() => ({}));
     if (response.status === 401 && path !== "/api/auth/login") {
       signOut("Your session expired. Log in again.");

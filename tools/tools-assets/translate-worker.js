@@ -185,6 +185,7 @@ function corsHeaders(request, env) {
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
+    "Access-Control-Expose-Headers": "X-Refreshed-Token",
     "Vary": "Origin"
   };
   if (allowed.includes(origin)) headers["Access-Control-Allow-Origin"] = origin;
@@ -465,7 +466,8 @@ async function translate(request, env, user, id) {
   return json({ user: userMessage, assistant: assistantMessage, title });
 }
 
-async function route(request, env, url) {
+/* async function route(request, env, url) { */
+async function route(request, env, url, ctx) {
   const path = url.pathname;
   const method = request.method;
 
@@ -475,6 +477,8 @@ async function route(request, env, url) {
   if (!env.DB) throw new HttpError(500, "D1 binding DB is not configured.");
   const user = await requireUser(request, env);
   if (!user) throw new HttpError(401, "Your login has expired or is invalid. Log in again.");
+  const now = Math.floor(Date.now() / 1000);
+  ctx.token = await signToken({ sub: user, role: "user", iat: now, exp: now + TOKEN_LIFETIME_SECONDS }, env.AUTH_SECRET);
 
   if (path === "/api/modes" && method === "GET") return json({ modes: MODES.map(({ id, label }) => ({ id, label })) });
   if (path === "/api/tabs" && method === "GET") return listTabs(env, user);
@@ -498,7 +502,7 @@ async function route(request, env, url) {
   throw new HttpError(404, "Not found.");
 }
 
-export default {
+/* export default {
   async fetch(request, env) {
     const cors = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
@@ -515,5 +519,27 @@ export default {
       }
     }
     return withCors(response, cors);
+  }
+}; */
+export default {
+  async fetch(request, env) {
+    const cors = corsHeaders(request, env);
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+
+    const ctx = {};
+    let response;
+    try {
+      response = await route(request, env, new URL(request.url), ctx);
+    } catch (error) {
+      if (error instanceof HttpError) {
+        response = json({ error: error.message }, error.status);
+      } else {
+        console.error(error);
+        response = json({ error: "Unexpected server error." }, 500);
+      }
+    }
+    const finalResponse = withCors(response, cors);
+    if (ctx.token) finalResponse.headers.set("X-Refreshed-Token", ctx.token);
+    return finalResponse;
   }
 };
