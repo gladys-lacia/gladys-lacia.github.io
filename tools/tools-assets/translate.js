@@ -45,8 +45,8 @@
   const deleteConfirm = $("deleteConfirm");
 
   const state = {
-    token: sessionStorage.getItem("translateToken"),
-    user: sessionStorage.getItem("translateUser") || "",
+    token: localStorage.getItem("translateToken"),
+    user: localStorage.getItem("translateUser") || "",
     modes: [],
     tabs: [],
     messages: {},
@@ -129,9 +129,9 @@
     state.messages = {};
     state.activeId = null;
     state.pending = null;
-    sessionStorage.removeItem("translateToken");
-    sessionStorage.removeItem("translateUser");
-    sessionStorage.removeItem("translateActiveTab");
+    localStorage.removeItem("translateToken");
+    localStorage.removeItem("translateUser");
+    localStorage.removeItem("translateActiveTab");
     messagesEl.replaceChildren();
     tabList.replaceChildren();
     showError("");
@@ -233,7 +233,7 @@
 
   async function setActive(id) {
     state.activeId = id;
-    sessionStorage.setItem("translateActiveTab", String(id));
+    localStorage.setItem("translateActiveTab", String(id));
     showError("");
     renderTabs();
     renderHeader();
@@ -280,7 +280,7 @@
       await createTab();
       return;
     }
-    const saved = Number(sessionStorage.getItem("translateActiveTab"));
+    const saved = Number(localStorage.getItem("translateActiveTab"));
     await setActive(state.tabs.some((tab) => tab.id === saved) ? saved : state.tabs[0].id);
   }
 
@@ -420,8 +420,8 @@
       });
       state.token = result.token;
       state.user = result.user.username;
-      sessionStorage.setItem("translateToken", state.token);
-      sessionStorage.setItem("translateUser", state.user);
+      localStorage.setItem("translateToken", state.token);
+      localStorage.setItem("translateUser", state.user);
       loginPassword.value = "";
       showApp();
       await loadAll();
