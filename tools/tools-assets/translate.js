@@ -6,6 +6,7 @@
   const API_BASE_URL = "https://translate-html.acct-gladyslacia.workers.dev";
   const DEFAULT_TITLE = "New translation";
   const CLEAR_PHRASE = "CLEAR";
+  const DELETE_PHRASE = "DELETE";
 
   const $ = (id) => document.getElementById(id);
   const loginView = $("loginView");
@@ -36,6 +37,12 @@
   const clearError = $("clearError");
   const clearCancel = $("clearCancel");
   const clearConfirm = $("clearConfirm");
+  const deleteDialog = $("deleteDialog");
+  const deleteForm = $("deleteForm");
+  const deletePhrase = $("deletePhrase");
+  const deleteError = $("deleteError");
+  const deleteCancel = $("deleteCancel");
+  const deleteConfirm = $("deleteConfirm");
 
   const state = {
     token: sessionStorage.getItem("translateToken"),
@@ -300,7 +307,7 @@
     }
   }
 
-  async function deleteTab() {
+  /* async function deleteTab() {
     const tab = activeTab();
     if (!tab || !window.confirm("Delete this tab and all of its messages? This cannot be undone.")) return;
     try {
@@ -309,6 +316,26 @@
       showError(error.message);
       return;
     }
+    state.tabs = state.tabs.filter((item) => item.id !== tab.id);
+    delete state.messages[tab.id];
+    if (state.tabs.length) await setActive(state.tabs[0].id);
+    else await createTab();
+  } */
+  async function deleteTab(event) {
+    event.preventDefault();
+    if (deletePhrase.value.trim() !== DELETE_PHRASE) return;
+    const tab = activeTab();
+    if (!tab) return;
+    deleteConfirm.disabled = true;
+    try {
+      await api(`/api/tabs/${tab.id}`, { method: "DELETE", body: { confirm: DELETE_PHRASE } });
+    } catch (error) {
+      deleteError.textContent = error.message;
+      deleteError.hidden = false;
+      deleteConfirm.disabled = deletePhrase.value.trim() !== DELETE_PHRASE;
+      return;
+    }
+    deleteDialog.close();
     state.tabs = state.tabs.filter((item) => item.id !== tab.id);
     delete state.messages[tab.id];
     if (state.tabs.length) await setActive(state.tabs[0].id);
@@ -448,10 +475,23 @@
   });
   clearCancel.addEventListener("click", () => clearDialog.close());
   clearForm.addEventListener("submit", clearConversation);
-  deleteTabButton.addEventListener("click", () => {
+  /* deleteTabButton.addEventListener("click", () => {
     closeSettings();
     deleteTab();
+  }); */
+  deleteTabButton.addEventListener("click", () => {
+    closeSettings();
+    deletePhrase.value = "";
+    deleteConfirm.disabled = true;
+    deleteError.hidden = true;
+    deleteDialog.showModal();
+    deletePhrase.focus();
   });
+  deletePhrase.addEventListener("input", () => {
+    deleteConfirm.disabled = deletePhrase.value.trim() !== DELETE_PHRASE;
+  });
+  deleteCancel.addEventListener("click", () => deleteDialog.close());
+  deleteForm.addEventListener("submit", deleteTab);
 
   /* ---------- Start ---------- */
 

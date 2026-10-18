@@ -402,8 +402,13 @@ async function updateTab(request, env, user, id) {
   return json({ tab: { ...tab, mode_id: modeId } });
 }
 
-async function deleteTab(env, user, id) {
+/* async function deleteTab(env, user, id) {
   await requireTab(env, id, user);
+  await env.DB.batch([ */
+async function deleteTab(request, env, user, id) {
+  await requireTab(env, id, user);
+  const body = await readJson(request);
+  if (body.confirm !== "DELETE") throw new HttpError(400, "Type DELETE to confirm.");
   await env.DB.batch([
     env.DB.prepare(`DELETE FROM "${T_MSGS}" WHERE tab_id = ? AND user_name = ?`).bind(id, user),
     env.DB.prepare(`DELETE FROM "${T_TABS}" WHERE id = ? AND user_name = ?`).bind(id, user)
@@ -477,7 +482,8 @@ async function route(request, env, url) {
 
   let match = path.match(/^\/api\/tabs\/(\d+)$/);
   if (match && method === "PUT") return updateTab(request, env, user, Number(match[1]));
-  if (match && method === "DELETE") return deleteTab(env, user, Number(match[1]));
+  /* if (match && method === "DELETE") return deleteTab(env, user, Number(match[1])); */
+  if (match && method === "DELETE") return deleteTab(request, env, user, Number(match[1]));
 
   match = path.match(/^\/api\/tabs\/(\d+)\/messages$/);
   if (match && method === "GET") return listMessages(env, user, Number(match[1]));

@@ -72,7 +72,7 @@
     </main>
   </div>
 
-  <!-- Clear confirmation -->
+  <!-- Clear conversation confirmation -->
   <dialog id="clearDialog" class="dialog">
     <form id="clearForm">
       <h2>Clear this conversation?</h2>
@@ -84,6 +84,22 @@
       <div class="dialog-actions">
         <button id="clearCancel" class="btn" type="button">Cancel</button>
         <button id="clearConfirm" class="btn btn-danger" type="submit" disabled>Clear conversation</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Delete tab confirmation -->
+  <dialog id="deleteDialog" class="dialog">
+    <form id="deleteForm">
+      <h2>Delete this tab?</h2>
+      <p>This permanently deletes the tab and all of its messages, including from the database.</p>
+      <label class="field">Type DELETE to confirm
+        <input id="deletePhrase" type="text" autocomplete="off" />
+      </label>
+      <p id="deleteError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button id="deleteCancel" class="btn" type="button">Cancel</button>
+        <button id="deleteConfirm" class="btn btn-danger" type="submit" disabled>Delete tab</button>
       </div>
     </form>
   </dialog>
