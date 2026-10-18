@@ -84,7 +84,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transition: margin-left 0.2s, transform 0.2s, visibility 0s 0.2s;
 }
 .sidebar-top { padding: 14px; }
-.btn-new { width: 100%; text-align: left; background: var(--teal); }
+/* .btn-new { width: 100%; text-align: left; background: var(--teal); } */
+.btn-new { width: 100%; text-align: left; background: var(--cream); color: var(--teal); }
+.btn-new:hover { filter: none; background: #fff; }
 
 .tab-list {
   flex: 1;
