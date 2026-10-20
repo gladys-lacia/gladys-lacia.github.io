@@ -22,6 +22,7 @@
   <input type="checkbox" id="repeated-open" class="state" />
   <input type="checkbox" id="groups-open" class="state" />
   <input type="checkbox" id="delete-group-open" class="state" />
+  <input type="checkbox" id="edit-task-open" class="state" />
 
   <div class="layout">
 
@@ -51,11 +52,11 @@
 
       <h2 class="sidebar-title">My tasks</h2>
       <ul class="task-list">
-        <li class="task"><select aria-label="Priority"><option selected>A</option><option>B</option><option>C</option><option>D</option></select><span>Submit client proposal</span><label class="delete" for="delete-open">Delete</label></li>
-        <li class="task"><select aria-label="Priority"><option>A</option><option selected>B</option><option>C</option><option>D</option></select><span>Plan next week’s content</span><label class="delete" for="delete-open">Delete</label></li>
-        <li class="task"><select aria-label="Priority"><option>A</option><option selected>B</option><option>C</option><option>D</option></select><span>Update portfolio page</span><label class="delete" for="delete-open">Delete</label></li>
-        <li class="task done"><select aria-label="Priority" disabled><option>A</option><option>B</option><option selected>C</option><option>D</option></select><span>Reply to routine emails</span><label class="delete" for="delete-open">Delete</label></li>
-        <li class="task done"><select aria-label="Priority" disabled><option>A</option><option>B</option><option>C</option><option selected>D</option></select><span>Organize old files</span><label class="delete" for="delete-open">Delete</label></li>
+        <li class="task"><select aria-label="Priority"><option selected>A</option><option>B</option><option>C</option><option>D</option></select><span>Submit client proposal</span><div class="task-actions"><label class="edit" for="edit-task-open">Edit</label><label class="delete" for="delete-open">Delete</label></div></li>
+        <li class="task"><select aria-label="Priority"><option>A</option><option selected>B</option><option>C</option><option>D</option></select><span>Plan next week’s content</span><div class="task-actions"><label class="edit" for="edit-task-open">Edit</label><label class="delete" for="delete-open">Delete</label></div></li>
+        <li class="task"><select aria-label="Priority"><option>A</option><option selected>B</option><option>C</option><option>D</option></select><span>Update portfolio page</span><div class="task-actions"><label class="edit" for="edit-task-open">Edit</label><label class="delete" for="delete-open">Delete</label></div></li>
+        <li class="task done"><select aria-label="Priority" disabled><option>A</option><option>B</option><option selected>C</option><option>D</option></select><span>Reply to routine emails</span><div class="task-actions"><label class="edit" for="edit-task-open">Edit</label><label class="delete" for="delete-open">Delete</label></div></li>
+        <li class="task done"><select aria-label="Priority" disabled><option>A</option><option>B</option><option>C</option><option selected>D</option></select><span>Organize old files</span><div class="task-actions"><label class="edit" for="edit-task-open">Edit</label><label class="delete" for="delete-open">Delete</label></div></li>
       </ul>
 
       <div class="sidebar-foot">
@@ -271,6 +272,43 @@
       <div class="dialog-actions">
         <label class="btn btn-plain" for="add-individual">Cancel</label>
         <button class="btn" type="button">Add task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit task popup (sample values shown) -->
+  <div class="modal modal-edit">
+    <label class="backdrop" for="edit-task-open"></label>
+    <div class="dialog" role="dialog" aria-labelledby="edit-task-title">
+      <h2 id="edit-task-title">Edit task</h2>
+      <label class="field">Priority
+        <select>
+          <option selected>A. Urgent and Important</option>
+          <option>B. Not Urgent but Important</option>
+          <option>C. Urgent but Not Important</option>
+          <option>D. Not Urgent and Not Important</option>
+        </select>
+      </label>
+      <label class="field">Task
+        <input type="text" value="Submit client proposal" />
+      </label>
+      <div class="deadline">
+        <input type="checkbox" id="edit-has-deadline" checked />
+        <label for="edit-has-deadline">This task has a deadline</label>
+        <div class="deadline-fields">
+          <input type="date" value="2026-10-20" aria-label="Deadline date" />
+          <input type="time" value="17:00" aria-label="Deadline time" />
+          <select aria-label="Deadline timezone">
+            <option selected>Asia/Manila (PHT)</option>
+            <option>America/New_York (ET)</option>
+            <option>Europe/London (UK)</option>
+            <option>Australia/Sydney (AET)</option>
+          </select>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="edit-task-open">Cancel</label>
+        <button class="btn" type="button">Save changes</button>
       </div>
     </div>
   </div>

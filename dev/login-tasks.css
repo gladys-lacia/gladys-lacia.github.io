@@ -119,6 +119,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .task.done { background: var(--panel); }
 .task.done span { color: #777; text-decoration: line-through; }
 .task.done select { opacity: 0.5; cursor: not-allowed; }
+.task-actions { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.edit { padding: 3px 6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.edit:hover { text-decoration: none; }
 .delete { flex: 0 0 auto; padding: 3px 6px; color: var(--danger); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
 .delete:hover { text-decoration: none; }
 .sidebar-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; border-top: 1px solid var(--line); }
@@ -246,7 +249,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Popups */
 .modal { display: none; position: fixed; inset: 0; z-index: 20; align-items: center; justify-content: center; padding: 16px; }
-#add-individual:checked ~ .modal-add, #delete-open:checked ~ .modal-delete, #clear-open:checked ~ .modal-clear, #repeated-open:checked ~ .modal-repeated, #groups-open:checked ~ .modal-groups, #delete-group-open:checked ~ .modal-delete-group { display: flex; }
+#add-individual:checked ~ .modal-add, #delete-open:checked ~ .modal-delete, #clear-open:checked ~ .modal-clear, #repeated-open:checked ~ .modal-repeated, #groups-open:checked ~ .modal-groups, #delete-group-open:checked ~ .modal-delete-group, #edit-task-open:checked ~ .modal-edit { display: flex; }
 .backdrop { position: absolute; inset: 0; background: rgba(46, 45, 43, 0.5); cursor: default; }
 .dialog {
   position: relative;
@@ -268,8 +271,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .deadline-fields { display: none; flex: 1 1 100%; flex-wrap: wrap; gap: 8px; }
 .deadline-fields input, .deadline-fields select { flex: 1 1 110px; min-width: 0; padding: 8px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; }
 .deadline-fields select { flex-basis: 150px; }
-.modal-add .dialog { max-width: 480px; }
-#has-deadline:checked ~ .deadline-fields { display: flex; }
+.modal-add .dialog, .modal-edit .dialog { max-width: 480px; }
+.deadline input[type="checkbox"]:checked ~ .deadline-fields { display: flex; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
 .dialog-wide { max-width: 520px; max-height: calc(100dvh - 32px); overflow-y: auto; }
 .dialog h3 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; color: var(--teal); }
