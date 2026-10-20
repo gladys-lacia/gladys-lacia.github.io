@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Tasks | Gladys Lacia</title>
+  <link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="stylesheet" href="login-tasks.css" />
+</head>
+<body>
+
+  <!-- Design-only state switches (CSS checkbox toggles; replaced by JavaScript later) -->
+  <input type="checkbox" id="sidebar-collapsed" class="state" />
+  <input type="checkbox" id="add-menu" class="state" />
+  <input type="checkbox" id="add-individual" class="state" />
+  <input type="checkbox" id="chat-open" class="state" />
+  <input type="checkbox" id="delete-open" class="state" />
+  <input type="checkbox" id="clear-open" class="state" />
+  <input type="checkbox" id="repeated-open" class="state" />
+  <input type="checkbox" id="groups-open" class="state" />
+  <input type="checkbox" id="delete-group-open" class="state" />
+
+  <div class="layout">
+
+    <!-- Left sidebar -->
+    <aside class="sidebar" aria-label="Task list">
+      <div class="sidebar-head">
+        <label class="icon-btn" for="sidebar-collapsed" title="Collapse sidebar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+        </label>
+        <div class="head-icons">
+          <label class="icon-btn" for="add-menu" title="Add task">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
+          </label>
+          <label class="icon-btn" for="repeated-open" title="Save repeated tasks">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3.5h8.5L16.5 6.5v10h-11.5z"/><path d="M7.5 3.5v4h5v-4M7.5 16.5v-5h5v5"/></svg>
+          </label>
+          <label class="icon-btn" for="chat-open" title="Ask for task ordering advice">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 4.5h13v9h-7l-3.5 3v-3h-2.5z"/></svg>
+          </label>
+        </div>
+
+        <div class="add-menu" role="menu">
+          <label for="add-individual" role="menuitem">Individual task</label>
+          <label for="groups-open" role="menuitem">Group of repeated tasks</label>
+        </div>
+      </div>
+
+      <h2 class="sidebar-title">My tasks</h2>
+      <ul class="task-list">
+        <li class="task"><select aria-label="Priority"><option selected>A</option><option>B</option><option>C</option><option>D</option></select><span>Submit client proposal</span><label class="delete" for="delete-open">Delete</label></li>
+        <li class="task"><select aria-label="Priority"><option>A</option><option selected>B</option><option>C</option><option>D</option></select><span>Plan next week’s content</span><label class="delete" for="delete-open">Delete</label></li>
+        <li class="task"><select aria-label="Priority"><option>A</option><option selected>B</option><option>C</option><option>D</option></select><span>Update portfolio page</span><label class="delete" for="delete-open">Delete</label></li>
+        <li class="task done"><select aria-label="Priority" disabled><option>A</option><option>B</option><option selected>C</option><option>D</option></select><span>Reply to routine emails</span><label class="delete" for="delete-open">Delete</label></li>
+        <li class="task done"><select aria-label="Priority" disabled><option>A</option><option>B</option><option>C</option><option selected>D</option></select><span>Organize old files</span><label class="delete" for="delete-open">Delete</label></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <button class="btn" type="button">Log out</button>
+        <div class="utc-clock">
+          <time datetime="2026-10-20">Tue, Oct 20, 2026</time>
+          <time datetime="14:30Z">14:30 UTC</time>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Floating conversation, attached beside the left sidebar -->
+    <section class="chat" aria-label="Task ordering conversation">
+      <header class="chat-head">
+        <h2>Task ordering help</h2>
+        <div class="head-icons">
+          <label class="icon-btn" for="clear-open" title="Clear conversation">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2M6 6l.7 10h6.6L14 6M8.5 9v4.5M11.5 9v4.5"/></svg>
+          </label>
+          <label class="icon-btn" for="chat-open" title="Close conversation">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </label>
+        </div>
+      </header>
+      <div class="chat-messages">
+        <p class="bubble bubble-user">Which should I do first today?</p>
+        <p class="bubble bubble-reply">Start with “Submit client proposal.” It is urgent and important, so it belongs in A.</p>
+      </div>
+      <div class="chat-input">
+        <input type="checkbox" id="use-active-tasks" />
+        <label for="use-active-tasks">Get task ordering help for active tasks</label><br>
+        <input type="checkbox" id="use-input" />
+        <label for="use-input">Type a message</label>
+        <textarea rows="2" placeholder="Ask about your task order"></textarea>
+        <button class="btn" type="button">Get task ordering help</button>
+      </div>
+    </section>
+
+    <!-- Calendar and Tasks Decision (scroll together on small phones) -->
+    <div class="main-area">
+
+    <!-- Calendar -->
+    <main class="calendar">
+      <header class="cal-head">
+        <label class="icon-btn cal-toggle" for="sidebar-collapsed" title="Open sidebar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+        </label>
+        <h1><span class="t-month">October 2026</span><span class="t-year">2026</span></h1>
+        <div class="cal-controls">
+          <select aria-label="Year"><option>2025</option><option selected>2026</option><option>2027</option></select>
+          <select aria-label="Month">
+            <option>January</option><option>February</option><option>March</option><option>April</option>
+            <option>May</option><option>June</option><option>July</option><option>August</option>
+            <option>September</option><option selected>October</option><option>November</option><option>December</option>
+            <option value="whole-year">Whole Year</option>
+          </select>
+          <select aria-label="Timezone"><option selected>Asia/Manila (PHT)</option><option>America/New_York (ET)</option><option>Europe/London (UK)</option><option>Australia/Sydney (AET)</option></select>
+        </div>
+      </header>
+
+      <div class="cal-grid" role="grid">
+        <div class="dow">Sun</div><div class="dow">Mon</div><div class="dow">Tue</div><div class="dow">Wed</div><div class="dow">Thu</div><div class="dow">Fri</div><div class="dow">Sat</div>
+        <div class="day out"><div class="day-top"><span>27</span></div></div>
+        <div class="day out"><div class="day-top"><span>28</span></div></div>
+        <div class="day out"><div class="day-top"><span>29</span></div></div>
+        <div class="day out"><div class="day-top"><span>30</span></div></div>
+        <div class="day"><div class="day-top"><span>1</span></div></div>
+        <div class="day"><div class="day-top"><span>2</span></div></div>
+        <div class="day"><div class="day-top"><span>3</span></div></div>
+        <div class="day"><div class="day-top"><span>4</span></div></div>
+        <div class="day"><div class="day-top"><span>5</span></div></div>
+        <div class="day"><div class="day-top"><span>6</span></div><span class="count">1 task</span></div>
+        <div class="day"><div class="day-top"><span>7</span></div></div>
+        <div class="day"><div class="day-top"><span>8</span></div></div>
+        <div class="day"><div class="day-top"><span>9</span></div></div>
+        <div class="day"><div class="day-top"><span>10</span></div></div>
+        <div class="day"><div class="day-top"><span>11</span></div></div>
+        <div class="day"><div class="day-top"><span>12</span></div></div>
+        <div class="day"><div class="day-top"><span>13</span></div></div>
+        <div class="day"><div class="day-top"><span>14</span></div></div>
+        <div class="day"><div class="day-top"><span>15</span></div></div>
+        <div class="day"><div class="day-top"><span>16</span></div></div>
+        <div class="day"><div class="day-top"><span>17</span></div></div>
+        <div class="day"><div class="day-top"><span>18</span></div></div>
+        <div class="day"><div class="day-top"><span>19</span></div></div>
+        <div class="day today"><div class="day-top"><span>20</span></div><span class="count">1 task</span></div>
+        <div class="day"><div class="day-top"><span>21</span></div></div>
+        <div class="day"><input type="checkbox" id="done-22" class="state" /><div class="day-top"><span>22</span><label class="done-btn" for="done-22" title="Show completed tasks"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M6.5 10.3l2.4 2.4 4.6-4.9"/></svg></label></div><span class="count">1 task</span><div class="done-pop"><strong>Completed</strong><span class="chip chip-c">Reply to routine emails</span></div></div>
+        <div class="day"><div class="day-top"><span>23</span></div></div>
+        <div class="day"><div class="day-top"><span>24</span></div></div>
+        <div class="day"><div class="day-top"><span>25</span></div></div>
+        <div class="day"><div class="day-top"><span>26</span></div></div>
+        <div class="day"><div class="day-top"><span>27</span></div></div>
+        <div class="day"><input type="checkbox" id="done-28" class="state" /><div class="day-top"><span>28</span><label class="done-btn" for="done-28" title="Show completed tasks"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M6.5 10.3l2.4 2.4 4.6-4.9"/></svg></label></div><span class="count">1 task</span><div class="done-pop"><strong>Completed</strong><span class="chip chip-d">Organize old files</span></div></div>
+        <div class="day"><div class="day-top"><span>29</span></div></div>
+        <div class="day"><div class="day-top"><span>30</span></div></div>
+        <div class="day"><div class="day-top"><span>31</span></div></div>
+      </div>
+
+      <!-- Whole Year view: shown instead of the month grid when "Whole Year" is selected -->
+      <div class="year-grid" aria-label="Whole year 2026">
+        <section class="mini">
+          <h3>January</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 5"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+        <section class="mini">
+          <h3>February</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 1"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li></ol>
+        </section>
+        <section class="mini">
+          <h3>March</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 1"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+        <section class="mini">
+          <h3>April</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 4"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li></ol>
+        </section>
+        <section class="mini">
+          <h3>May</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 6"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+        <section class="mini">
+          <h3>June</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 2"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li></ol>
+        </section>
+        <section class="mini">
+          <h3>July</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 4"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+        <section class="mini">
+          <h3>August</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 7"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+        <section class="mini">
+          <h3>September</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 3"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li></ol>
+        </section>
+        <section class="mini">
+          <h3>October</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 5"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li class="today">20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+        <section class="mini">
+          <h3>November</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 1"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li></ol>
+        </section>
+        <section class="mini">
+          <h3>December</h3>
+          <ol class="mini-dow"><li>S</li><li>M</li><li>T</li><li>W</li><li>T</li><li>F</li><li>S</li></ol>
+          <ol class="mini-days" style="--start: 3"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ol>
+        </section>
+      </div>
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="decision" aria-label="Tasks Decision">
+      <header class="decision-head">
+        <h2>Tasks Decision</h2>
+        <div class="local-clock">
+          <time datetime="2026-10-20T22:30+08:00">Tue, Oct 20, 2026</time>
+          <time datetime="2026-10-20T22:30+08:00">22:30 PHT</time>
+        </div>
+      </header>
+      <section class="quad quad-a"><h3>A. Urgent and Important</h3><ul><li><label><input type="checkbox" /> Submit client proposal</label></li></ul></section>
+      <section class="quad quad-b"><h3>B. Not Urgent but Important</h3><ul><li><label><input type="checkbox" /> Plan next week’s content</label></li><li><label><input type="checkbox" /> Update portfolio page</label></li></ul></section>
+      <section class="quad quad-c"><h3>C. Urgent but Not Important</h3><ul></ul></section>
+      <section class="quad quad-d"><h3>D. Not Urgent and Not Important</h3><ul></ul></section>
+      <section class="quad quad-done"><h3>Tasks Done</h3><ul><li><label><input type="checkbox" checked /> Reply to routine emails</label></li><li><label><input type="checkbox" checked /> Organize old files</label></li></ul></section>
+    </aside>
+    </div>
+  </div>
+
+  <!-- Add individual task popup -->
+  <div class="modal modal-add">
+    <label class="backdrop" for="add-individual"></label>
+    <div class="dialog" role="dialog" aria-labelledby="add-title">
+      <h2 id="add-title">Add an individual task</h2>
+      <label class="field">Priority
+        <select>
+          <option>A. Urgent and Important</option>
+          <option>B. Not Urgent but Important</option>
+          <option>C. Urgent but Not Important</option>
+          <option>D. Not Urgent and Not Important</option>
+        </select>
+      </label>
+      <label class="field">Task
+        <input type="text" placeholder="What needs to get done?" />
+      </label>
+      <div class="deadline">
+        <input type="checkbox" id="has-deadline" />
+        <label for="has-deadline">This task has a deadline</label>
+        <div class="deadline-fields">
+          <input type="date" aria-label="Deadline date" />
+          <input type="time" aria-label="Deadline time" />
+          <select aria-label="Deadline timezone">
+            <option selected>Asia/Manila (PHT)</option>
+            <option>America/New_York (ET)</option>
+            <option>Europe/London (UK)</option>
+            <option>Australia/Sydney (AET)</option>
+          </select>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="add-individual">Cancel</label>
+        <button class="btn" type="button">Add task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group of repeated tasks popup (from the add task icon): saved groups only -->
+  <div class="modal modal-groups">
+    <label class="backdrop" for="groups-open"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="groups-title">
+      <h2 id="groups-title">Saved groups</h2>
+      <ul class="group-list">
+        <li class="group">
+          <div><strong>Weekly content routine</strong><small>Draft blog post, schedule social posts, review analytics</small></div>
+          <button class="btn btn-small" type="button">Add to my tasks</button>
+        </li>
+        <li class="group">
+          <div><strong>Monthly admin</strong><small>Send invoices, update time logs</small></div>
+          <button class="btn btn-small" type="button">Add to my tasks</button>
+        </li>
+      </ul>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="groups-open">Close</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save repeated tasks popup: saved groups (delete) and a form to save a new group -->
+  <div class="modal modal-repeated">
+    <label class="backdrop" for="repeated-open"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="repeated-title">
+      <h2 id="repeated-title">Repeated tasks</h2>
+
+      <h3>Saved groups</h3>
+      <ul class="group-list">
+        <li class="group-item">
+          <input type="checkbox" id="edit-group-1" class="state" />
+          <div class="group">
+            <div><strong>Weekly content routine</strong><small>Draft blog post, schedule social posts, review analytics</small></div>
+            <div class="group-actions">
+              <label class="btn btn-small" for="edit-group-1">Edit group</label>
+              <label class="delete" for="delete-group-open">Delete</label>
+            </div>
+          </div>
+          <div class="group-edit">
+            <label class="field">Group name
+              <input type="text" value="Weekly content routine" />
+            </label>
+            <div class="field">Tasks in this group
+            <input type="text" aria-label="Task 1" value="Draft blog post" />
+            <input type="text" aria-label="Task 2" value="Schedule social posts" />
+            <input type="text" aria-label="Task 3" value="Review analytics" />
+              <button class="btn btn-plain btn-small" type="button">Add another task</button>
+            </div>
+            <div class="dialog-actions">
+              <label class="btn btn-plain btn-small" for="edit-group-1">Cancel</label>
+              <button class="btn btn-small" type="button">Save changes</button>
+            </div>
+          </div>
+        </li>
+        <li class="group-item">
+          <input type="checkbox" id="edit-group-2" class="state" />
+          <div class="group">
+            <div><strong>Monthly admin</strong><small>Send invoices, update time logs</small></div>
+            <div class="group-actions">
+              <label class="btn btn-small" for="edit-group-2">Edit group</label>
+              <label class="delete" for="delete-group-open">Delete</label>
+            </div>
+          </div>
+          <div class="group-edit">
+            <label class="field">Group name
+              <input type="text" value="Monthly admin" />
+            </label>
+            <div class="field">Tasks in this group
+            <input type="text" aria-label="Task 1" value="Send invoices" />
+            <input type="text" aria-label="Task 2" value="Update time logs" />
+              <button class="btn btn-plain btn-small" type="button">Add another task</button>
+            </div>
+            <div class="dialog-actions">
+              <label class="btn btn-plain btn-small" for="edit-group-2">Cancel</label>
+              <button class="btn btn-small" type="button">Save changes</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <h3>Save a new group</h3>
+      <label class="field">Group name
+        <input type="text" placeholder="For example, Weekly content routine" />
+      </label>
+      <div class="field">Tasks in this group
+        <input type="text" aria-label="Task 1" placeholder="First task" />
+        <input type="text" aria-label="Task 2" placeholder="Second task" />
+        <input type="text" aria-label="Task 3" placeholder="Third task" />
+        <button class="btn btn-plain btn-small" type="button">Add another task</button>
+      </div>
+
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="repeated-open">Close</label>
+        <button class="btn" type="button">Save group</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete group confirmation popup -->
+  <div class="modal modal-delete-group">
+    <label class="backdrop" for="delete-group-open"></label>
+    <div class="dialog" role="dialog" aria-labelledby="delete-group-title">
+      <h2 id="delete-group-title">Delete this group?</h2>
+      <p>This permanently removes the saved group, including from the database.</p>
+      <label class="field">Type DELETE to confirm
+        <input type="text" autocomplete="off" />
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="delete-group-open">Cancel</label>
+        <button class="btn btn-danger" type="button" disabled>Delete group</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clear conversation confirmation popup -->
+  <div class="modal modal-clear">
+    <label class="backdrop" for="clear-open"></label>
+    <div class="dialog" role="dialog" aria-labelledby="clear-title">
+      <h2 id="clear-title">Clear this conversation?</h2>
+      <p>This permanently deletes every message in this conversation, including from the database.</p>
+      <label class="field">Type CLEAR to confirm
+        <input type="text" autocomplete="off" />
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="clear-open">Cancel</label>
+        <button class="btn btn-danger" type="button" disabled>Clear conversation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation popup -->
+  <div class="modal modal-delete">
+    <label class="backdrop" for="delete-open"></label>
+    <div class="dialog" role="dialog" aria-labelledby="delete-title">
+      <h2 id="delete-title">Delete this task?</h2>
+      <p>This permanently removes the task, including from the database.</p>
+      <label class="field">Type DELETE to confirm
+        <input type="text" autocomplete="off" />
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="delete-open">Cancel</label>
+        <button class="btn btn-danger" type="button" disabled>Delete task</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
