@@ -5,7 +5,7 @@
 (() => {
   "use strict";
 
-  const API_BASE_URL = "https://multi-user-prompts-tool.acct-gladyslacia.workers.dev";
+  const API_BASE_URL = "https://prompts-html.acct-gladyslacia.workers.dev";
   const DELETE_PHRASE = "DELETE";
 
   // Keys are prefixed so they never clash with the Translate tool on the same site.
