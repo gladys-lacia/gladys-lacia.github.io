@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Prompts | Gladys Lacia</title>
+  <link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="stylesheet" href="tools-assets/prompts.css" />
+</head>
+<body>
+
+  <!-- Login: shown before anyone can enter the tool -->
+  <div id="loginView" class="login-view">
+    <form id="loginForm" class="login-card">
+      <h1>Prompts</h1>
+      <p class="login-note">Log in to continue. Accounts are created by the site owner.</p>
+      <label class="field">Username or email
+        <input id="loginIdentifier" type="text" autocomplete="username" required />
+      </label>
+      <label class="field">Password
+        <input id="loginPassword" type="password" autocomplete="current-password" required />
+      </label>
+      <p id="loginError" class="form-error" role="alert" hidden></p>
+      <button id="loginSubmit" class="btn" type="submit">Log in</button>
+    </form>
+  </div>
+
+  <!-- Tool -->
+  <div id="appView" class="layout" hidden>
+
+    <!-- Left sidebar: three permanent buttons -->
+    <aside class="sidebar" aria-label="Prompt sections">
+      <div class="sidebar-head">
+        <button class="icon-btn js-sidebar-toggle" type="button" title="Collapse sidebar" aria-label="Toggle sidebar" aria-expanded="true">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+        </button>
+      </div>
+      <h2 class="sidebar-title">My prompts</h2>
+      <nav class="tab-buttons" aria-label="Sections">
+        <button class="tab-btn tab-btn-ismco" type="button" data-tab="ismco">ISMCO Templates</button>
+        <button class="tab-btn tab-btn-other" type="button" data-tab="other">Other Templates</button>
+        <button class="tab-btn tab-btn-inputs" type="button" data-tab="inputs">Inputs</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <button id="logoutButton" class="btn" type="button">Log out</button>
+        <span id="userLabel" class="user-label"></span>
+      </div>
+    </aside>
+
+    <main class="content">
+      <p id="pageError" class="page-error" role="alert" hidden></p>
+
+      <!-- ISMCO Templates -->
+      <section class="panel" id="panel-ismco" data-tab="ismco" aria-label="ISMCO Templates">
+        <header class="panel-head">
+          <button class="icon-btn panel-toggle js-sidebar-toggle" type="button" title="Open sidebar" aria-label="Toggle sidebar" aria-expanded="true">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+          </button>
+          <h1>ISMCO Templates</h1>
+          <button class="btn btn-ismco panel-add" type="button" data-add="ismco">+ Add template</button>
+        </header>
+        <div class="grid" id="grid-ismco"></div>
+      </section>
+
+      <!-- Other Templates -->
+      <section class="panel" id="panel-other" data-tab="other" aria-label="Other Templates" hidden>
+        <header class="panel-head">
+          <button class="icon-btn panel-toggle js-sidebar-toggle" type="button" title="Open sidebar" aria-label="Toggle sidebar" aria-expanded="true">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+          </button>
+          <h1>Other Templates</h1>
+          <button class="btn btn-other panel-add" type="button" data-add="other">+ Add template</button>
+        </header>
+        <div class="grid" id="grid-other"></div>
+      </section>
+
+      <!-- Inputs: notes -->
+      <section class="panel" id="panel-inputs" data-tab="inputs" aria-label="Inputs" hidden>
+        <header class="panel-head">
+          <button class="icon-btn panel-toggle js-sidebar-toggle" type="button" title="Open sidebar" aria-label="Toggle sidebar" aria-expanded="true">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+          </button>
+          <h1>Inputs</h1>
+          <button class="btn btn-inputs panel-add" type="button" data-add="note">+ Add note</button>
+        </header>
+        <div class="grid" id="grid-inputs"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== Add and edit popups (the same popup is used for adding and editing) ===== -->
+
+  <!-- ISMCO template -->
+  <div class="modal" id="ismcoModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog dialog-wide" id="ismcoForm" role="dialog" aria-modal="true" aria-labelledby="ismcoTitle" novalidate>
+      <h2 id="ismcoTitle">Add an ISMCO template</h2>
+      <label class="field">Template name
+        <input id="ismco-name" type="text" maxlength="200" placeholder="For example, Blog post draft" />
+      </label>
+      <label class="field">INTENT
+        <textarea id="ismco-intent" rows="3" maxlength="20000" placeholder="What the AI should achieve"></textarea>
+      </label>
+      <label class="field">SCOPE
+        <textarea id="ismco-scope" rows="3" maxlength="20000" placeholder="What is included and what is left out"></textarea>
+      </label>
+      <label class="field">METHOD
+        <textarea id="ismco-method" rows="3" maxlength="20000" placeholder="How the AI should work through the task"></textarea>
+      </label>
+      <label class="field">CONSTRAINTS
+        <textarea id="ismco-constraints" rows="3" maxlength="20000" placeholder="Rules the AI must follow"></textarea>
+      </label>
+      <label class="field">OUTPUT
+        <textarea id="ismco-output" rows="3" maxlength="20000" placeholder="The format of the answer"></textarea>
+      </label>
+      <p id="ismcoError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn btn-plain" type="button" data-close>Cancel</button>
+        <button id="ismcoSave" class="btn btn-save" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Other template -->
+  <div class="modal" id="otherModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog dialog-wide" id="otherForm" role="dialog" aria-modal="true" aria-labelledby="otherTitle" novalidate>
+      <h2 id="otherTitle">Add a template</h2>
+      <label class="field">Template
+        <textarea id="other-body" rows="8" maxlength="20000" placeholder="Paste or type your prompt"></textarea>
+      </label>
+      <p id="otherError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn btn-plain" type="button" data-close>Cancel</button>
+        <button id="otherSave" class="btn btn-save" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Input note -->
+  <div class="modal" id="noteModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog dialog-wide" id="noteForm" role="dialog" aria-modal="true" aria-labelledby="noteTitle" novalidate>
+      <h2 id="noteTitle">Add a note</h2>
+      <label class="field">What is this note about?
+        <input id="note-title" type="text" maxlength="200" placeholder="For example, Blog on remote work tips" />
+      </label>
+      <div class="checks">
+        <input type="checkbox" id="note-with-ismco" />
+        <label for="note-with-ismco">With ISMCO Template</label>
+        <input type="checkbox" id="note-plain" />
+        <label for="note-plain">Plain Notes</label>
+
+        <div class="check-block" id="blockIsmco" hidden>
+          <label class="field">ISMCO template
+            <select id="note-template"></select>
+          </label>
+          <label class="field">INPUT
+            <textarea id="note-input" rows="4" maxlength="20000" placeholder="The words you want to tell the AI"></textarea>
+          </label>
+        </div>
+        <div class="check-block" id="blockPlain" hidden>
+          <label class="field">Notes
+            <textarea id="note-plain-text" rows="4" maxlength="20000" placeholder="Write your notes here"></textarea>
+          </label>
+        </div>
+      </div>
+      <p id="noteError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn btn-plain" type="button" data-close>Cancel</button>
+        <button id="noteSave" class="btn btn-save" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===== View popup (filled in by prompts.js for each template or note) ===== -->
+  <div class="modal" id="viewModal" hidden>
+    <div class="backdrop" data-close></div>
+    <div class="dialog dialog-wide" id="viewDialog" role="dialog" aria-modal="true" aria-labelledby="viewTitle"></div>
+  </div>
+
+  <!-- ===== Delete confirmation popup (shared by all three sections) ===== -->
+  <div class="modal" id="deleteModal" hidden>
+    <div class="backdrop" data-close></div>
+    <form class="dialog" id="deleteForm" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+      <h2 id="deleteTitle">Delete this item?</h2>
+      <p>This permanently removes it, including from the database.</p>
+      <label class="field">Type DELETE to confirm
+        <input id="deletePhrase" type="text" autocomplete="off" />
+      </label>
+      <p id="deleteError" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn btn-plain" type="button" data-close>Cancel</button>
+        <button id="deleteConfirm" class="btn btn-danger" type="submit" disabled>Delete</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="tools-assets/prompts.js" defer></script>
+</body>
+</html>
