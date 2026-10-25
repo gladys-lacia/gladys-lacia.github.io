@@ -72,6 +72,7 @@
    3. CREATING AN ACCOUNT (you do this yourself; there is no sign-up page)
    ------------------------------------------------------------------------------------
 
+   The error in 3a has already been resolved:
    a) Make a password hash. Open the console of any https page in your browser and run this
       with the real password in place of CHANGE-ME:
 
