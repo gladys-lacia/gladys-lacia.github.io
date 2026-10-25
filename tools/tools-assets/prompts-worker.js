@@ -1,6 +1,6 @@
 /* Prompts tool API: Cloudflare Worker + Cloudflare D1 (free tiers).
 
-   There is NO registration endpoint. You create each account directly in the database.
+   It's already been resolved: There is NO registration endpoint. You create each account directly in the database.
    Every data request needs a valid login token, and every query is filtered by the user id
    inside that token, so one user can never read or change another user's prompts.
 
