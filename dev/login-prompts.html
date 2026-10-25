@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Prompts | Gladys Lacia</title>
+  <link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="stylesheet" href="login-prompts.css" />
+</head>
+<body>
+
+  <!-- Design-only state switches (CSS checkbox and radio toggles; replaced by JavaScript later) -->
+  <input type="radio" name="tab" id="tab-ismco" class="state" checked />
+  <input type="radio" name="tab" id="tab-other" class="state" />
+  <input type="radio" name="tab" id="tab-inputs" class="state" />
+  <input type="checkbox" id="sidebar-collapsed" class="state" />
+  <input type="checkbox" id="add-ismco" class="state" />
+  <input type="checkbox" id="add-other" class="state" />
+  <input type="checkbox" id="add-inputs" class="state" />
+  <input type="checkbox" id="view-ismco" class="state" />
+  <input type="checkbox" id="view-other" class="state" />
+  <input type="checkbox" id="view-inputs-ismco" class="state" />
+  <input type="checkbox" id="view-inputs-plain" class="state" />
+  <input type="checkbox" id="edit-ismco" class="state" />
+  <input type="checkbox" id="edit-other" class="state" />
+  <input type="checkbox" id="edit-inputs" class="state" />
+  <input type="checkbox" id="delete-open" class="state" />
+
+  <div class="layout">
+
+    <!-- Left sidebar: three permanent buttons -->
+    <aside class="sidebar" aria-label="Prompt sections">
+      <div class="sidebar-head">
+        <label class="icon-btn" for="sidebar-collapsed" title="Collapse sidebar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+        </label>
+      </div>
+      <h2 class="sidebar-title">My prompts</h2>
+      <nav class="tab-buttons">
+        <label class="tab-btn tab-btn-ismco" for="tab-ismco">ISMCO Templates</label>
+        <label class="tab-btn tab-btn-other" for="tab-other">Other Templates</label>
+        <label class="tab-btn tab-btn-inputs" for="tab-inputs">Inputs</label>
+      </nav>
+
+      <div class="sidebar-foot">
+        <button class="btn" type="button">Log out</button>
+        <span class="user-label">gladyslacia</span>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <!-- ISMCO Templates: settings -->
+      <section class="panel panel-ismco" aria-label="ISMCO Templates">
+        <header class="panel-head">
+          <label class="icon-btn panel-toggle" for="sidebar-collapsed" title="Open sidebar">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+          </label>
+          <h1>ISMCO Templates</h1>
+          <label class="btn btn-ismco panel-add" for="add-ismco">+ Add template</label>
+        </header>
+        <div class="grid">
+          <article class="card card-ismco">
+            <label class="card-open" for="view-ismco" title="Open template">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <h3>Blog post draft</h3>
+            <p class="card-snippet">Draft an SEO-friendly blog post that informs and engages the target reader.</p>
+          </article>
+          <article class="card card-ismco">
+            <label class="card-open" for="view-ismco" title="Open template">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <h3>Social media captions</h3>
+            <p class="card-snippet">Write a set of short captions that match the brand voice and invite replies.</p>
+          </article>
+          <article class="card card-ismco">
+            <label class="card-open" for="view-ismco" title="Open template">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <h3>Research summary</h3>
+            <p class="card-snippet">Summarize the sources provided and list the key points a client needs to know.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Other Templates: settings with a single text field -->
+      <section class="panel panel-other" aria-label="Other Templates">
+        <header class="panel-head">
+          <label class="icon-btn panel-toggle" for="sidebar-collapsed" title="Open sidebar">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+          </label>
+          <h1>Other Templates</h1>
+          <label class="btn btn-other panel-add" for="add-other">+ Add template</label>
+        </header>
+        <div class="grid">
+          <article class="card card-other">
+            <label class="card-open" for="view-other" title="Open template">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <p class="card-snippet card-snippet-long">Proofread the text below. Fix grammar, spelling, and punctuation, and keep my wording and tone.</p>
+          </article>
+          <article class="card card-other">
+            <label class="card-open" for="view-other" title="Open template">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <p class="card-snippet card-snippet-long">Turn these meeting notes into a short summary with decisions, action items, and owners.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Inputs: notes -->
+      <section class="panel panel-inputs" aria-label="Inputs">
+        <header class="panel-head">
+          <label class="icon-btn panel-toggle" for="sidebar-collapsed" title="Open sidebar">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+          </label>
+          <h1>Inputs</h1>
+          <label class="btn btn-inputs panel-add" for="add-inputs">+ Add note</label>
+        </header>
+        <div class="grid">
+          <article class="card card-inputs">
+            <label class="card-open" for="view-inputs-ismco" title="Open note">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <h3>Blog on remote work tips</h3>
+            <p class="card-snippet">With ISMCO template: Blog post draft</p>
+          </article>
+          <article class="card card-inputs">
+            <label class="card-open" for="view-inputs-plain" title="Open note">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></svg>
+            </label>
+            <h3>Ideas for next week’s newsletter</h3>
+            <p class="card-snippet">Plain note</p>
+          </article>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== Add popups ===== -->
+
+  <!-- Add ISMCO template -->
+  <div class="modal modal-add-ismco">
+    <label class="backdrop" for="add-ismco"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="add-ismco-title">
+      <h2 id="add-ismco-title">Add an ISMCO template</h2>
+      <label class="field">Template name
+        <input type="text" placeholder="For example, Blog post draft" />
+      </label>
+      <label class="field">INTENT
+        <textarea rows="3" placeholder="What the AI should achieve"></textarea>
+      </label>
+      <label class="field">SCOPE
+        <textarea rows="3" placeholder="What is included and what is left out"></textarea>
+      </label>
+      <label class="field">METHOD
+        <textarea rows="3" placeholder="How the AI should work through the task"></textarea>
+      </label>
+      <label class="field">CONSTRAINTS
+        <textarea rows="3" placeholder="Rules the AI must follow"></textarea>
+      </label>
+      <label class="field">OUTPUT
+        <textarea rows="3" placeholder="The format of the answer"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="add-ismco">Cancel</label>
+        <button class="btn btn-save" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add other template -->
+  <div class="modal modal-add-other">
+    <label class="backdrop" for="add-other"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="add-other-title">
+      <h2 id="add-other-title">Add a template</h2>
+      <label class="field">Template
+        <textarea rows="8" placeholder="Paste or type your prompt"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="add-other">Cancel</label>
+        <button class="btn btn-save" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add input note -->
+  <div class="modal modal-add-inputs">
+    <label class="backdrop" for="add-inputs"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="add-inputs-title">
+      <h2 id="add-inputs-title">Add a note</h2>
+      <label class="field">What is this note about?
+        <input type="text" placeholder="For example, Blog on remote work tips" />
+      </label>
+      <div class="checks">
+        <input type="checkbox" id="add-with-ismco" />
+        <label for="add-with-ismco">With ISMCO Template</label>
+        <input type="checkbox" id="add-plain" />
+        <label for="add-plain">Plain Notes</label>
+
+        <div class="check-block block-ismco">
+          <label class="field">ISMCO template
+            <select>
+              <option>Blog post draft</option>
+              <option>Social media captions</option>
+              <option>Research summary</option>
+            </select>
+          </label>
+          <label class="field">INPUT
+            <textarea rows="4" placeholder="The words you want to tell the AI"></textarea>
+          </label>
+        </div>
+        <div class="check-block block-plain">
+          <label class="field">Notes
+            <textarea rows="4" placeholder="Write your notes here"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="add-inputs">Cancel</label>
+        <button class="btn btn-save" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== View popups (sample values shown) ===== -->
+
+  <!-- View ISMCO template: Delete bottom-left, Edit bottom-right -->
+  <div class="modal modal-view-ismco">
+    <label class="backdrop" for="view-ismco"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="view-ismco-title">
+      <h2 id="view-ismco-title">Blog post draft</h2>
+      <dl class="prompt">
+        <dt>INTENT</dt>
+        <dd>Draft an SEO-friendly blog post that informs and engages the target reader.</dd>
+        <dt>SCOPE</dt>
+        <dd>One blog post of about 800 words on the topic given in INPUT. Leave out pricing and unverified claims.</dd>
+        <dt>METHOD</dt>
+        <dd>Outline first, then write section by section. Place the main keyword in the title, the first paragraph, and one subheading.</dd>
+        <dt>CONSTRAINTS</dt>
+        <dd>Plain, friendly English. No filler phrases. Do not invent statistics or sources.</dd>
+        <dt>OUTPUT</dt>
+        <dd>A title, a meta description under 160 characters, and the full post with H2 subheadings.</dd>
+      </dl>
+      <div class="dialog-foot">
+        <label class="delete" for="delete-open">Delete</label>
+        <label class="edit" for="edit-ismco">Edit</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- View other template: Copy top-right, Delete bottom-left, Edit bottom-right -->
+  <div class="modal modal-view-other">
+    <label class="backdrop" for="view-other"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="view-other-title">
+      <button class="copy" type="button">Copy</button>
+      <h2 id="view-other-title">Template</h2>
+      <p class="prompt-text">Proofread the text below. Fix grammar, spelling, and punctuation, and keep my wording and tone.</p>
+      <div class="dialog-foot">
+        <label class="delete" for="delete-open">Delete</label>
+        <label class="edit" for="edit-other">Edit</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- View note with ISMCO template: Copy top-right, Delete bottom-left, Edit bottom-right -->
+  <div class="modal modal-view-inputs-ismco">
+    <label class="backdrop" for="view-inputs-ismco"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="view-inputs-ismco-title">
+      <button class="copy" type="button">Copy</button>
+      <h2 id="view-inputs-ismco-title">Blog on remote work tips</h2>
+      <p class="dialog-sub">With ISMCO template: Blog post draft</p>
+      <dl class="prompt">
+        <dt>INTENT</dt>
+        <dd>Draft an SEO-friendly blog post that informs and engages the target reader.</dd>
+        <dt>SCOPE</dt>
+        <dd>One blog post of about 800 words on the topic given in INPUT. Leave out pricing and unverified claims.</dd>
+        <dt>METHOD</dt>
+        <dd>Outline first, then write section by section. Place the main keyword in the title, the first paragraph, and one subheading.</dd>
+        <dt>CONSTRAINTS</dt>
+        <dd>Plain, friendly English. No filler phrases. Do not invent statistics or sources.</dd>
+        <dt>OUTPUT</dt>
+        <dd>A title, a meta description under 160 characters, and the full post with H2 subheadings.</dd>
+        <dt>INPUT</dt>
+        <dd>Write about five practical tips for staying focused while working from home, for freelancers in the Philippines.</dd>
+      </dl>
+      <div class="dialog-foot">
+        <label class="delete" for="delete-open">Delete</label>
+        <label class="edit" for="edit-inputs">Edit</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- View plain note: Copy top-right, Delete bottom-left, Edit bottom-right -->
+  <div class="modal modal-view-inputs-plain">
+    <label class="backdrop" for="view-inputs-plain"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="view-inputs-plain-title">
+      <button class="copy" type="button">Copy</button>
+      <h2 id="view-inputs-plain-title">Ideas for next week’s newsletter</h2>
+      <p class="dialog-sub">Plain note</p>
+      <p class="prompt-text">Share one quick productivity tip, link the new Pomodoro Timer project, and ask readers which tool they would like next.</p>
+      <div class="dialog-foot">
+        <label class="delete" for="delete-open">Delete</label>
+        <label class="edit" for="edit-inputs">Edit</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Edit popups (sample values shown) ===== -->
+
+  <!-- Edit ISMCO template -->
+  <div class="modal modal-edit-ismco">
+    <label class="backdrop" for="edit-ismco"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="edit-ismco-title">
+      <h2 id="edit-ismco-title">Edit ISMCO template</h2>
+      <label class="field">Template name
+        <input type="text" value="Blog post draft" />
+      </label>
+      <label class="field">INTENT
+        <textarea rows="3">Draft an SEO-friendly blog post that informs and engages the target reader.</textarea>
+      </label>
+      <label class="field">SCOPE
+        <textarea rows="3">One blog post of about 800 words on the topic given in INPUT. Leave out pricing and unverified claims.</textarea>
+      </label>
+      <label class="field">METHOD
+        <textarea rows="3">Outline first, then write section by section. Place the main keyword in the title, the first paragraph, and one subheading.</textarea>
+      </label>
+      <label class="field">CONSTRAINTS
+        <textarea rows="3">Plain, friendly English. No filler phrases. Do not invent statistics or sources.</textarea>
+      </label>
+      <label class="field">OUTPUT
+        <textarea rows="3">A title, a meta description under 160 characters, and the full post with H2 subheadings.</textarea>
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="edit-ismco">Cancel</label>
+        <button class="btn btn-save" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit other template -->
+  <div class="modal modal-edit-other">
+    <label class="backdrop" for="edit-other"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="edit-other-title">
+      <h2 id="edit-other-title">Edit template</h2>
+      <label class="field">Template
+        <textarea rows="8">Proofread the text below. Fix grammar, spelling, and punctuation, and keep my wording and tone.</textarea>
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="edit-other">Cancel</label>
+        <button class="btn btn-save" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit input note (sample: With ISMCO Template checked) -->
+  <div class="modal modal-edit-inputs">
+    <label class="backdrop" for="edit-inputs"></label>
+    <div class="dialog dialog-wide" role="dialog" aria-labelledby="edit-inputs-title">
+      <h2 id="edit-inputs-title">Edit note</h2>
+      <label class="field">What is this note about?
+        <input type="text" value="Blog on remote work tips" />
+      </label>
+      <div class="checks">
+        <input type="checkbox" id="edit-with-ismco" checked />
+        <label for="edit-with-ismco">With ISMCO Template</label>
+        <input type="checkbox" id="edit-plain" />
+        <label for="edit-plain">Plain Notes</label>
+
+        <div class="check-block block-ismco">
+          <label class="field">ISMCO template
+            <select>
+              <option selected>Blog post draft</option>
+              <option>Social media captions</option>
+              <option>Research summary</option>
+            </select>
+          </label>
+          <label class="field">INPUT
+            <textarea rows="4">Write about five practical tips for staying focused while working from home, for freelancers in the Philippines.</textarea>
+          </label>
+        </div>
+        <div class="check-block block-plain">
+          <label class="field">Notes
+            <textarea rows="4"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="edit-inputs">Cancel</label>
+        <button class="btn btn-save" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Delete confirmation popup (shared by all three sections) ===== -->
+  <div class="modal modal-delete">
+    <label class="backdrop" for="delete-open"></label>
+    <div class="dialog" role="dialog" aria-labelledby="delete-title">
+      <h2 id="delete-title">Delete this item?</h2>
+      <p>This permanently removes it, including from the database.</p>
+      <label class="field">Type DELETE to confirm
+        <input type="text" autocomplete="off" />
+      </label>
+      <div class="dialog-actions">
+        <label class="btn btn-plain" for="delete-open">Cancel</label>
+        <button class="btn btn-danger" type="button" disabled>Delete</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+/* Login Prompts: design only. Loads after ../assets/style.css and reuses its palette and fonts. */
+:root {
+  --cream: #FFFEF2;
+  --panel: #F7F5E8;
+  --ink: #2e2d2b;
+  --maroon: #4A0404;
+  --teal: #044A4A;
+  --line: #d8d5ca;
+  --field: #aaa69b;
+  --danger: #C0392B;
+  --ismco: #B83232;
+  --other: #B85C00;
+  --inputs: #806600;
+  --save: #287447;
+  --left-w: 260px;
+}
+
+html, body { height: 100%; overflow: hidden; background: var(--cream); }
+p { text-align: left; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.state { position: absolute; opacity: 0; pointer-events: none; }
+
+/* Buttons and icons */
+.btn {
+  display: inline-block;
+  border: 0;
+  border-radius: 4px;
+  padding: 7px 14px;
+  background: var(--teal);
+  color: var(--cream);
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+.btn:hover { filter: brightness(1.18); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-plain { background: transparent; color: var(--ink); border: 1px solid var(--field); }
+.btn-danger { background: var(--danger); }
+.btn-save { background: var(--save); color: var(--cream); }
+.btn-ismco { background: var(--ismco); color: var(--cream); }
+.btn-other { background: var(--other); color: var(--cream); }
+.btn-inputs { background: var(--inputs); color: var(--cream); }
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+.icon-btn:hover { background: rgba(46, 45, 43, 0.08); }
+.icon-btn svg { width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Layout */
+.layout { display: flex; height: 100dvh; overflow: hidden; position: relative; }
+
+/* Left sidebar */
+.sidebar {
+  position: relative;
+  flex: 0 0 var(--left-w);
+  width: var(--left-w);
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  transition: margin-left 0.2s, visibility 0s;
+}
+#sidebar-collapsed:checked ~ .layout .sidebar {
+  margin-left: calc(var(--left-w) * -1);
+  visibility: hidden;
+  transition: margin-left 0.2s, visibility 0s 0.2s;
+}
+.sidebar-head { display: flex; align-items: center; padding: 10px 12px; }
+.sidebar-title { padding: 6px 16px 12px; font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--maroon); }
+
+/* The three permanent buttons */
+.tab-buttons { display: flex; flex-direction: column; gap: 10px; padding: 0 16px 16px; }
+.tab-btn {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 4px;
+  color: var(--cream);
+  font-weight: 700;
+  cursor: pointer;
+}
+.tab-btn:hover { filter: brightness(1.12); }
+.tab-btn-ismco { background: var(--ismco); }
+.tab-btn-other { background: var(--other); }
+.tab-btn-inputs { background: var(--inputs); }
+#tab-ismco:checked ~ .layout .tab-btn-ismco,
+#tab-other:checked ~ .layout .tab-btn-other,
+#tab-inputs:checked ~ .layout .tab-btn-inputs { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+/* Log out and username at the bottom-left of the sidebar */
+.sidebar-foot { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-top: auto; padding: 12px 16px; border-top: 1px solid var(--line); }
+.sidebar-foot .btn { flex: 0 0 auto; }
+.user-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.8rem; color: #555; }
+
+/* Content area */
+.content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; }
+.panel { display: none; flex-direction: column; padding: 14px 20px 24px; }
+#tab-ismco:checked ~ .layout .panel-ismco,
+#tab-other:checked ~ .layout .panel-other,
+#tab-inputs:checked ~ .layout .panel-inputs { display: flex; }
+
+.panel-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.panel-head h1 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; color: var(--maroon); }
+.panel-toggle { display: none; }
+#sidebar-collapsed:checked ~ .layout .panel-toggle { display: inline-grid; }
+.panel-add { margin-left: auto; }
+
+/* Squares */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  aspect-ratio: 1 / 1;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-top-width: 5px;
+  border-radius: 6px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.card-ismco { border-top-color: var(--ismco); }
+.card-other { border-top-color: var(--other); }
+.card-inputs { border-top-color: var(--inputs); }
+.card h3 { padding-right: 34px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; line-height: 1.35; color: var(--maroon); overflow-wrap: anywhere; }
+.card-snippet { font-size: 0.88rem; line-height: 1.5; color: #555; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.card-snippet-long { margin-top: 22px; color: var(--ink); -webkit-line-clamp: 8; }
+
+/* Small button at the top-right of each square that pops it up */
+.card-open {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.card-open:hover { background: rgba(46, 45, 43, 0.1); }
+.card-open svg { width: 16px; height: 16px; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Popups with an opening animation */
+.modal { display: none; position: fixed; inset: 0; z-index: 20; align-items: center; justify-content: center; padding: 16px; }
+#add-ismco:checked ~ .modal-add-ismco,
+#add-other:checked ~ .modal-add-other,
+#add-inputs:checked ~ .modal-add-inputs,
+#view-ismco:checked ~ .modal-view-ismco,
+#view-other:checked ~ .modal-view-other,
+#view-inputs-ismco:checked ~ .modal-view-inputs-ismco,
+#view-inputs-plain:checked ~ .modal-view-inputs-plain,
+#edit-ismco:checked ~ .modal-edit-ismco,
+#edit-other:checked ~ .modal-edit-other,
+#edit-inputs:checked ~ .modal-edit-inputs,
+#delete-open:checked ~ .modal-delete { display: flex; }
+
+@keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.backdrop { position: absolute; inset: 0; background: rgba(46, 45, 43, 0.5); cursor: default; animation: backdrop-in 0.2s ease-out; }
+.dialog {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--cream);
+  animation: pop-in 0.22s ease-out;
+}
+.dialog-wide { max-width: 560px; max-height: calc(100dvh - 32px); overflow-y: auto; }
+.dialog h2 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: var(--maroon); overflow-wrap: anywhere; }
+.dialog-sub { font-size: 0.85rem; color: #555; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* Fields */
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.field input, .field select, .field textarea { padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
+.field textarea { resize: vertical; }
+
+/* Input note: checkboxes that reveal extra fields */
+.checks { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 8px; font-size: 0.9rem; }
+.checks > input[type="checkbox"] { accent-color: var(--teal); }
+.checks > label { margin-right: 14px; cursor: pointer; }
+.check-block { display: none; flex: 1 1 100%; flex-direction: column; gap: 10px; padding: 12px; border: 1px solid var(--line); border-left: 4px solid var(--inputs); border-radius: 4px; background: var(--panel); }
+#add-with-ismco:checked ~ .block-ismco,
+#add-plain:checked ~ .block-plain,
+#edit-with-ismco:checked ~ .block-ismco,
+#edit-plain:checked ~ .block-plain { display: flex; }
+
+/* View popups */
+.prompt { display: flex; flex-direction: column; gap: 4px; }
+.prompt dt { margin-top: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--teal); }
+.prompt dt:first-child { margin-top: 0; }
+.prompt dd { font-size: 0.92rem; line-height: 1.6; overflow-wrap: anywhere; }
+.prompt-text { font-size: 0.92rem; line-height: 1.6; overflow-wrap: anywhere; }
+.copy { position: absolute; top: 20px; right: 22px; padding: 3px 6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.copy:hover { text-decoration: none; }
+.copy ~ h2 { padding-right: 52px; }
+.dialog-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.edit { padding: 3px 6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.edit:hover { text-decoration: none; }
+.delete { padding: 3px 6px; color: var(--danger); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.delete:hover { text-decoration: none; }
+
+/* Smaller screens: the three buttons sit in a row above the content */
+@media (max-width: 700px) {
+  .layout { flex-direction: column; }
+  .sidebar { flex: 0 0 auto; width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
+  #sidebar-collapsed:checked ~ .layout .sidebar { display: none; }
+  .sidebar-title { padding-bottom: 8px; }
+  .tab-buttons { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .tab-btn { flex: 1 1 auto; text-align: center; padding: 10px; font-size: 0.85rem; }
+  .panel { padding: 12px 14px 20px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .card { padding: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
