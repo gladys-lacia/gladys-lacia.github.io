@@ -234,6 +234,26 @@ async function verifyPassword(password, stored) {
   return timingSafeEqual(actual, expected);
 }
 
+// Put them right after verifyPassword in the “Passwords” section:
+async function hashPassword(password) {
+  const iterations = 100000;
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const hash = await derive(password, salt, iterations);
+  return `pbkdf2$${iterations}$${bytesToB64(salt)}$${bytesToB64(hash)}`;
+}
+
+function isHashed(stored) {
+  return String(stored || "").startsWith("pbkdf2$");
+}
+
+// Only used for old rows that still hold a plain-text password.
+// Comparing SHA-256 digests keeps the comparison constant-time and equal-length.
+async function verifyLegacyPlaintext(password, stored) {
+  const a = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(password)));
+  const b = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(String(stored))));
+  return timingSafeEqual(a, b);
+}
+
 /* ---------- Login tokens (HMAC-signed, expire on their own) ---------- */
 
 async function hmacKey(env) {
@@ -317,7 +337,16 @@ async function handleLogin(request, env) {
     .bind(identifier)
     .first();
 
-  const passwordOk = await verifyPassword(password, user ? user.password_hash : DUMMY_HASH);
+  const stored = user ? user.password_hash : DUMMY_HASH;
+  let passwordOk;
+  let needsUpgrade = false;
+  if (user && !isHashed(stored)) {
+    passwordOk = await verifyLegacyPlaintext(password, stored);
+    needsUpgrade = passwordOk;
+  } else {
+    passwordOk = await verifyPassword(password, stored);
+  }
+  /* const passwordOk = await verifyPassword(password, user ? user.password_hash : DUMMY_HASH); */
   if (!user || !passwordOk || user.is_active !== 1) {
     await env.DB
       .prepare(
@@ -333,6 +362,15 @@ async function handleLogin(request, env) {
   }
 
   await env.DB.prepare(`DELETE FROM "${FAILS_TABLE}" WHERE key = ?1`).bind(throttleKey).run();
+  // Add this directly below it, before const token = ...:
+  if (needsUpgrade) {
+    const newHash = await hashPassword(password);
+    await env.DB
+      .prepare(`UPDATE "${USERS_TABLE}" SET password_hash = ?1 WHERE id = ?2 AND password_hash = ?3`)
+      .bind(newHash, user.id, user.password_hash)
+      .run();
+  }
+  // 
   const token = await signToken(env, user);
   return json({ token, user: { username: user.username } });
 }
