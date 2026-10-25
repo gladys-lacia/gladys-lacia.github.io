@@ -165,8 +165,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .card-other { border-top-color: var(--other); }
 .card-inputs { border-top-color: var(--inputs); }
 .card h3 { padding-right: 34px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; line-height: 1.35; color: var(--maroon); overflow-wrap: anywhere; }
-.card-snippet { font-size: 0.88rem; line-height: 1.5; color: #555; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
-.card-snippet-long { margin-top: 22px; color: var(--ink); -webkit-line-clamp: 8; }
+.card-snippet { font-size: 0.88rem; line-height: 1.5; color: #555; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.card-snippet-long { margin-top: 22px; color: var(--ink); -webkit-line-clamp: 8; line-clamp: 8; }
 
 /* Small button at the top-right of each square that pops it up */
 .card-open {
