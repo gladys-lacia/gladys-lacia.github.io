@@ -8,7 +8,7 @@
    1. D1 TABLES (run each statement once in the D1 console or with `wrangler d1 execute`)
    ------------------------------------------------------------------------------------
 
-   CREATE TABLE IF NOT EXISTS prompts_users (
+   CREATE TABLE IF NOT EXISTS user_prompts (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
      username TEXT NOT NULL UNIQUE COLLATE NOCASE,
      email TEXT UNIQUE COLLATE NOCASE,
@@ -19,7 +19,7 @@
 
    CREATE TABLE IF NOT EXISTS "multi-user-prompts-tool" (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
-     user_id INTEGER NOT NULL REFERENCES prompts_users(id) ON DELETE CASCADE,
+     user_id INTEGER NOT NULL REFERENCES user_prompts(id) ON DELETE CASCADE,
      kind TEXT NOT NULL CHECK (kind IN ('ismco','other','note')),
      title TEXT NOT NULL DEFAULT '',
      intent TEXT NOT NULL DEFAULT '',
@@ -54,8 +54,8 @@
 
    [[d1_databases]]
    binding = "DB"                       # must be exactly DB
-   database_name = "<your D1 database name>"
-   database_id = "<your D1 database id>"
+   database_name = "gladys-lacia-github-io"
+   database_id = "c158a644-5858-4835-938e-06ba65c039f5"
 
    [vars]
    ALLOWED_ORIGINS = "https://gladys-lacia.github.io"
@@ -85,17 +85,17 @@
 
    b) Insert the user with the printed value:
 
-      INSERT INTO prompts_users (username, email, password_hash)
+      INSERT INTO user_prompts (username, email, password_hash)
       VALUES ('gladyslacia', 'you@example.com', 'pbkdf2$100000$...$...');
 
    To block someone without deleting their data:
-      UPDATE prompts_users SET is_active = 0 WHERE username = 'someone';
+      UPDATE user_prompts SET is_active = 0 WHERE username = 'someone';
    To change a password, make a new hash (step a) and UPDATE password_hash.
    If the free plan ever reports "exceeded CPU" on login, create hashes with a lower
    iterations number (for example 50000); the number is stored inside each hash.
 */
 
-const USERS_TABLE = "prompts_users";
+const USERS_TABLE = "user_prompts";
 const ITEMS_TABLE = "multi-user-prompts-tool";
 const FAILS_TABLE = "prompts_login_failures";
 
