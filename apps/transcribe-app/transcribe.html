@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: file:; connect-src https://transcribe-app-electron.acct-gladyslacia.workers.dev wss://generativelanguage.googleapis.com" />
+  <title>Transcribe | An app built by Gladys Lacia</title>
+  <link rel="icon" type="image/jpeg" href="./transcribe-app-assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./transcribe-app-assets/transcribe.css" />
+</head>
+<body>
+
+  <!-- Icons -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-side" viewBox="0 0 20 20"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></symbol>
+    <symbol id="i-open" viewBox="0 0 20 20"><path d="M11.5 3.5h5v5M16.5 3.5l-6 6M8.5 4.5h-4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-4"/></symbol>
+    <symbol id="i-close" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></symbol>
+    <symbol id="i-play" viewBox="0 0 20 20"><path d="M6 4l10 6-10 6z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 20 20"><path d="M7 4v12M13 4v12"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 20 20"><rect x="5" y="5" width="10" height="10" rx="1"/></symbol>
+    <symbol id="i-end" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M6.5 10.5l2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 20 20"><path d="M4 6h12M8 6V4h4v2M6 6l1 10h6l1-10"/></symbol>
+    <symbol id="i-up" viewBox="0 0 20 20"><path d="M10 14V4M6 8l4-4 4 4M4 16h12"/></symbol>
+    <symbol id="i-text" viewBox="0 0 20 20"><path d="M4 5h12M4 9h12M4 13h8"/></symbol>
+    <symbol id="i-conv" viewBox="0 0 20 20"><path d="M4 7h11l-3-3M16 13H5l3 3"/></symbol>
+  </svg>
+
+  <!-- State switches used by the stylesheet (set by transcribe.js) -->
+  <input type="radio" name="tab" id="tab-live" class="state" checked />
+  <input type="radio" name="tab" id="tab-audio" class="state" />
+  <input type="radio" name="tab" id="tab-video" class="state" />
+  <input type="checkbox" id="sidebar-collapsed" class="state" />
+  <input type="checkbox" id="offline" class="state" />
+
+  <div class="layout">
+
+    <aside class="sidebar" aria-label="Transcribe sections">
+      <div class="sidebar-head">
+        <label class="icon-btn" for="sidebar-collapsed" title="Collapse sidebar"><svg class="ic"><use href="#i-side"/></svg></label>
+        <span class="user-label">Live transcription and recordings</span>
+      </div>
+      <h2 class="sidebar-title">Transcribe</h2>
+      <nav class="tabs">
+        <label class="tab-btn tab-live" for="tab-live">Transcribe Live</label>
+        <label class="tab-btn tab-audio" for="tab-audio">Audio Recordings</label>
+        <label class="tab-btn tab-video" for="tab-video">Screen Recordings</label>
+      </nav>
+      <p class="warn" id="warn" role="alert" hidden></p>
+      <div class="sidebar-foot">
+        <button class="btn" id="btn-logout" type="button">Log out</button>
+        <div class="demo" title="Network status">
+          <span class="dot"></span><span class="net-on">Online</span><span class="net-off">Offline</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <!-- 1. Transcribe Live -->
+      <section class="panel panel-live" aria-label="Transcribe Live">
+        <header class="panel-head">
+          <label class="icon-btn panel-toggle" for="sidebar-collapsed" title="Open sidebar"><svg class="ic"><use href="#i-side"/></svg></label>
+          <h1>Transcribe Live</h1>
+          <button class="btn panel-add" id="btn-add-live" type="button">+ Add session</button>
+        </header>
+        <p class="model">Model: <code id="model-live">gemini-3.5-transcribe-live</code></p>
+        <div class="grid" id="live-grid"></div>
+        <div class="veil"><p>You cannot use Transcribe Live because you are offline. Connect to the internet to use it.</p></div>
+      </section>
+
+      <!-- 2. Audio Recordings -->
+      <section class="panel panel-audio" aria-label="Audio Recordings">
+        <header class="panel-head">
+          <label class="icon-btn panel-toggle" for="sidebar-collapsed" title="Open sidebar"><svg class="ic"><use href="#i-side"/></svg></label>
+          <h1>Audio Recordings</h1>
+        </header>
+        <p class="model">Model: <code id="model-audio">gemini-3.5-flash-lite</code></p>
+        <div class="split">
+          <div class="col-local">
+            <header class="col-head">
+              <h2>MP3 Local Files</h2>
+              <button class="btn btn-sm" id="btn-add-audio" type="button" style="--c:var(--local)">+ Add recording</button>
+            </header>
+            <div id="list-local"></div>
+          </div>
+          <div class="col-r2">
+            <header class="col-head"><h2>MP3 Cloudflare Files</h2></header>
+            <div id="list-r2"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Screen Recordings (works offline) -->
+      <section class="panel panel-video" aria-label="Screen Recordings">
+        <header class="panel-head">
+          <label class="icon-btn panel-toggle" for="sidebar-collapsed" title="Open sidebar"><svg class="ic"><use href="#i-side"/></svg></label>
+          <h1>Screen Recordings</h1>
+        </header>
+        <div class="split">
+          <div class="col-video">
+            <header class="col-head">
+              <h2>Video Files (Local)</h2>
+              <button class="btn btn-sm" id="btn-add-video" type="button" style="--c:var(--video)">+ Add MP4 recording</button>
+            </header>
+            <div id="list-video"></div>
+          </div>
+          <div class="col-video">
+            <header class="col-head"><h2>Video Player</h2></header>
+            <div class="screen">
+              <span id="screen-msg">Click play on a video file to watch it here</span>
+              <video id="player" hidden></video>
+            </div>
+            <div class="player-bar">
+              <button class="icon-btn" id="p-toggle" type="button" title="Play / pause"><svg class="ic"><use href="#i-play"/></svg></button>
+              <input type="range" class="seek" id="p-seek" min="0" max="1000" value="0" aria-label="Seek" />
+              <span class="player-time" id="p-time">0:00 / 0:00</span>
+            </div>
+            <p class="hint">Press the spacebar to play or pause.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== Popups ===== -->
+
+  <!-- Live session: new, ongoing, or ended (full content width) -->
+  <div class="modal modal-live" id="m-live">
+    <div class="backdrop"></div>
+    <div class="dialog dialog-full" role="dialog" aria-labelledby="live-title">
+      <div class="dialog-bar">
+        <button class="icon-btn b-close" data-on="idle ended" type="button" title="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+        <h2 class="dlg-title" id="live-title"></h2>
+        <div class="rec-ctrl">
+          <span class="status"></span>
+          <button class="icon-btn b-start" data-on="idle stopped" type="button" title="Start recording"><svg class="ic"><use href="#i-play"/></svg></button>
+          <button class="icon-btn b-stop" data-on="rec wait" type="button" title="Stop recording" disabled><svg class="ic"><use href="#i-stop"/></svg></button>
+          <button class="icon-btn b-end" data-on="idle stopped" type="button" title="End session"><svg class="ic"><use href="#i-end"/></svg></button>
+        </div>
+      </div>
+      <label class="field stop-confirm" data-on="rec wait">Type STOP to confirm<input class="stop-input" type="text" autocomplete="off" /></label>
+      <div class="log">
+        <p class="empty">The transcription will appear here.</p>
+        <div class="lines"></div>
+      </div>
+      <div class="dialog-foot" data-on="ended">
+        <button class="link-btn link-danger b-delete" type="button">Delete</button>
+        <button class="link-btn b-copy" type="button">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New audio recording (full content width) -->
+  <div class="modal modal-audio" id="m-audio">
+    <div class="backdrop"></div>
+    <div class="dialog dialog-full" role="dialog" aria-labelledby="audio-title">
+      <div class="dialog-bar">
+        <button class="icon-btn b-close" data-on="idle" type="button" title="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+        <h2 class="dlg-title" id="audio-title"></h2>
+        <div class="rec-ctrl">
+          <span class="status"></span>
+          <button class="icon-btn b-start" data-on="idle stopped" type="button" title="Start audio recording"><svg class="ic"><use href="#i-play"/></svg></button>
+          <button class="icon-btn b-stop" data-on="rec wait" type="button" title="Stop audio recording" disabled><svg class="ic"><use href="#i-stop"/></svg></button>
+          <button class="icon-btn b-end" data-on="idle stopped" type="button" title="End recording"><svg class="ic"><use href="#i-end"/></svg></button>
+        </div>
+      </div>
+      <label class="field stop-confirm" data-on="rec wait">Type STOP to confirm<input class="stop-input" type="text" autocomplete="off" /></label>
+      <div class="log">
+        <p class="empty" data-on="idle stopped">Press play to start. The MP3 is saved on this laptop.</p>
+        <p class="empty" data-on="rec wait">Recording audio…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transcription (half content width): Copy top-right, status left, Delete right -->
+  <div class="modal modal-d1" id="m-d1">
+    <div class="backdrop"></div>
+    <div class="dialog dialog-half" role="dialog" aria-labelledby="d1-title">
+      <div class="dialog-bar">
+        <button class="icon-btn b-close" type="button" title="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+        <button class="link-btn b-copy" type="button" style="margin-left:auto">Copy</button>
+      </div>
+      <h2 id="d1-title"></h2>
+      <div class="dialog-row">
+        <span class="status d1-status"></span>
+        <button class="link-btn link-danger b-delete" type="button">Delete</button>
+      </div>
+      <p class="d1-text"></p>
+    </div>
+  </div>
+
+  <!-- New MP4 recording (full content width) -->
+  <div class="modal modal-video" id="m-video">
+    <div class="backdrop"></div>
+    <div class="dialog dialog-full" role="dialog" aria-labelledby="video-title">
+      <div class="dialog-bar">
+        <button class="icon-btn b-close" data-on="idle" type="button" title="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+        <h2 class="dlg-title" id="video-title"></h2>
+        <div class="rec-ctrl">
+          <span class="status"></span>
+          <button class="icon-btn b-start" data-on="idle stopped" type="button" title="Start MP4 recording"><svg class="ic"><use href="#i-play"/></svg></button>
+          <button class="icon-btn b-stop" data-on="rec wait" type="button" title="Stop MP4 recording" disabled><svg class="ic"><use href="#i-stop"/></svg></button>
+          <button class="icon-btn b-end" data-on="idle stopped" type="button" title="End MP4 recording"><svg class="ic"><use href="#i-end"/></svg></button>
+        </div>
+      </div>
+      <label class="field stop-confirm" data-on="rec wait">Type STOP to confirm<input class="stop-input" type="text" autocomplete="off" /></label>
+      <div class="log">
+        <p class="empty" data-on="idle stopped">Press play to start. The MP4 is saved on this laptop.</p>
+        <video class="preview" data-on="rec wait" muted playsinline></video>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation (DELETE / UPLOAD / CONVERT) -->
+  <div class="modal modal-confirm" id="m-confirm">
+    <div class="backdrop"></div>
+    <div class="dialog" role="dialog" aria-labelledby="c-title">
+      <h2 id="c-title"></h2>
+      <p id="c-text"></p>
+      <label class="field"><span>Type <span id="c-word"></span> to confirm</span><input id="c-input" type="text" autocomplete="off" /></label>
+      <p class="err" id="c-err" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn btn-plain" id="c-cancel" type="button">Cancel</button>
+        <button class="btn" id="c-ok" type="button" disabled></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log in -->
+  <div class="modal modal-login" id="m-login">
+    <div class="backdrop"></div>
+    <div class="dialog" role="dialog" aria-labelledby="login-title">
+      <h2 id="login-title">Transcribe</h2>
+      <p>Log in to continue.</p>
+      <label class="field"><span>Username</span><input id="login-user" type="text" autocomplete="username" /></label>
+      <label class="field"><span>Password</span><input id="login-pass" type="password" autocomplete="current-password" /></label>
+      <p class="err" id="login-err" hidden></p>
+      <div class="dialog-actions"><button class="btn" id="login-ok" type="button">Log in</button></div>
+    </div>
+  </div>
+
+  <script src="./transcribe-app-assets/transcribe.js"></script>
+</body>
+</html>

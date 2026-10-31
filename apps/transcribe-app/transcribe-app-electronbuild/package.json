@@ -1,0 +1,38 @@
+{
+  "name": "transcribe-app-electronbuild",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build workspace for transcribe.exe (Electron and electron-builder live here)",
+  "scripts": {
+    "start": "electron ..",
+    "build": "electron-builder --win dir"
+  },
+  "build": {
+    "appId": "com.gdlc.transcribe",
+    "productName": "transcribe",
+    "directories": {
+      "app": "..",
+      "output": "dist"
+    },
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**"
+    ],
+    "files": [
+      "start-transcribe.js",
+      "transcribe.html",
+      "transcribe-app-assets/**/*",
+      "package.json",
+      "!**/*.map"
+    ],
+    "win": {
+      "target": "dir",
+      "executableName": "transcribe",
+      "signAndEditExecutable": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0"
+  }
+}
