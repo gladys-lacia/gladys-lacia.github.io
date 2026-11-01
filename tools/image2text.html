@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Image to Text | Gladys Lacia</title>
+  <link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="stylesheet" href="tools-assets/image2text.css" />
+</head>
+<body>
+
+  <input id="sidebarCollapse" class="sr-only" type="checkbox" />
+
+  <!-- Login: shown before anyone can enter the tool -->
+  <div id="loginView" class="login-view">
+    <form id="loginForm" class="login-card">
+      <h1>Image to Text</h1>
+      <p class="login-note">Log in to continue. This tool is private.</p>
+      <label class="field">Username
+        <input id="loginIdentifier" type="text" autocomplete="username" required />
+      </label>
+      <label class="field">Password
+        <input id="loginPassword" type="password" autocomplete="current-password" required />
+      </label>
+      <p id="loginError" class="form-error" role="alert" hidden></p>
+      <button id="loginSubmit" class="btn btn-primary" type="submit">Log in</button>
+    </form>
+  </div>
+
+  <div id="appView" class="app" hidden>
+
+    <!-- Sidebar: conversation tabs -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <span class="sidebar-title">Image to Text</span>
+        <button id="addTabButton" class="icon-btn icon-btn-light" type="button" aria-label="Add tab" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
+        </button>
+      </div>
+
+      <!-- ID card-sized pop-up attached to the right side of the sidebar -->
+      <div id="add-tab" class="popover" role="dialog" aria-labelledby="addTabHeading" hidden>
+        <form id="addTabForm" class="popover-form">
+          <h2 id="addTabHeading">New tab</h2>
+          <label class="field">What is this tab for?
+            <input id="addTabTitle" type="text" maxlength="80" placeholder="e.g. Handwritten notes" autocomplete="off" />
+          </label>
+          <p id="addTabError" class="form-error" role="alert" hidden></p>
+          <div class="popover-actions">
+            <button id="addTabSubmit" class="btn btn-primary" type="submit">Add tab</button>
+          </div>
+        </form>
+      </div>
+
+      <nav id="tabList" class="tab-list" aria-label="Conversation tabs"></nav>
+
+      <div class="sidebar-bottom">
+        <button id="logoutButton" class="btn-logout" type="button">Log out</button>
+        <span id="userLabel" class="user-label"></span>
+      </div>
+    </aside>
+
+    <!-- Conversation area -->
+    <main class="conversation">
+      <header class="conv-header">
+        <label class="icon-btn toggle-label" for="sidebarCollapse" aria-label="Toggle sidebar">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+        </label>
+        <h1 id="convTitle" class="conv-title"></h1>
+        <button id="deleteTabButton" class="icon-btn icon-btn-danger" type="button" aria-label="Delete tab">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.5h13M8 5.5V3.5h4v2M5.5 5.5l.7 10.5h7.6l.7-10.5M8.5 9v4.5M11.5 9v4.5"/></svg>
+        </button>
+      </header>
+
+      <p id="pageError" class="page-error" role="alert" hidden></p>
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <!-- Upload field: five boxes, then the Upload button -->
+      <form id="composer" class="composer">
+        <div class="upload-field">
+          <div id="slots" class="slots" role="group" aria-label="Photo slots, maximum of 5"></div>
+          <p id="uploadHint" class="upload-hint">0 of 5 photos added</p>
+        </div>
+        <input id="fileInput" class="sr-only" type="file" accept=".jpg,.jpeg,image/jpeg" multiple tabindex="-1" />
+        <button id="uploadButton" class="btn btn-primary btn-upload" type="submit" disabled>Upload</button>
+      </form>
+    </main>
+  </div>
+
+  <!-- Delete tab confirmation -->
+  <div id="delete-tab" class="modal">
+    <button class="modal-backdrop" type="button" data-close aria-label="Close"></button>
+    <div class="dialog" role="dialog" aria-labelledby="deleteTabHeading">
+      <form id="deleteTabForm">
+        <h2 id="deleteTabHeading">Delete this tab?</h2>
+        <p>This permanently deletes the tab and all of its messages, including from the database.</p>
+        <label class="field">Type DELETE to confirm
+          <input id="deleteTabPhrase" type="text" autocomplete="off" />
+        </label>
+        <p id="deleteTabError" class="form-error" role="alert" hidden></p>
+        <div class="dialog-actions">
+          <button class="btn" type="button" data-close>Cancel</button>
+          <button id="deleteTabConfirm" class="btn btn-danger" type="submit" disabled>Delete tab</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete message photos confirmation -->
+  <div id="delete-message" class="modal">
+    <button class="modal-backdrop" type="button" data-close aria-label="Close"></button>
+    <div class="dialog" role="dialog" aria-labelledby="deleteMessageHeading">
+      <form id="deleteMessageForm">
+        <h2 id="deleteMessageHeading">Delete these photos?</h2>
+        <p>This permanently deletes the photos in this message from R2 Object Storage.</p>
+        <label class="field">Type DELETE to confirm
+          <input id="deleteMessagePhrase" type="text" autocomplete="off" />
+        </label>
+        <p id="deleteMessageError" class="form-error" role="alert" hidden></p>
+        <div class="dialog-actions">
+          <button class="btn" type="button" data-close>Cancel</button>
+          <button id="deleteMessageConfirm" class="btn btn-danger" type="submit" disabled>Delete photos</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Photo viewer -->
+  <div id="photo-viewer" class="modal">
+    <button class="modal-backdrop" type="button" data-close aria-label="Close"></button>
+    <div class="viewer" role="dialog" aria-label="Photo preview">
+      <button class="icon-btn viewer-close" type="button" data-close aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+      <div id="viewerPhoto" class="viewer-photo ph"></div>
+      <p id="viewerName" class="viewer-name"></p>
+    </div>
+  </div>
+
+  <script src="tools-assets/image2text.js" defer></script>
+</body>
+</html>

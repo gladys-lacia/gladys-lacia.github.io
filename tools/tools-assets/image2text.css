@@ -349,3 +349,72 @@ a.thumb:hover { border-color: var(--cream); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ------------------------------------------------------------------
+   Functional additions (everything above is the unchanged design CSS)
+   ------------------------------------------------------------------ */
+
+/* Login */
+.form-error { color: var(--danger); font-size: 0.9rem; }
+.login-view { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+.login-card h1 { font-family: 'Montserrat', sans-serif; font-size: 1.75rem; color: var(--maroon); }
+.login-note { font-size: 0.9rem; color: #555; }
+
+/* Page-level error and empty states */
+.page-error {
+  margin: 8px 16px 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--danger);
+  background: rgba(192, 57, 43, 0.08);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.empty { margin: auto; max-width: 36ch; color: #777; text-align: center; }
+
+/* Pop-ups opened with JavaScript */
+.modal.is-open { display: grid; }
+button.modal-backdrop { width: 100%; height: 100%; padding: 0; border: 0; cursor: default; }
+.popover .form-error { margin-top: -4px; }
+.dialog .form-error { margin-top: -4px; }
+
+/* Real photos replace the placeholder gradients */
+.has-photo { background-size: cover; background-position: center; background-repeat: no-repeat; }
+.has-photo::after { display: none; }
+button.thumb { padding: 0; cursor: pointer; }
+.viewer-photo.has-photo { background-size: contain; background-color: var(--ink); }
+
+/* Upload slots */
+.slot-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(46, 45, 43, 0.75);
+  color: var(--cream);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.slot-remove:hover { background: rgba(46, 45, 43, 0.95); }
+.slot-empty:disabled { opacity: 0.5; cursor: not-allowed; }
+.slot-empty:disabled:hover { border-color: var(--field); color: var(--field); }
+.msg-body-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.text-btn:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
