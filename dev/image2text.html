@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Image to Text | Gladys Lacia</title>
+  <link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="stylesheet" href="image2text.css" />
+</head>
+<body>
+
+  <!-- Design-only state markers (no JavaScript):
+       #closed-add hides the "new tab" pop-up; #open-add shows it again.
+       #delete-tab, #delete-message and #photo-viewer open the pop-ups via :target. -->
+  <span id="closed-add"></span>
+  <input id="sidebarCollapse" class="sr-only" type="checkbox" />
+
+  <div class="app">
+
+    <!-- Sidebar: conversation tabs -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <span class="sidebar-title">Image to Text</span>
+        <a class="icon-btn icon-btn-light" href="#open-add" aria-label="Add tab">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
+        </a>
+      </div>
+
+      <!-- ID card-sized pop-up attached to the right side of the sidebar -->
+      <div id="add-tab" class="popover" role="dialog" aria-labelledby="addTabHeading">
+        <form class="popover-form">
+          <h2 id="addTabHeading">New tab</h2>
+          <label class="field">What is this tab for?
+            <input type="text" placeholder="e.g. Handwritten notes" />
+          </label>
+          <div class="popover-actions">
+            <a class="btn btn-primary" href="#closed-add">Add tab</a>
+          </div>
+        </form>
+      </div>
+
+      <nav class="tab-list" aria-label="Conversation tabs">
+        <button class="tab-item" type="button" aria-current="true"><span class="tab-title">Handwritten notes</span></button>
+        <button class="tab-item" type="button"><span class="tab-title">Receipts</span></button>
+        <button class="tab-item" type="button"><span class="tab-title">Lecture slides</span></button>
+        <button class="tab-item" type="button"><span class="tab-title">Whiteboard from Monday meeting</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="btn-logout" type="button">Log out</button>
+        <span class="user-label">username</span>
+      </div>
+    </aside>
+
+    <!-- Conversation area -->
+    <main class="conversation">
+      <header class="conv-header">
+        <label class="icon-btn toggle-label" for="sidebarCollapse" aria-label="Toggle sidebar">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></svg>
+        </label>
+        <h1 class="conv-title">Handwritten notes</h1>
+        <a class="icon-btn icon-btn-danger" href="#delete-tab" aria-label="Delete tab">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.5h13M8 5.5V3.5h4v2M5.5 5.5l.7 10.5h7.6l.7-10.5M8.5 9v4.5M11.5 9v4.5"/></svg>
+        </a>
+      </header>
+
+      <div class="messages" aria-live="polite">
+
+        <!-- Extracted: user bubble replaced, one AI bubble per photo -->
+        <div class="msg msg-user msg-removed">
+          <p>The text in the photos shown here has already been extracted, and these photos have been deleted from R2 Object Storage.</p>
+        </div>
+
+        <article class="msg msg-assistant">
+          <div class="msg-head">
+            <span class="msg-label">Extracted text</span>
+            <button class="text-btn" type="button">Copy</button>
+          </div>
+          <div class="msg-body">Meeting notes, Monday
+
+- Finalize the landing page copy
+- Send the invoice to the client
+- Book the call for Thursday, 2 PM</div>
+        </article>
+
+        <article class="msg msg-assistant">
+          <div class="msg-head">
+            <span class="msg-label">Extracted text</span>
+            <button class="text-btn" type="button">Copy</button>
+          </div>
+          <div class="msg-body">Ideas for next week's posts:
+1. Behind the scenes of my workflow
+2. Three templates I use every day
+3. How I plan a content calendar</div>
+        </article>
+
+        <!-- Deleted: user bubble replaced -->
+        <div class="msg msg-user msg-removed">
+          <p>The photos shown here have already been deleted from R2 Object Storage.</p>
+        </div>
+
+        <!-- Uploaded: photos in the user's bubble -->
+        <article class="msg msg-user">
+          <div class="msg-head msg-head-end">
+            <button class="text-btn" type="button">Extract</button>
+          </div>
+          <div class="msg-photos">
+            <a class="thumb ph ph-1" href="#photo-viewer"><span class="sr-only">View photo 1</span></a>
+            <a class="thumb ph ph-2" href="#photo-viewer"><span class="sr-only">View photo 2</span></a>
+            <a class="thumb ph ph-3" href="#photo-viewer"><span class="sr-only">View photo 3</span></a>
+          </div>
+          <div class="msg-foot">
+            <a class="text-btn" href="#delete-message">Delete</a>
+            <span class="msg-status">Uploaded</span>
+          </div>
+        </article>
+
+        <!-- Uploading: estimated time shown in the user's bubble -->
+        <article class="msg msg-user msg-pending">
+          <div class="msg-photos">
+            <span class="thumb ph ph-1"></span>
+            <span class="thumb ph ph-2"></span>
+          </div>
+          <div class="msg-foot msg-foot-end">
+            <span class="msg-status">Estimated upload time: about 8 seconds</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Upload field: five boxes, then the Upload button -->
+      <form class="composer">
+        <div class="upload-field">
+          <div class="slots" role="group" aria-label="Photo slots, maximum of 5">
+            <div class="slot slot-filled ph ph-1" title="2026-11nov-01-030215-110215">
+              <span class="slot-name">2026-11nov-01-030215-110215</span>
+            </div>
+            <div class="slot slot-filled ph ph-2" title="2026-11nov-01-030216-110216">
+              <span class="slot-name">2026-11nov-01-030216-110216</span>
+            </div>
+            <div class="slot slot-filled ph ph-3" title="2026-11nov-01-030217-110217">
+              <span class="slot-name">2026-11nov-01-030217-110217</span>
+            </div>
+            <button class="slot slot-empty" type="button" aria-label="Add photo 4">+</button>
+            <button class="slot slot-empty" type="button" aria-label="Add photo 5">+</button>
+          </div>
+          <p class="upload-hint">3 of 5 photos added</p>
+        </div>
+        <button class="btn btn-primary btn-upload" type="submit">Upload</button>
+      </form>
+    </main>
+  </div>
+
+  <!-- Delete tab confirmation -->
+  <div id="delete-tab" class="modal">
+    <a class="modal-backdrop" href="#" aria-label="Close"></a>
+    <div class="dialog" role="dialog" aria-labelledby="deleteTabHeading">
+      <form>
+        <h2 id="deleteTabHeading">Delete this tab?</h2>
+        <p>This permanently deletes the tab and all of its messages, including from the database.</p>
+        <label class="field">Type DELETE to confirm
+          <input type="text" autocomplete="off" />
+        </label>
+        <div class="dialog-actions">
+          <a class="btn" href="#">Cancel</a>
+          <button class="btn btn-danger" type="button" disabled>Delete tab</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete message photos confirmation -->
+  <div id="delete-message" class="modal">
+    <a class="modal-backdrop" href="#" aria-label="Close"></a>
+    <div class="dialog" role="dialog" aria-labelledby="deleteMessageHeading">
+      <form>
+        <h2 id="deleteMessageHeading">Delete these photos?</h2>
+        <p>This permanently deletes the photos in this message from R2 Object Storage.</p>
+        <label class="field">Type DELETE to confirm
+          <input type="text" autocomplete="off" />
+        </label>
+        <div class="dialog-actions">
+          <a class="btn" href="#">Cancel</a>
+          <button class="btn btn-danger" type="button" disabled>Delete photos</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Photo viewer -->
+  <div id="photo-viewer" class="modal">
+    <a class="modal-backdrop" href="#" aria-label="Close"></a>
+    <div class="viewer" role="dialog" aria-label="Photo preview">
+      <a class="icon-btn viewer-close" href="#" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </a>
+      <div class="viewer-photo ph ph-1"></div>
+      <p class="viewer-name">2026-11nov-01-030215-110215</p>
+    </div>
+  </div>
+
+</body>
+</html>
