@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Remote Job Hunting | Gladys Lacia</title>
+<link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="tools-assets/remote-jobhunting.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-edit" viewBox="0 0 20 20"><path d="M3 17l1-4L14 3l3 3L7 16zM12 5l3 3"/></symbol><symbol id="i-del" viewBox="0 0 20 20"><path d="M4 6h12M8 6V4h4v2M6 6l1 11h6l1-11M9 9v5M11 9v5"/></symbol><symbol id="i-x" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></symbol><symbol id="i-send" viewBox="0 0 20 20"><path d="M3 3l14 7-14 7 2-7zM5 10h6"/></symbol><symbol id="i-side" viewBox="0 0 20 20"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></symbol></svg>
+
+<!-- Login: shown before anyone can enter the tool -->
+<div id="loginView" class="login-view">
+  <form id="loginForm" class="login-card">
+    <h1>Remote Job Hunting</h1>
+    <p class="login-note">Log in to continue. Accounts are created by the site owner.</p>
+    <label class="f">Username or email
+      <input id="loginIdentifier" type="text" autocomplete="username" required>
+    </label>
+    <label class="f">Password
+      <input id="loginPassword" type="password" autocomplete="current-password" required>
+    </label>
+    <p id="loginError" class="form-error" role="alert" hidden></p>
+    <button id="loginSubmit" class="btn" type="submit">Log in</button>
+  </form>
+</div>
+
+<!-- Tool -->
+<div id="appView" class="layout" hidden>
+
+  <aside class="sidebar" aria-label="Sections">
+    <div class="shead"><button class="ic js-sidebar-toggle" type="button" title="Collapse sidebar" aria-label="Toggle sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button></div>
+    <h2 class="stitle">Remote job hunting</h2>
+    <nav class="tabs" aria-label="Sections">
+      <button class="tab c1" type="button" data-tab="ismco">ISMCO Templates</button>
+      <button class="tab c2" type="button" data-tab="notes">Notes</button>
+      <button class="tab c3" type="button" data-tab="diary">Diary Analysis</button>
+      <button class="tab c4" type="button" data-tab="experience">Experience Analysis</button>
+      <button class="tab c5" type="button" data-tab="description">Description Analysis</button>
+      <button class="tab c6" type="button" data-tab="classification">Classification Analysis</button>
+      <button class="tab c7" type="button" data-tab="application">Application Analysis</button>
+      <button class="tab c8" type="button" data-tab="workdiary">Work Diary</button>
+    </nav>
+    <div class="sfoot"><button id="logoutButton" class="btn" type="button">Log out</button><span id="userLabel" class="user"></span></div>
+  </aside>
+
+  <main class="content">
+    <p id="pageError" class="page-error" role="alert" hidden></p>
+
+    <section class="panel c1" id="panel-ismco" data-tab="ismco" aria-label="ISMCO Templates" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>ISMCO Templates</h1><button class="btn add" type="button" data-add="ismco">+ Add template</button></header>
+      <div class="grid" id="grid-ismco"></div>
+    </section>
+
+    <section class="panel c2" id="panel-notes" data-tab="notes" aria-label="Notes" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Notes</h1><button class="btn add" type="button" data-add="notes">+ Add note</button></header>
+      <div class="grid" id="grid-notes"></div>
+    </section>
+
+    <section class="panel c3" id="panel-diary" data-tab="diary" aria-label="Diary Analysis" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Diary Analysis</h1><button class="btn add" type="button" data-add="diary">+ Add analysis</button></header>
+      <div class="grid" id="grid-diary"></div>
+    </section>
+
+    <section class="panel c4" id="panel-experience" data-tab="experience" aria-label="Experience Analysis" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Experience Analysis</h1><button class="btn add" type="button" data-add="experience">+ Add analysis</button></header>
+      <div class="grid" id="grid-experience"></div>
+    </section>
+
+    <section class="panel c5" id="panel-description" data-tab="description" aria-label="Description Analysis" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Description Analysis</h1><button class="btn add" type="button" data-add="description">+ Add analysis</button></header>
+      <div class="grid" id="grid-description"></div>
+    </section>
+
+    <section class="panel c6" id="panel-classification" data-tab="classification" aria-label="Classification Analysis" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Classification Analysis</h1><button class="btn add" type="button" data-add="classification">+ Add classification</button></header>
+      <div class="grid" id="grid-classification"></div>
+    </section>
+
+    <section class="panel c7" id="panel-application" data-tab="application" aria-label="Application Analysis" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Application Analysis</h1><button class="btn add" type="button" data-add="application">+ Add application</button></header>
+      <div class="grid" id="grid-application"></div>
+    </section>
+
+    <section class="panel c8" id="panel-workdiary" data-tab="workdiary" aria-label="Work Diary" hidden>
+      <header class="phead"><button class="ic ptoggle js-sidebar-toggle" type="button" aria-label="Open sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button><h1>Work Diary</h1><button class="btn add" type="button" data-add="workdiary">+ Add work diary</button></header>
+      <div class="grid" id="grid-workdiary"></div>
+    </section>
+  </main>
+
+  <!-- ===== Add and edit popups (the same popup is used for adding and editing) ===== -->
+
+  <!-- ISMCO template -->
+  <div class="modal" id="ismcoModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog" id="ismcoForm" role="dialog" aria-modal="true" aria-labelledby="ismcoTitle" novalidate>
+      <header class="head"><h2 id="ismcoTitle">Add an ISMCO template</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f">What is this prompt for?<input id="ismco-name" type="text" maxlength="200" placeholder="e.g. Remote role fit check"></label>
+      <label class="f">INTENT<textarea id="ismco-intent" rows="3" maxlength="20000" placeholder="What the AI should achieve"></textarea></label>
+      <label class="f">SCOPE<textarea id="ismco-scope" rows="3" maxlength="20000" placeholder="What is included and left out"></textarea></label>
+      <label class="f">METHOD<textarea id="ismco-method" rows="3" maxlength="20000" placeholder="How the AI works through it"></textarea></label>
+      <label class="f">CONSTRAINTS<textarea id="ismco-constraints" rows="3" maxlength="20000" placeholder="Rules the AI must follow"></textarea></label>
+      <label class="f">OUTPUT<textarea id="ismco-output" rows="3" maxlength="20000" placeholder="The format of the answer"></textarea></label>
+      <label class="f">Applies to
+        <select id="ismco-applies">
+          <option value="diary">Diary Analysis</option>
+          <option value="experience">Experience Analysis</option>
+          <option value="description">Description Analysis</option>
+          <option value="classification">Classification Analysis</option>
+          <option value="application">Application Analysis</option>
+        </select>
+      </label>
+      <p id="ismcoError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="ismcoSave" class="btn save" type="submit">Save</button></div>
+    </form>
+  </div>
+
+  <!-- Note -->
+  <div class="modal" id="noteModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog" id="noteForm" role="dialog" aria-modal="true" aria-labelledby="noteTitle" novalidate>
+      <header class="head"><h2 id="noteTitle">Add a note</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f">What is this note for?<input id="note-title" type="text" maxlength="200" placeholder="Note title"></label>
+      <div class="checks">
+        <input type="checkbox" id="note-plain-check"><label for="note-plain-check">Plain Notes</label>
+        <input type="checkbox" id="note-uploads-check"><label for="note-uploads-check">With Uploads</label>
+      </div>
+      <div class="blk" id="blockPlain" hidden>
+        <label class="f">Notes<textarea id="note-plain-text" rows="4" maxlength="20000" placeholder="Write your notes here"></textarea></label>
+      </div>
+      <div class="blk" id="blockUploads" hidden>
+        <div class="ups" id="noteSlots"></div>
+        <p class="sub">Up to 5 files (PDF, PNG, JPG, WEBP or TXT, 4 MB each), stored in R2. Each is renamed on upload, e.g. 2026-01jan-13-0742am-utc-0342pm-utc8.</p>
+      </div>
+      <p id="noteError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="noteSave" class="btn save" type="submit">Save</button></div>
+    </form>
+  </div>
+
+  <!-- Analysis (one popup for all five analysis tabs; the blocks shown depend on the tab) -->
+  <div class="modal" id="analysisModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog" id="analysisForm" role="dialog" aria-modal="true" aria-labelledby="analysisFormTitle" novalidate>
+      <header class="head"><h2 id="analysisFormTitle">Add an analysis</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f"><span id="afPurposeLabel">What is this analysis for?</span><input id="af-title" type="text" maxlength="200" placeholder=""></label>
+
+      <div id="afDiaryBlock" hidden>
+        <div class="stack">
+          <label class="f">Source (Work Diary)<select id="af-diary"></select></label>
+          <label class="f">Covered timeframe<input id="af-timeframe" type="text" readonly></label>
+          <label class="f">Content<textarea id="af-content" readonly rows="6" placeholder="Filled from the chosen Work Diary."></textarea></label>
+        </div>
+      </div>
+
+      <div id="afJobBlock" hidden>
+        <div class="stack">
+          <label class="f">Job post title<input id="af-jobtitle" type="text" maxlength="200"></label>
+          <label class="f">Job post details<textarea id="af-jobdetails" rows="3" maxlength="20000"></textarea></label>
+          <label class="f">Full job post description<textarea id="af-jobdesc" rows="6" maxlength="30000"></textarea></label>
+        </div>
+      </div>
+
+      <label class="f" id="afSourceBlock" hidden>Source (notes with uploads)<select id="af-source"></select></label>
+      <label class="f" id="afRefBlock" hidden>Reference (plain notes)<select id="af-reference"></select></label>
+
+      <label class="f">ISMCO Template<select id="af-template"></select></label>
+      <p id="afNote" class="sub"></p>
+      <p id="analysisError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="analysisSave" class="btn save" type="submit">Save</button></div>
+    </form>
+  </div>
+
+  <!-- Work diary -->
+  <div class="modal" id="diaryModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog" id="diaryForm" role="dialog" aria-modal="true" aria-labelledby="diaryTitle" novalidate>
+      <header class="head"><h2 id="diaryTitle">Add a work diary</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f">What is this work diary about?<input id="diary-name" type="text" maxlength="200"></label>
+      <label class="f">Context<textarea id="diary-context" rows="4" maxlength="20000"></textarea></label>
+      <p id="diaryError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="diarySave" class="btn save" type="submit">Save</button></div>
+    </form>
+  </div>
+
+  <!-- ===== View popup (filled in by remote-jobhunting.js for each item) ===== -->
+  <div class="modal" id="viewModal" hidden>
+    <div class="backdrop" data-close></div>
+    <div class="dialog" id="viewDialog" role="dialog" aria-modal="true" aria-labelledby="viewTitle"></div>
+  </div>
+
+  <!-- ===== Larger preview of an uploaded file ===== -->
+  <div class="modal preview" id="previewModal" hidden>
+    <div class="backdrop" data-close></div>
+    <div class="dialog tall" id="previewDialog" role="dialog" aria-modal="true" aria-labelledby="previewTitle"></div>
+  </div>
+
+  <!-- ===== Delete confirmation popup (shared by every section) ===== -->
+  <div class="modal del" id="deleteModal" hidden>
+    <div class="backdrop" data-close></div>
+    <form class="dialog narrow" id="deleteForm" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+      <h2 id="deleteTitle">Delete this item?</h2>
+      <p>This permanently removes it, including from the database.</p>
+      <label class="f">Type DELETE to confirm<input id="deletePhrase" type="text" autocomplete="off"></label>
+      <p id="deleteError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="deleteConfirm" class="btn dng" type="submit" disabled>Delete</button></div>
+    </form>
+  </div>
+
+</div>
+
+<script src="tools-assets/remote-jobhunting.js" defer></script>
+</body>
+</html>
