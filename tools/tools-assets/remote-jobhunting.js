@@ -1069,7 +1069,7 @@
     $("analysisFormTitle").textContent = item ? EDIT_TITLE[kind] : ADD_TITLE[kind];
     $("afPurposeLabel").textContent = PURPOSE_LABEL[kind];
     $("af-title").value = item ? item.title : "";
-    $("af-title").placeholder = diaryKind ? "e.g. Week 2 wins" : "";
+    $("af-title").placeholder = diaryKind ? "Please write here what this diary analysis is for." : "";
 
     $("afDiaryBlock").hidden = !diaryKind;
     $("afJobBlock").hidden = kind !== "application";
