@@ -163,19 +163,19 @@ a:hover {
 }
 .d-bar-chart {
   width: 41.67%;
-  background-color: #EF4444;
+  background-color: #C62828;
 }
 .i-bar-chart {
   width: 50%;
-  background-color: #EAB308;
+  background-color: #C2540A;
 }
 .s-bar-chart {
   width: 41.67%;
-  background-color: #22C55E;
+  background-color: #2E7D32;
 }
 .c-bar-chart {
   width: 66.67%;
-  background-color: #8B5CF6;
+  background-color: #1565C0;
 }
 .pht-timezone {
   text-align: center;
@@ -238,23 +238,23 @@ a:hover {
 }
 .reading-english-language-proficiency {
   width: 71.43%;
-  background-color: #EF4444;
+  background-color: #C62828;
 }
 .listening-english-language-proficiency {
   width: 50%;
-  background-color: #F97316;
+  background-color: #C2540A;
 }
 .writing-english-language-proficiency {
   width: 92.86%;
-  background-color: #EAB308;
+  background-color: #2E7D32;
 }
 .speaking-english-language-proficiency {
   width: 57.14%;
-  background-color: #22C55E;
+  background-color: #1565C0;
 }
 .overall-band-score {
   width: 71.43%;
-  background-color: #8B5CF6;
+  background-color: #8E24AA;
 }
 .work-exp-portfolio-qr-code {
   display: none;
