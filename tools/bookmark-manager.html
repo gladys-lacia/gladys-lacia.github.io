@@ -12,6 +12,7 @@
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-edit" viewBox="0 0 20 20"><path d="M3 17l1-4L14 3l3 3L7 16zM12 5l3 3"/></symbol><symbol id="i-del" viewBox="0 0 20 20"><path d="M4 6h12M8 6V4h4v2M6 6l1 11h6l1-11M9 9v5M11 9v5"/></symbol><symbol id="i-x" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></symbol><symbol id="i-side" viewBox="0 0 20 20"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></symbol><symbol id="i-bmadd" viewBox="0 0 20 20"><path d="M5.5 3h9v14L10 13.5 5.5 17zM10 5.5v4M8 7.5h4"/></symbol><symbol id="i-tabadd" viewBox="0 0 20 20"><path d="M2.5 6.5v9a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1H9.5l-1.5-2H3.5a1 1 0 0 0-1 1zM10 9.5v4M8 11.5h4"/></symbol></svg>
+<symbol id="i-view" viewBox="0 0 20 20"><path d="M8 4H4.5a1 1 0 0 0-1 1v10.5a1 1 0 0 0 1 1H15a1 1 0 0 0 1-1V12M11 3.5h5.5V9M16.5 3.5L9 11"/></symbol> <!-- Add the icon. -->
 
 <!-- Login: shown before anyone can enter the tool -->
 <div id="loginView" class="login-view">
@@ -88,6 +89,17 @@
       <p id="deleteError" class="form-error" role="alert" hidden></p>
       <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="deleteConfirm" class="btn dng" type="submit" disabled>Delete</button></div>
     </form>
+  </div>
+
+  <!-- View a bookmark's details -->
+  <div class="modal" id="viewModal" hidden>
+    <div class="backdrop"></div>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="viewTitle">
+      <header class="head"><h2 id="viewTitle">Bookmark</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <div class="vm-field"><span class="vm-label">What is this bookmark used for?</span><p id="viewDesc" class="vm-text"></p></div>
+      <div class="vm-field"><span class="vm-label">URL</span><a id="viewUrl" class="vm-text" target="_blank" rel="noopener noreferrer"></a></div>
+      <div class="acts"><button class="btn plain" type="button" data-close>Close</button></div>
+    </div>
   </div>
 
 </div>

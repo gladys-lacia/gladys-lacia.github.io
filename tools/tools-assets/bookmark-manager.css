@@ -127,6 +127,7 @@ a { color: inherit; text-decoration: none; }
 .mini { font-family: inherit; padding: 3px 6px; margin: 0 -6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
 .mini:hover { text-decoration: none; }
 .mini.del { color: var(--danger); }
+.bm .view { grid-column: 2; grid-row: 1; justify-self: end; position: relative; z-index: 2; margin: -4px -8px -4px 0; } /* Position the button and style the popup. */
 
 /* Popups: centered on the tabset, and as wide as the pane (the tabset minus the vertical tab column).
    The popup is centered in the content area minus the section's 20px side padding, which is the tabset. */
@@ -143,6 +144,13 @@ a { color: inherit; text-decoration: none; }
 .head .ic:last-child { margin-left: auto; }
 .dialog > h2 { font: 700 1.1rem 'Montserrat', sans-serif; color: var(--maroon); }
 .sub { font-size: 0.85rem; color: #555; }
+
+/* Position the button and style the popup. */
+.vm-field { display: flex; flex-direction: column; gap: 4px; }
+.vm-label { font-size: 0.9rem; font-weight: 700; color: var(--maroon); }
+.vm-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.5; text-align: left; }
+a.vm-text { color: var(--teal); text-decoration: underline; }
+
 .acts { display: flex; justify-content: flex-end; gap: 10px; }
 
 

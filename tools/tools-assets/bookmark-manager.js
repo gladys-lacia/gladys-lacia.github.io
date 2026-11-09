@@ -52,6 +52,12 @@
   const deletePhrase = $("deletePhrase");
   const deleteError = $("deleteError");
   const deleteConfirm = $("deleteConfirm");
+  
+  /* Register the popup’s elements. */
+  const viewModal = $("viewModal");
+  const viewTitle = $("viewTitle");
+  const viewDesc = $("viewDesc");
+  const viewUrl = $("viewUrl");
 
   /* localStorage can be unavailable (private mode, blocked storage), so every call is guarded. */
   const store = {
@@ -325,6 +331,14 @@
     copy.type = "button";
     copy.addEventListener("click", () => copyUrl(bookmark.url, copy));
 
+    /* Add the button to each card. */
+    const view = el("button", "ic view");
+    view.type = "button";
+    view.title = "View details";
+    view.setAttribute("aria-label", "View details");
+    view.innerHTML = '<svg aria-hidden="true"><use href="#i-view"/></svg>'; // static markup only
+    view.addEventListener("click", () => openView(bookmark));
+
     const body = el("div", "bm-body");
     body.append(el("h3", "", bookmark.name), el("p", "bm-url", bookmark.url));
 
@@ -335,7 +349,8 @@
     edit.type = "button";
     edit.addEventListener("click", () => openBookmarkForm(bookmark, bookmark.tab_id));
 
-    card.append(copy, body, del, edit);
+    /* card.append(copy, body, del, edit); */
+    card.append(copy, view, body, del, edit);
     return card;
   }
 
@@ -360,7 +375,8 @@
 
   /* ---------- Popups ---------- */
 
-  const MODALS = [bookmarkModal, tabModal, deleteModal];
+  /* const MODALS = [bookmarkModal, tabModal, deleteModal]; */
+  const MODALS = [bookmarkModal, tabModal, deleteModal, viewModal];
 
   function openModal(modal, focusNode) {
     modal.hidden = false;
@@ -384,6 +400,18 @@
     closeModal(top);
     if (top === deleteModal) state.deleting = null;
     else state.editing = null;
+  }
+
+  /* View popup (read-only details of one bookmark) */
+
+  function openView(bookmark) {
+    viewTitle.textContent = bookmark.name;
+    viewDesc.textContent = bookmark.description || "No description.";
+    const href = safeUrl(bookmark.url);
+    viewUrl.textContent = bookmark.url;
+    if (href) viewUrl.href = href;
+    else viewUrl.removeAttribute("href");
+    openModal(viewModal);
   }
 
   /* Bookmark form (add and edit use the same popup) */
