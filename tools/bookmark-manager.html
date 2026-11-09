@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bookmark Manager | Gladys Lacia</title>
+<link rel="icon" type="image/png" href="../assets/gdlcfavicon2.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="tools-assets/bookmark-manager.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-edit" viewBox="0 0 20 20"><path d="M3 17l1-4L14 3l3 3L7 16zM12 5l3 3"/></symbol><symbol id="i-del" viewBox="0 0 20 20"><path d="M4 6h12M8 6V4h4v2M6 6l1 11h6l1-11M9 9v5M11 9v5"/></symbol><symbol id="i-x" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></symbol><symbol id="i-side" viewBox="0 0 20 20"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M7.5 3.5v13"/></symbol><symbol id="i-bmadd" viewBox="0 0 20 20"><path d="M5.5 3h9v14L10 13.5 5.5 17zM10 5.5v4M8 7.5h4"/></symbol><symbol id="i-tabadd" viewBox="0 0 20 20"><path d="M2.5 6.5v9a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1H9.5l-1.5-2H3.5a1 1 0 0 0-1 1zM10 9.5v4M8 11.5h4"/></symbol></svg>
+
+<!-- Login: shown before anyone can enter the tool -->
+<div id="loginView" class="login-view">
+  <form id="loginForm" class="login-card">
+    <h1>Bookmark Manager</h1>
+    <p class="login-note">Log in to continue. This tool is private.</p>
+    <label class="f">Username
+      <input id="loginUsername" type="text" autocomplete="username" required>
+    </label>
+    <label class="f">Password
+      <input id="loginPassword" type="password" autocomplete="current-password" required>
+    </label>
+    <p id="loginError" class="form-error" role="alert" hidden></p>
+    <button id="loginSubmit" class="btn" type="submit">Log in</button>
+  </form>
+</div>
+
+<!-- Tool -->
+<div id="appView" class="layout" hidden>
+
+  <aside class="sidebar" aria-label="Sections">
+    <div class="shead"><button class="ic js-sidebar-toggle" type="button" title="Collapse sidebar" aria-label="Toggle sidebar" aria-expanded="true"><svg aria-hidden="true"><use href="#i-side"/></svg></button></div>
+    <h2 class="stitle">Bookmark manager</h2>
+    <nav class="sections" aria-label="Sections">
+      <button class="sbtn personal" type="button" data-section="personal">Personal</button>
+      <button class="sbtn resources" type="button" data-section="resources">Resources</button>
+      <button class="sbtn work" type="button" data-section="work">Work</button>
+    </nav>
+    <div class="sfoot"><button id="logoutButton" class="btn" type="button">Log out</button><span id="userLabel" class="user"></span></div>
+  </aside>
+
+  <main class="content">
+    <p id="pageError" class="page-error" role="alert" hidden></p>
+    <!-- One section per button. Its tabs and bookmarks are drawn by bookmark-manager.js. -->
+    <section class="section personal" id="section-personal" data-section="personal" aria-label="Personal" hidden></section>
+    <section class="section resources" id="section-resources" data-section="resources" aria-label="Resources" hidden></section>
+    <section class="section work" id="section-work" data-section="work" aria-label="Work" hidden></section>
+  </main>
+
+  <!-- ===== Popups (shared by all three sections) ===== -->
+
+  <!-- Add / edit a bookmark -->
+  <div class="modal" id="bookmarkModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog" id="bookmarkForm" role="dialog" aria-modal="true" aria-labelledby="bookmarkTitle" novalidate>
+      <header class="head"><h2 id="bookmarkTitle">Add a bookmark</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f">Bookmark name<input id="bookmark-name" type="text" maxlength="200" placeholder="Write the name of this bookmark."></label>
+      <label class="f">What is this bookmark used for?<textarea id="bookmark-desc" rows="4" maxlength="20000" placeholder="Write all the uses of this bookmark."></textarea></label>
+      <label class="f">URL<input id="bookmark-url" type="url" maxlength="2000" placeholder="https://example.com/"></label>
+      <p id="bookmarkError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="bookmarkSave" class="btn save" type="submit">Save</button></div>
+    </form>
+  </div>
+
+  <!-- Add / edit a tab -->
+  <div class="modal" id="tabModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog" id="tabForm" role="dialog" aria-modal="true" aria-labelledby="tabTitle" novalidate>
+      <header class="head"><h2 id="tabTitle">Add a tab</h2><button class="ic" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f">Tab name<input id="tab-name" type="text" maxlength="200" placeholder="Write the name of this tab."></label>
+      <label class="f">What is this tab used for?<textarea id="tab-desc" rows="4" maxlength="20000" placeholder="Write all the uses of this tab."></textarea></label>
+      <p id="tabError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="tabSave" class="btn save" type="submit">Save</button></div>
+    </form>
+  </div>
+
+  <!-- Delete confirmation (shared by bookmarks and tabs) -->
+  <div class="modal del" id="deleteModal" hidden>
+    <div class="backdrop"></div>
+    <form class="dialog narrow" id="deleteForm" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+      <h2 id="deleteTitle">Delete this bookmark?</h2>
+      <p id="deleteText">This permanently removes this bookmark.</p>
+      <label class="f">Type DELETE to confirm<input id="deletePhrase" type="text" autocomplete="off"></label>
+      <p id="deleteError" class="form-error" role="alert" hidden></p>
+      <div class="acts"><button class="btn plain" type="button" data-close>Cancel</button><button id="deleteConfirm" class="btn dng" type="submit" disabled>Delete</button></div>
+    </form>
+  </div>
+
+</div>
+
+<script src="tools-assets/bookmark-manager.js" defer></script>
+</body>
+</html>

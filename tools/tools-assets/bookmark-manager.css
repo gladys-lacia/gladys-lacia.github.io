@@ -1,10 +1,6 @@
-/* Bookmark Manager: design preview (no JavaScript yet).
-   Built on the look of remote-jobhunting.css: same palette, fonts, buttons, fields and popups.
-   Until bookmark-manager.js exists, the states are switched with plain CSS:
-   - the three section buttons and the vertical tabs use hidden radio inputs
-   - the popups open with :target (links such as href="#modal-add-bookmark")
-   - the sidebar collapses with a hidden checkbox
-   When JavaScript arrives it can replace these switches with the hidden attribute and classes. */
+/* Bookmark Manager tool. Loads after ../assets/style.css and reuses its palette and fonts.
+   Visual design comes from dev/bookmark-manager.css; the radio, checkbox and :target
+   state switches are replaced by the hidden attribute and classes that bookmark-manager.js controls. */
 :root {
   --cream: #FFFEF2;
   --panel: #F7F5E8;
@@ -38,6 +34,7 @@ a { color: inherit; text-decoration: none; }
 /* Buttons and icons */
 .btn { display: inline-block; border: 0; border-radius: 4px; padding: 7px 14px; background: var(--teal); color: var(--cream); font-weight: 700; text-align: center; cursor: pointer; }
 .btn:hover { filter: brightness(1.18); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn.plain { background: transparent; color: var(--ink); border: 1px solid var(--field); }
 .btn.save { background: var(--save); }
 .btn.dng { background: var(--danger); }
@@ -58,24 +55,27 @@ a { color: inherit; text-decoration: none; }
 .f { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
 .f input, .f select, .f textarea { padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
 .f textarea { resize: vertical; }
+.form-error { color: var(--danger); font-size: 0.9rem; overflow-wrap: anywhere; }
+
+/* Login: shown before anyone can enter the tool */
+.login-view { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+.login-card { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 14px; padding: 28px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.login-card h1 { font: 700 1.75rem 'Montserrat', sans-serif; color: var(--maroon); }
+.login-note { font-size: 0.9rem; color: #555; }
 
 /* Layout */
 .layout { position: relative; display: flex; height: 100dvh; overflow: hidden; }
 .sidebar { flex: 0 0 var(--left-w); width: var(--left-w); display: flex; flex-direction: column; background: var(--panel); border-right: 1px solid var(--line); transition: margin-left 0.2s, visibility 0s; }
-#sidebar-collapse:checked ~ .sidebar { margin-left: calc(var(--left-w) * -1); visibility: hidden; transition: margin-left 0.2s, visibility 0s 0.2s; }
+.layout.sidebar-collapsed .sidebar { margin-left: calc(var(--left-w) * -1); visibility: hidden; transition: margin-left 0.2s, visibility 0s 0.2s; }
 .shead { padding: 10px 12px; }
 .stitle { padding: 6px 16px 12px; font: 700 1rem 'Montserrat', sans-serif; color: var(--maroon); }
 
 /* The three permanent buttons */
 .sections { display: flex; flex-direction: column; gap: 10px; padding: 6px 16px 16px; }
-.sbtn { display: block; width: 100%; padding: 12px 14px; border-radius: 4px; background: var(--c); color: var(--cream); font-weight: 700; text-align: left; cursor: pointer; }
+.sbtn { display: block; border: 0; width: 100%; padding: 12px 14px; border-radius: 4px; background: var(--c); color: var(--cream); font-weight: 700; text-align: left; cursor: pointer; }
 .sbtn:hover { filter: brightness(1.12); }
-#sec-personal:checked ~ .sidebar label[for="sec-personal"],
-#sec-resources:checked ~ .sidebar label[for="sec-resources"],
-#sec-work:checked ~ .sidebar label[for="sec-work"] { outline: 3px solid var(--ink); outline-offset: 2px; }
-#sec-personal:focus-visible ~ .sidebar label[for="sec-personal"],
-#sec-resources:focus-visible ~ .sidebar label[for="sec-resources"],
-#sec-work:focus-visible ~ .sidebar label[for="sec-work"] { outline: 3px solid var(--teal); outline-offset: 2px; }
+.sbtn[aria-current="true"] { outline: 3px solid var(--ink); outline-offset: 2px; }
+.sbtn[aria-current="true"]:focus-visible { outline-color: var(--teal); }
 
 /* Log out button and username at the bottom of the sidebar */
 .sfoot { display: flex; align-items: center; gap: 12px; margin-top: auto; padding: 12px 16px; border-top: 1px solid var(--line); }
@@ -83,27 +83,24 @@ a { color: inherit; text-decoration: none; }
 
 /* Content: only the open section shows */
 .content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
-.section { display: none; flex: 1; min-height: 0; flex-direction: column; padding: 14px 20px 20px; }
-#sec-personal:checked ~ .content #section-personal,
-#sec-resources:checked ~ .content #section-resources,
-#sec-work:checked ~ .content #section-work { display: flex; }
+.section { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 14px 20px 20px; }
+.page-error { margin: 12px 20px 0; padding: 8px 12px; border-left: 3px solid var(--danger); background: rgba(192, 57, 43, 0.08); font-size: 0.9rem; overflow-wrap: anywhere; }
 
-/* Vertical browser-style tabs (left of the content) and the tab's own pane (right).
-   Each tab is: hidden radio, then its label, then its pane. The labels stack in the first column
-   and the open pane fills the second column. */
-.tabset { flex: 1; min-height: 0; display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); grid-template-rows: repeat(24, min-content) 1fr; align-content: start; padding-top: 4px; }
-.vtab { grid-column: 1; display: block; margin: 0 0 4px; padding: 12px 12px 12px 14px; border: 1px solid var(--line); border-right: 0; border-left: 4px solid var(--c); border-radius: 10px 0 0 10px; background: var(--tab-idle); color: #555; font: 700 0.88rem 'Montserrat', sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+/* Vertical browser-style tabs (the rail, left) and the open tab's pane (right).
+   The rail is one pixel wider than the --rail-w column and the pane slides under it by one pixel,
+   so the open tab covers the pane's left border and looks joined to it. */
+.tabset { flex: 1; min-height: 0; display: grid; grid-template-columns: calc(var(--rail-w) + 1px) minmax(0, 1fr); padding-top: 4px; }
+.rail { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; }
+.vtab { display: block; width: 100%; margin: 0 1px 4px 0; padding: 12px 12px 12px 14px; border: 1px solid var(--line); border-right: 0; border-left: 4px solid var(--c); border-radius: 10px 0 0 10px; background: var(--tab-idle); color: #555; font: 700 0.88rem 'Montserrat', sans-serif; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .vtab:hover { background: #e7e3cf; color: var(--ink); }
-.tabset > input:checked + .vtab { position: relative; z-index: 1; margin-right: -1px; background: var(--cream); color: var(--maroon); border-color: var(--line); border-left-color: var(--c); }
-.tabset > input:focus-visible + .vtab { outline: 3px solid var(--teal); outline-offset: -3px; }
+.vtab[aria-selected="true"] { margin-right: 0; background: var(--cream); color: var(--maroon); }
 
-.pane { grid-column: 2; grid-row: 1 / -1; display: none; flex-direction: column; min-height: 0; padding: 18px 20px 14px; border: 1px solid var(--line); border-top: 5px solid var(--c); border-radius: 0 8px 8px 8px; background: var(--cream); }
-.tabset > input:checked + .vtab + .pane { display: flex; }
+.pane { grid-column: 2; margin-left: -1px; display: flex; flex-direction: column; min-height: 0; padding: 18px 20px 14px; border: 1px solid var(--line); border-top: 5px solid var(--c); border-radius: 0 8px 8px 8px; background: var(--cream); }
 
 /* Top of a tab: name and description on the left, Add tab and Add bookmark on the right */
 .phead { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
 .ptoggle { display: none; }
-#sidebar-collapse:checked ~ .content .ptoggle { display: inline-grid; }
+.layout.sidebar-collapsed .ptoggle { display: inline-grid; }
 .ptitle { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .ptitle h1 { font: 700 1.5rem 'Montserrat', sans-serif; color: var(--maroon); overflow-wrap: anywhere; }
 .desc { max-width: 70ch; font-size: 0.88rem; line-height: 1.5; color: #555; overflow-wrap: anywhere; }
@@ -126,15 +123,14 @@ a { color: inherit; text-decoration: none; }
 .bm-url { font-size: 0.82rem; color: var(--teal); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bm .del { grid-column: 1; grid-row: 3; justify-self: start; }
 .bm .edit { grid-column: 2; grid-row: 3; justify-self: end; }
-.mini { padding: 3px 6px; margin: 0 -6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.mini { font-family: inherit; padding: 3px 6px; margin: 0 -6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
 .mini:hover { text-decoration: none; }
 .mini.del { color: var(--danger); }
 
 /* Popups: centered on the tabset, and as wide as the pane (the tabset minus the vertical tab column).
    The popup is centered in the content area minus the section's 20px side padding, which is the tabset. */
-.modal { position: fixed; top: 0; right: 0; bottom: 0; left: var(--left-w); z-index: 20; display: none; align-items: center; justify-content: center; padding: 16px 20px; }
-.modal:target { display: flex; }
-#sidebar-collapse:checked ~ .modal { left: 0; }
+.modal { position: fixed; top: 0; right: 0; bottom: 0; left: var(--left-w); z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px 20px; }
+.layout.sidebar-collapsed .modal { left: 0; }
 .modal.del { z-index: 30; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
@@ -148,20 +144,19 @@ a { color: inherit; text-decoration: none; }
 .sub { font-size: 0.85rem; color: #555; }
 .acts { display: flex; justify-content: flex-end; gap: 10px; }
 
-/* Delete popups: the Delete button stays dim until DELETE is typed exactly */
-.dialog:has(input:invalid) .btn.dng { opacity: 0.5; pointer-events: none; cursor: not-allowed; }
 
 @media (max-width: 700px) {
   :root { --rail-w: 104px; }
   .layout { flex-direction: column; }
   .sidebar { flex: 0 0 auto; width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
-  #sidebar-collapse:checked ~ .sidebar { display: none; }
+  .layout.sidebar-collapsed .sidebar { display: none; }
   .sfoot { margin-top: 0; }
   .sections { flex-direction: row; flex-wrap: wrap; gap: 8px; }
   .sbtn { flex: 1 1 auto; width: auto; padding: 10px; font-size: 0.85rem; text-align: center; }
-  .modal, #sidebar-collapse:checked ~ .modal { left: 0; padding: 16px 10px; }
+  .modal, .layout.sidebar-collapsed .modal { left: 0; padding: 16px 10px; }
   .section { padding: 12px 10px 14px; }
   .vtab { padding: 10px 8px 10px 10px; font-size: 0.78rem; }
+  .tools { flex-wrap: wrap; justify-content: flex-end; }
   .pane { padding: 14px 12px 12px; }
   .ptitle h1 { font-size: 1.2rem; }
   .grid { grid-template-columns: 1fr; gap: 12px; }
