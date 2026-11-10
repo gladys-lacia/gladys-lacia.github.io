@@ -16,6 +16,7 @@ body {
 p {
   text-align: justify;
   text-justify: inter-word;
+  hyphens: none;
 }
 
 /* Document Container */
