@@ -1,0 +1,647 @@
+/* Portfolio page styles. Standalone: does not depend on style1.css or style2.css. */
+/* Palette and type are carried over from the root page for a consistent look. */
+
+:root {
+  --maroon: #4A0404;
+  --forest: #274A04;
+  --teal: #044A4A;
+  --plum: #27044A;
+  --cream: #FFFEF2;
+  --ink: #2e2d2b;
+  --line: rgba(46, 45, 43, 0.13);
+  --shadow: 0 1px 2px rgba(46, 45, 43, 0.06), 0 10px 28px rgba(46, 45, 43, 0.09);
+}
+
+/* Base Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
+body {
+  background-color: var(--cream);
+  background-image: linear-gradient(180deg, rgba(74, 4, 4, 0.07), rgba(255, 254, 242, 0) 380px);
+  background-repeat: no-repeat;
+  color: var(--ink);
+  font-family: 'Lato', sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+/* Document Container */
+.document {
+  max-width: 880px;
+  margin: 40px auto 56px;
+  padding: 0 24px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Hero header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 34px 36px;
+  margin-bottom: 28px;
+  border-radius: 16px;
+  color: var(--cream);
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--plum) 100%);
+  box-shadow: 0 14px 34px rgba(74, 4, 4, 0.28);
+}
+
+.profile-image {
+  width: 132px;
+  height: 132px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--cream);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.header-text h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.4rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--cream);
+}
+
+.header .role {
+  margin: 10px 0 0;
+  font-size: 1rem;
+  opacity: 0.92;
+}
+
+/* Section cards */
+.section {
+  margin-bottom: 28px;
+  padding: 28px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.section h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  color: var(--teal);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.section h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: var(--plum);
+  margin-top: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.section h2 + h3 {
+  margin-top: 0;
+}
+
+.section h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--plum);
+  margin-bottom: 8px;
+}
+
+.section ul {
+  margin-left: 20px;
+  margin-bottom: 8px;
+}
+
+.section li {
+  margin-bottom: 4px;
+}
+
+.section li::marker {
+  color: var(--teal);
+}
+
+/* Links */
+a {
+  color: var(--maroon);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s ease;
+  overflow-wrap: anywhere;
+}
+
+a:hover {
+  color: var(--teal);
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Contact */
+.contact .contact-list {
+  list-style: none;
+  margin: 0;
+}
+
+.contact .contact-list li {
+  margin-bottom: 6px;
+}
+
+.contact-label {
+  font-weight: 700;
+}
+
+/* Section navigation */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  background: rgba(255, 254, 242, 0.92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nav-links a {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--teal);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-links a:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--cream);
+}
+
+/* Hamburger button: shown on small screens only */
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--teal);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nav-toggle:hover,
+.nav-toggle[aria-expanded="true"] {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--cream);
+}
+
+.nav-toggle:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+}
+
+/* A. Natural Role Alignment */
+.alignment {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 12px 0 16px;
+}
+
+.alignment-group {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.alignment-group ul {
+  margin-bottom: 0;
+}
+
+.alignment-strong {
+  background: rgba(46, 125, 50, 0.05);
+}
+
+.alignment-lower {
+  background: rgba(194, 84, 10, 0.05);
+}
+
+/* Justified text: Professional Summary paragraphs (the alignment boxes stay left-aligned)
+   and the E.2 Soft Skills list (the second h3 inside #skills) */
+#professional-summary p,
+#skills h3:nth-of-type(2) + ul li {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: none;
+}
+
+/* B. Work Experience */
+.company {
+  font-size: 1.1rem;
+  color: var(--maroon);
+}
+
+.job-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.timeline-note {
+  margin-bottom: 20px;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding-left: 28px;
+  border-left: 3px solid var(--teal);
+}
+
+.timeline > li.role-card {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 20px 22px;
+  background: rgba(39, 4, 74, 0.035);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.timeline > li.role-card:last-child {
+  margin-bottom: 0;
+}
+
+.timeline > li.role-card::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  left: -40px;
+  width: 15px;
+  height: 15px;
+  background: var(--cream);
+  border: 3px solid var(--teal);
+  border-radius: 50%;
+}
+
+.role-card h4 {
+  font-size: 1.05rem;
+  color: var(--maroon);
+}
+
+.role-card .block-label {
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.evidence li {
+  margin-bottom: 10px;
+}
+
+.screenshots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.screenshots img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: rgba(46, 45, 43, 0.07);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+/* Screenshot "view" button (added by function-portfolio.js) */
+.screenshot-item {
+  position: relative;
+}
+
+.view-button,
+.lightbox-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(46, 45, 43, 0.82);
+  color: var(--cream);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.view-button {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+}
+
+.view-button:hover,
+.lightbox-close:hover {
+  background: var(--maroon);
+}
+
+.view-button:focus-visible,
+.lightbox-close:focus-visible {
+  outline: 3px solid var(--cream);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--teal);
+}
+
+.view-button[hidden],
+.lightbox[hidden] {
+  display: none;
+}
+
+/* Pop-up (added by function-portfolio.js) */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(20, 18, 16, 0.88);
+}
+
+.lightbox-dialog {
+  position: relative;
+  max-width: 100%;
+}
+
+.lightbox-image {
+  display: block;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  background: var(--cream);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Diploma "view" button, placed to the left of the heading text */
+.with-view-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-button-inline {
+  position: static;
+  flex-shrink: 0;
+}
+
+/* PDF pop-up: a top bar holds the close button so it never covers the document */
+.lightbox-dialog.is-embed {
+  width: min(900px, calc(100vw - 32px));
+  height: calc(100vh - 32px);
+  padding-top: 48px;
+  background: rgba(46, 45, 43, 0.95);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lightbox-dialog.is-embed .lightbox-close {
+  top: 8px;
+  right: 8px;
+}
+
+.lightbox-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--cream);
+}
+
+.lightbox-frame[hidden],
+.lightbox-image[hidden] {
+  display: none;
+}
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+/* E. Skills, Expertise, and Tools */
+.skill-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 8px;
+}
+
+.skill-grid {
+  counter-reset: skill;
+}
+
+.skill-grid > li {
+  counter-increment: skill;
+  position: relative;
+  margin: 0;
+  padding: 16px 18px;
+  background: rgba(39, 4, 74, 0.035);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.skill-grid > li::before {
+  content: counter(skill, decimal-leading-zero);
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font: 700 0.8rem 'Montserrat', sans-serif;
+  color: var(--plum);
+  opacity: 0.4;
+}
+
+.skill-grid h4 {
+  padding-right: 28px;
+}
+
+.skill-grid p {
+  margin-bottom: 4px;
+}
+
+.skill-grid strong {
+  color: var(--teal);
+}
+
+.soft-skills li {
+  margin-bottom: 8px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .alignment,
+  .skill-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .document {
+    padding: 0 16px;
+    margin-top: 24px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .profile-image {
+    width: 104px;
+    height: 104px;
+  }
+
+  .header-text h1 {
+    font-size: 1.9rem;
+  }
+
+  .section {
+    padding: 22px 20px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 0 0 10px 10px;
+    box-shadow: var(--shadow);
+  }
+
+  .nav-links.is-open {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    font-size: 0.95rem;
+    white-space: normal;
+  }
+
+  .nav-links a:last-child {
+    border-bottom: 0;
+  }
+
+  .timeline {
+    padding-left: 20px;
+  }
+
+  .timeline > li.role-card {
+    padding: 16px;
+  }
+
+  .timeline > li.role-card::before {
+    left: -32px;
+  }
+
+  .screenshots {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Motion: one page-load entrance for the header only */
+@keyframes gd-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.header {
+  animation: gd-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .header { animation: none; }
+  a { transition: none; }
+}
+
+/* Print: keep text readable when backgrounds are stripped */
+@media print {
+  body { background-image: none; }
+  .header {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    animation: none;
+    color: var(--ink);
+  }
+  .header-text h1 { color: var(--maroon); }
+  .header .role { color: var(--forest); opacity: 1; }
+  .profile-image { border: 0; border-radius: 4px; box-shadow: none; }
+  .section-nav { display: none; }
+  .section { box-shadow: none; }
+  .role-card, .alignment-group, .skill-grid > li { break-inside: avoid; }
+}
