@@ -206,3 +206,15 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
   .profile-image { border: 0; border-radius: 4px; box-shadow: none; }
   .section { box-shadow: none; break-inside: avoid; }
 }
+
+/* Header: Primary Niches list */
+.header .role-list {
+  margin: 6px 0 0 20px;
+  color: var(--cream);
+  opacity: 0.9;
+  font-size: 1.05rem;
+}
+.header .role-list li { margin-bottom: 2px; }
+@media print {
+  .header .role-list { color: var(--forest); opacity: 1; }
+}
