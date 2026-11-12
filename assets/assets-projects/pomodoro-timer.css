@@ -1,0 +1,309 @@
+/* Project 1: Pomodoro Timer - enhancement layer
+   Loads after style1.css and the page's inline styles. No original rules were edited.
+   Brand colors: #4A0404 (maroon), #274A04 (forest), #044A4A (teal), #27044A (plum), #FFFEF2 (cream) */
+
+:root {
+  --maroon: #4A0404;
+  --forest: #274A04;
+  --teal: #044A4A;
+  --plum: #27044A;
+  --cream: #FFFEF2;
+  --ink: #2e2d2b;
+  --line: rgba(46, 45, 43, 0.14);
+  --shadow: 0 1px 2px rgba(46, 45, 43, 0.06), 0 18px 40px rgba(46, 45, 43, 0.12);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-image: linear-gradient(180deg, rgba(74, 4, 4, 0.08), rgba(255, 254, 242, 0) 420px);
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+}
+
+.document { max-width: 880px; margin: 40px auto 56px; }
+
+/* ---------- Hero header ---------- */
+.header {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 28px;
+  padding: 34px 36px;
+  border-radius: 16px;
+  color: var(--cream);
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--plum) 100%);
+  box-shadow: 0 14px 34px rgba(74, 4, 4, 0.28);
+  animation: pt-rise 0.7s var(--ease) both;
+}
+.header::after {
+  content: "";
+  position: absolute;
+  top: -90px;
+  right: -70px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 254, 242, 0.16), rgba(255, 254, 242, 0) 70%);
+  pointer-events: none;
+}
+.header-text { position: relative; z-index: 1; }
+.header-text h1 {
+  color: var(--cream);
+  font-size: 2.2rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+.header .role {
+  margin-top: 10px;
+  color: var(--cream);
+  opacity: 0.9;
+  font-size: 1.05rem;
+  text-align: left;
+}
+
+/* ---------- App card ---------- */
+.pomodoro-app {
+  position: relative;
+  overflow: hidden;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 36px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--cream);
+  box-shadow: var(--shadow);
+  animation: pt-rise 0.7s 0.1s var(--ease) both;
+}
+.pomodoro-app p { text-align: center; }
+
+.pomodoro-app .intro {
+  max-width: 520px;
+  margin: 0 auto 28px;
+  color: var(--ink);
+  opacity: 0.82;
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+/* ---------- Phase pill + count ---------- */
+.pomodoro-app .pomodoro-phase {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: var(--teal);
+  color: var(--cream);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+.pomodoro-app:has([data-focus-controls]:not([hidden])) .pomodoro-phase { background: var(--maroon); }
+.pomodoro-app:has([data-alarm-panel]:not([hidden])) .pomodoro-phase { background: var(--plum); }
+.pomodoro-app:has([data-long-break-controls]:not([hidden])) .pomodoro-phase,
+.pomodoro-app:has([data-long-break-stop-confirm-panel]:not([hidden])) .pomodoro-phase { background: var(--forest); }
+
+.pomodoro-app .pomodoro-count {
+  margin: 12px 0 22px;
+  color: var(--forest);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Timer ring ---------- */
+.pomodoro-app .pomodoro-time {
+  display: grid;
+  place-items: center;
+  width: clamp(220px, 62vw, 300px);
+  aspect-ratio: 1;
+  margin: 8px auto 26px;
+  border: 8px solid transparent;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--cream), var(--cream)) padding-box,
+    conic-gradient(from 200deg, var(--maroon), var(--plum), var(--teal), var(--forest), var(--maroon)) border-box;
+  box-shadow: 0 12px 30px rgba(39, 4, 74, 0.16), inset 0 2px 10px rgba(46, 45, 43, 0.06);
+  color: var(--plum);
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2.6rem, 11vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.pomodoro-app:has([data-focus-controls]:not([hidden])) .pomodoro-time {
+  animation: pt-pulse 3s ease-in-out infinite;
+}
+
+/* ---------- Status message ---------- */
+.pomodoro-app .pomodoro-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.4em;
+  max-width: 540px;
+  margin: 0 auto 22px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: rgba(4, 74, 74, 0.06);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* ---------- Panels ---------- */
+.pomodoro-app .pomodoro-panel {
+  max-width: 540px;
+  margin: 18px auto 0;
+}
+.pomodoro-app .pomodoro-panel .pomodoro-panel,
+.pomodoro-app [data-do-not-start-panel],
+.pomodoro-app [data-long-break-panel],
+.pomodoro-app [data-long-break-stop-confirm-panel] {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(39, 4, 74, 0.04);
+}
+.pomodoro-app [data-ready-panel] > p,
+.pomodoro-app [data-next-panel] > p,
+.pomodoro-app [data-long-break-panel] > p { margin-bottom: 14px; }
+
+.pomodoro-app .pomodoro-actions { gap: 12px; }
+
+/* ---------- Buttons ---------- */
+.pomodoro-app .pomodoro-button {
+  min-width: 120px;
+  padding: 12px 22px;
+  border: 2px solid var(--maroon);
+  border-radius: 10px;
+  background: var(--maroon);
+  color: var(--cream);
+  font-family: 'Lato', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(46, 45, 43, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.pomodoro-app .pomodoro-button:hover {
+  filter: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(74, 4, 4, 0.28);
+}
+.pomodoro-app .pomodoro-button:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(46, 45, 43, 0.18); }
+
+/* Secondary actions */
+.pomodoro-app [data-decline-first],
+.pomodoro-app [data-stop-request],
+.pomodoro-app [data-next-no],
+.pomodoro-app [data-do-not-start-cancel],
+.pomodoro-app [data-long-break-stop],
+.pomodoro-app [data-long-break-stop-cancel] {
+  background: transparent;
+  color: var(--maroon);
+  box-shadow: none;
+}
+.pomodoro-app [data-decline-first]:hover,
+.pomodoro-app [data-stop-request]:hover,
+.pomodoro-app [data-next-no]:hover,
+.pomodoro-app [data-do-not-start-cancel]:hover,
+.pomodoro-app [data-long-break-stop]:hover,
+.pomodoro-app [data-long-break-stop-cancel]:hover {
+  background: var(--maroon);
+  color: var(--cream);
+}
+
+/* Pause / Resume and long break start use teal and forest */
+.pomodoro-app [data-pause] { background: var(--teal); border-color: var(--teal); }
+.pomodoro-app [data-pause]:hover { box-shadow: 0 8px 18px rgba(4, 74, 74, 0.3); }
+.pomodoro-app [data-long-break-start] { background: var(--forest); border-color: var(--forest); }
+.pomodoro-app [data-long-break-start]:hover { box-shadow: 0 8px 18px rgba(39, 74, 4, 0.3); }
+.pomodoro-app [data-alarm-stop] { background: var(--plum); border-color: var(--plum); }
+.pomodoro-app [data-alarm-stop]:hover { box-shadow: 0 8px 18px rgba(39, 4, 74, 0.3); }
+
+.pomodoro-app [data-do-not-start-confirm] { margin-right: 10px; }
+.pomodoro-app [data-do-not-start-confirm],
+.pomodoro-app [data-do-not-start-cancel] { margin-top: 4px; }
+
+/* ---------- Inputs and radios ---------- */
+.pomodoro-app .pomodoro-field-label {
+  margin: 0 0 10px;
+  color: var(--plum);
+  line-height: 1.5;
+}
+.pomodoro-app .pomodoro-input {
+  border: 2px solid rgba(46, 45, 43, 0.28);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.pomodoro-app .pomodoro-input:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(4, 74, 74, 0.14); }
+.pomodoro-app .pomodoro-field-help {
+  margin: 10px 0 14px;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.pomodoro-app .pomodoro-radio-group { gap: 14px; margin: 4px 0 18px; }
+.pomodoro-app .pomodoro-radio-option {
+  gap: 10px;
+  padding: 10px 18px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--cream);
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.pomodoro-app .pomodoro-radio-option:hover { border-color: var(--forest); }
+.pomodoro-app .pomodoro-radio-option:has(input:checked) {
+  border-color: var(--forest);
+  background: rgba(39, 74, 4, 0.08);
+  color: var(--forest);
+}
+.pomodoro-app .pomodoro-radio { accent-color: var(--forest); width: 18px; height: 18px; }
+
+/* ---------- Focus states ---------- */
+.pomodoro-app .pomodoro-button:focus-visible,
+.pomodoro-app .pomodoro-input:focus-visible,
+.pomodoro-app .pomodoro-radio:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+}
+
+/* ---------- Motion ---------- */
+@keyframes pt-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pt-pulse {
+  0%, 100% { box-shadow: 0 12px 30px rgba(39, 4, 74, 0.16), inset 0 2px 10px rgba(46, 45, 43, 0.06); }
+  50% { box-shadow: 0 12px 38px rgba(74, 4, 4, 0.3), inset 0 2px 10px rgba(46, 45, 43, 0.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .header, .pomodoro-app, .pomodoro-app .pomodoro-time { animation: none !important; }
+  .pomodoro-app .pomodoro-button, .pomodoro-app .pomodoro-input, .pomodoro-app .pomodoro-radio-option { transition: none; }
+  .pomodoro-app .pomodoro-button:hover { transform: none; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .document { padding: 0 16px; margin: 24px auto 40px; }
+  .header { padding: 24px; }
+  .header-text h1 { font-size: 1.7rem; }
+  .pomodoro-app { margin: 0 auto; padding: 28px 18px 26px; }
+  .pomodoro-app .pomodoro-panel .pomodoro-panel,
+  .pomodoro-app [data-do-not-start-panel],
+  .pomodoro-app [data-long-break-panel],
+  .pomodoro-app [data-long-break-stop-confirm-panel] { padding: 16px; }
+  .pomodoro-app .pomodoro-button { min-width: 100px; }
+  .pomodoro-app .pomodoro-actions { gap: 10px; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background-image: none; }
+  .header, .pomodoro-app { animation: none; box-shadow: none; }
+  .header { background: none; padding: 0; }
+  .header-text h1 { color: var(--maroon); }
+  .header .role { color: var(--forest); opacity: 1; }
+  .header::after { display: none; }
+}

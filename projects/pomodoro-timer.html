@@ -66,25 +66,24 @@
     .pomodoro-field-help { margin: 8px 0 12px; font-size: .92rem; text-align: center; }
     .pomodoro-radio-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin: 16px 0; }
     .pomodoro-radio-option { display: inline-flex; align-items: center; gap: 8px; }
-    .pomodoro-back-link { display: inline-block; margin-top: 22px; color: #4A0404; }
     @media (max-width: 600px) {
       .pomodoro-app { margin: 16px auto; padding: 20px 14px; }
       .pomodoro-button { min-width: 96px; }
     }
   </style>
+  <link rel="stylesheet" href="../assets/assets-projects/pomodoro-timer.css" />
 </head>
 <body>
   <main class="document">
     <header class="header">
       <div class="header-text">
-        <h1>Project 1: Pomodoro Timer</h1>
-        <p class="role">Built by Gladys Lacia</p>
+        <h1 id="pomodoro-title">Pomodoro Timer</h1>
+        <p class="role">A coding project that guides focus sessions with 25-minute Pomodoros, short breaks, and long breaks, built by Gladys Lacia. Open to freelance work with clients in the US, UK, and Australia. Potential clients are welcome to test this project on this page.</p>
       </div>
     </header>
 
     <section class="pomodoro-app" data-pomodoro-app aria-labelledby="pomodoro-title">
-      <h1 id="pomodoro-title">Pomodoro Timer</h1>   
-      <p class="intro">Focus for 25 minutes, then take a 5-minute short break after Pomodoros 1-3. After Pomodoro 4, skip the short break and choose a long break.</p>
+      <p class="intro">Focus for 25 minutes, then take a 5-minute short break after Pomodoros 1 to 3. After Pomodoro 4, skip the short break and choose a long break.</p>
       <p class="pomodoro-phase" data-phase-display>Ready to Focus</p>
       <p class="pomodoro-count" data-pomodoro-display>Pomodoro 1 of 4</p>
       <div class="pomodoro-time" data-timer-display role="timer" aria-live="off">25:00</div>
@@ -182,7 +181,6 @@
         </div>
       </div>
     </section>
-    <p style="text-align:center"><a class="pomodoro-back-link" href="../index.html" target="_blank" rel="noopener">Back to main page</a></p>
   </main>
   <script src="../assets/assets-projects/pomodoro.js"></script>
 </body>
