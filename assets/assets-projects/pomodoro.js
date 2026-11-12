@@ -38,7 +38,7 @@
     const longBreakStopCancelButton = app.querySelector("[data-long-break-stop-cancel]");
 
     const focusAudio = new Audio();
-    const alarmAudio = new Audio("../assets/focus-sounds-pomodoro/alarm-clock.mp3");
+    const alarmAudio = new Audio("../assets/assets-projects/focus-sounds-pomodoro/alarm-clock.mp3");
 
     const FOCUS_SECONDS = 25 * 60;
     const SHORT_BREAK_SECONDS = 5 * 60;
@@ -144,7 +144,7 @@
         4: "rain-on-car-heavy.mp3"
       };
       const soundNumber = Math.min(pomodoroNumber, 4);
-      const source = `../assets/focus-sounds-pomodoro/${soundFiles[soundNumber]}`;
+      const source = `../assets/assets-projects/focus-sounds-pomodoro/${soundFiles[soundNumber]}`;
       if (!focusAudio.src.endsWith(source)) {
         focusAudio.src = source;
       }
