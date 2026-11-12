@@ -60,6 +60,7 @@
     let selectedLongBreakSeconds = 7; */
 
     let pomodoroSessionStarted = false;
+    let lastTickTime = 0; /* added */
 
     focusAudio.loop = true;
     alarmAudio.loop = true;
@@ -152,7 +153,7 @@
       playAudio(focusAudio, `Focus sound ${soundNumber}`);
     }
 
-    function startCountdown(onComplete) {
+    /* function startCountdown(onComplete) {
       stopInterval();
       intervalId = window.setInterval(() => {
         if (isPaused) return;
@@ -165,6 +166,28 @@
           onComplete();
         }
       }, 1000);
+    } */
+    function startCountdown(onComplete) {
+      stopInterval();
+      lastTickTime = Date.now();
+      intervalId = window.setInterval(() => {
+        const now = Date.now();
+        if (isPaused) {
+          lastTickTime = now;
+          return;
+        }
+        const elapsedSeconds = Math.floor((now - lastTickTime) / 1000);
+        if (elapsedSeconds < 1) return;
+        lastTickTime += elapsedSeconds * 1000;
+        remainingSeconds -= elapsedSeconds;
+        render();
+        if (remainingSeconds <= 0) {
+          remainingSeconds = 0;
+          stopInterval();
+          render();
+          onComplete();
+        }
+      }, 250);
     }
 
     function startFocus() {
