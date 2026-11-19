@@ -150,6 +150,48 @@ button.btn {
 button.btn:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
 
 /* =========================================================
+   5b. Corner accents on .center
+   Top-right and bottom-left corner brackets, drawn with
+   the ::before and ::after pseudo-elements.
+   ========================================================= */
+.center {
+  position: relative;            /* anchor for the absolutely positioned corners */
+  --corner-color: var(--ink);    /* corner color (#2e2d2b) */
+  --corner-thickness: 2px;       /* line thickness */
+  --corner-w: 12rem;             /* length of the horizontal arm */
+  --corner-h: 9rem;              /* length of the vertical arm */
+  --corner-gap: 1.2rem;          /* how far the corners sit outside the content */
+}
+
+/* Shared styles for both corners */
+.center::before,
+.center::after {
+  content: "";                   /* required for pseudo-elements to render */
+  position: absolute;
+  width: var(--corner-w);
+  height: var(--corner-h);
+  pointer-events: none;          /* clicks pass through to the buttons and email */
+}
+
+/* Top-right corner: a top line + a right line */
+.center::before {
+  top: calc(var(--corner-gap) * -1);
+  right: calc(var(--corner-gap) * -1);
+  border-top: var(--corner-thickness) solid var(--corner-color);
+  border-right: var(--corner-thickness) solid var(--corner-color);
+  border-top-right-radius: 14px;     /* soft rounded corner; remove for a sharp one */
+}
+
+/* Bottom-left corner: a bottom line + a left line */
+.center::after {
+  bottom: calc(var(--corner-gap) * -1);
+  left: calc(var(--corner-gap) * -1);
+  border-bottom: var(--corner-thickness) solid var(--corner-color);
+  border-left: var(--corner-thickness) solid var(--corner-color);
+  border-bottom-left-radius: 14px;   /* soft rounded corner; remove for a sharp one */
+}
+
+/* =========================================================
    6. Bottom-right: DISC Personality Profile
    ========================================================= */
 .disc {
