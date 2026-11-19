@@ -145,7 +145,7 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
 .disc h2 {
   font-family: 'Montserrat', sans-serif;
   font-size: 1.2rem;
-  color: var(--teal);
+  color: var(--maroon);
   margin-bottom: 0.5rem;
   line-height: 1.4;
 }
