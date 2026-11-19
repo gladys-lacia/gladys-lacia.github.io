@@ -41,8 +41,7 @@
     trigger.focus();
   }
 
-  trigger.addEventListener('click', function (e) {
-    e.preventDefault();
+  trigger.addEventListener('click', function () {
     open();
   });
   closeBtn.addEventListener('click', close);

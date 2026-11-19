@@ -1,12 +1,10 @@
 /* =========================================================
    1. Variables
    ========================================================= */
-/* Brand palette (from index.html / style2.css) */
+/* Brand palette */
 :root {
   --maroon: #4A0404;
-  --forest: #274A04;
   --teal: #044A4A;
-  --plum: #27044A;
   --cream: #FFFEF2;
   --ink: #2e2d2b;
   --line: rgba(46, 45, 43, 0.13);
@@ -41,7 +39,7 @@ body {
   font-family: 'Lato', sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  --portrait-w: 50vh;         /* updated by landing-page-1.js */
+  --portrait-w: 50vh;         /* updated by indexfunction.js */
 }
 
 a { color: var(--maroon); }
@@ -130,6 +128,7 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
   display: inline-block;
   padding: 0.7rem 1.6rem;
   border-radius: 12px;
+  background-color: var(--teal);
   color: var(--cream);
   font-weight: 700;
   font-size: 1.1rem;
@@ -143,9 +142,12 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
   box-shadow: 0 8px 18px rgba(46, 45, 43, 0.3);
   filter: brightness(1.12);
 }
-.btn-contact,
-.btn-niches,
-.btn-portfolio { background-color: #044A4A; }
+button.btn {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+button.btn:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
 
 /* =========================================================
    6. Bottom-right: DISC Personality Profile
@@ -176,7 +178,7 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
   font-weight: 700;
 }
 .disc-track {
-  flex: 0 0 190px;                 /* fixed track width */
+  flex: 0 0 12rem;                 /* fixed track width */
   min-width: 0;
   min-height: 1.5rem;
   background-color: rgba(46, 45, 43, 0.07);
@@ -207,8 +209,8 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
 
 /* =========================================================
    7. VA Niches popup
-   Covers .center and reuses the "section" card look from style1.css + style2.css.
-   Position, height and (via CSS) width are matched to .center by landing-page-1.js.
+   Covers .center with a "section" card.
+   Position and height are matched to .center by indexfunction.js; width is set in CSS.
    ========================================================= */
 .niches-popup {
   position: absolute;
@@ -238,15 +240,15 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
   font-family: 'Montserrat', sans-serif;
   font-size: 1.3rem;
   color: var(--teal);
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   white-space: nowrap;
 }
 .niches-popup .section ul {
-  margin-left: 20px;
-  margin-bottom: 8px;
+  margin-left: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 .niches-popup .section li {
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
   white-space: nowrap;
 }
 .niches-popup .section ul li::marker { color: var(--teal); }
