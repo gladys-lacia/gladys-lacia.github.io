@@ -16,7 +16,8 @@
   window.addEventListener('resize', setPortraitWidth);
 })();
 
-// VA Niches popup: opens over <main class="center">, same position and width.
+// VA Niches popup: opens over <main class="center">, same position and height.
+// (Width is handled in CSS: width: max-content.)
 (function () {
   var popup = document.getElementById('nichesPopup');
   var center = document.querySelector('.center');
@@ -28,8 +29,7 @@
     var r = center.getBoundingClientRect();
     popup.style.left = r.left + 'px';
     popup.style.top = r.top + 'px';
-    popup.style.width = r.width + 'px';
-    popup.style.minHeight = r.height + 'px';
+    popup.style.height = r.height + 'px';
   }
   function open() {
     popup.hidden = false;
@@ -52,19 +52,4 @@
   window.addEventListener('resize', function () {
     if (!popup.hidden) place();
   });
-})();
-
-// VA Niches popup: same height as .center (left, top and width are not touched).
-(function () {
-  var popup = document.getElementById('nichesPopup');
-  var center = document.querySelector('.center');
-  if (!popup || !center) return;
-
-  function matchHeight() {
-    if (popup.hidden) return;
-    popup.style.height = center.getBoundingClientRect().height + 'px';
-  }
-
-  new MutationObserver(matchHeight).observe(popup, { attributes: true, attributeFilter: ['hidden'] });
-  window.addEventListener('resize', matchHeight);
 })();
