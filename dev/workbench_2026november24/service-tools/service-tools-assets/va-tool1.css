@@ -1,0 +1,420 @@
+/* VA Tool 1. Loads after ../assets/style1.css and reuses its palette and fonts.
+   Layout is inspired by prompts.css. Tabs are plain links that switch panels
+   with the :target selector, so the preview works before any JavaScript exists. */
+:root {
+  --cream: #FFFEF2;
+  --panel: #F7F5E8;
+  --ink: #2e2d2b;
+  --maroon: #4A0404;
+  --teal: #044A4A;
+  --line: #d8d5ca;
+  --consulting: #C62828;
+  --research: #C2540A;
+  --content: #2E7D32;
+  --community: #1565C0;
+  --documentation: #8E24AA;
+  --tab-idle: #EFECDC;
+  --rail-w: 150px;
+  --field: #aaa69b;
+  --danger: #C0392B;
+  --save: #287447;
+  --left-w: 260px;
+}
+
+[hidden] { display: none !important; }
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: var(--cream); color: var(--ink); font: 16px/1.4 'Lato', sans-serif; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+/* Layout */
+.layout { display: flex; height: 100dvh; overflow: hidden; position: relative; }
+
+/* Left sidebar */
+.sidebar {
+  flex: 0 0 var(--left-w);
+  width: var(--left-w);
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+.sidebar-sub { padding: 0 16px 10px; font-size: 0.8rem; color: #555; }
+.sidebar-title { padding: 18px 16px 2px; font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--maroon); }
+
+/* The five permanent tabs: titles wrap onto new lines instead of overflowing */
+.tab-buttons { display: flex; flex-direction: column; gap: 10px; padding: 8px 16px 16px; overflow-y: auto; }
+.tab-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 4px;
+  color: var(--cream);
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: left;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  cursor: pointer;
+}
+.tab-btn:hover { filter: brightness(1.12); }
+.tab-btn-consulting { background: var(--consulting); }
+.tab-btn-research { background: var(--research); }
+.tab-btn-content { background: var(--content); }
+.tab-btn-community { background: var(--community); }
+.tab-btn-documentation { background: var(--documentation); }
+
+/* Open tab gets an outline (the first tab is open until another is chosen) */
+.layout:not(:has(.panel:target)) .tab-btn-consulting,
+.layout:has(#consulting:target) .tab-btn-consulting,
+.layout:has(#research:target) .tab-btn-research,
+.layout:has(#content:target) .tab-btn-content,
+.layout:has(#community:target) .tab-btn-community,
+.layout:has(#documentation:target) .tab-btn-documentation {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Log out and username at the bottom-left of the sidebar */
+.btn {
+  display: inline-block;
+  border: 0;
+  border-radius: 4px;
+  padding: 7px 14px;
+  background: var(--teal);
+  color: var(--cream);
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+.btn:hover { filter: brightness(1.18); }
+.sidebar-foot { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-top: auto; padding: 12px 16px; border-top: 1px solid var(--line); }
+.sidebar-foot .btn { flex: 0 0 auto; }
+.user-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.8rem; color: #555; }
+
+/* Content area: only the open panel shows */
+.content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; }
+.panel { --pad: 20px; position: relative; display: none; flex-direction: column; padding: 14px var(--pad) 24px; }
+.panel:target,
+.content:not(:has(.panel:target)) #consulting { display: flex; }
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 5px solid var(--c);
+}
+.panel-head h1 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; color: var(--maroon); overflow-wrap: anywhere; }
+
+.panel-consulting { --c: var(--consulting); }
+.panel-research { --c: var(--research); }
+.panel-content { --c: var(--content); }
+.panel-community { --c: var(--community); }
+.panel-documentation { --c: var(--documentation); }
+
+/* Horizontal tabs inside a panel, like the tabs under a search bar:
+   each tab is 50% of the content width, and the open tab gets an underline in the panel's color.
+   The bar runs edge to edge by cancelling the panel's side padding. */
+.sr { position: absolute; opacity: 0; pointer-events: none; }
+.panel-head:has(+ .sr) { margin-bottom: 0; }
+.subtabs { display: flex; margin: 0 calc(var(--pad) * -1) 16px; border-bottom: 1px solid var(--line); }
+.subtab {
+  flex: 0 0 50%;
+  padding: 14px 12px 11px;
+  border-bottom: 3px solid transparent;
+  color: #555;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.subtab:hover { background: var(--panel); color: var(--ink); }
+
+/* Open tab: underline and darker text */
+#consulting-tab-consultations:checked ~ .subtabs [for="consulting-tab-consultations"],
+#consulting-tab-reports:checked ~ .subtabs [for="consulting-tab-reports"] {
+  border-bottom-color: var(--c);
+  color: var(--maroon);
+}
+/* Keyboard focus (arrow keys move between the two radio buttons) */
+#consulting-tab-consultations:focus-visible ~ .subtabs [for="consulting-tab-consultations"],
+#consulting-tab-reports:focus-visible ~ .subtabs [for="consulting-tab-reports"] {
+  outline: 3px solid var(--teal);
+  outline-offset: -3px;
+}
+
+/* Only the open tab's pane shows */
+.subpane { display: none; }
+#consulting-tab-consultations:checked ~ .subpanes .subpane-consultations,
+#consulting-tab-reports:checked ~ .subpanes .subpane-reports { display: block; }
+
+/* Small icon buttons (Add tab, Delete tab) */
+.ic { display: inline-grid; place-items: center; flex: 0 0 auto; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); cursor: pointer; }
+.ic:hover { background: #ece8d3; }
+.ic svg { width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ic.danger svg { stroke: var(--danger); }
+.ic.danger:hover { background: rgba(192, 57, 43, 0.1); border-color: var(--danger); }
+.pane-top, .pane-foot { display: flex; justify-content: flex-end; gap: 8px; }
+.pane-top { margin-bottom: 12px; }
+.pane-foot { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* Vertical tabs on the left (the rail) and the open tab's pane on the right, as in bookmark-manager.css.
+   The rail is one pixel wider than the --rail-w column and the pane slides under it by one pixel,
+   so the open tab covers the pane's left border and looks joined to it. */
+.tabset { display: grid; grid-template-columns: calc(var(--rail-w) + 1px) minmax(0, 1fr); padding-top: 4px; }
+.rail { position: relative; z-index: 1; display: flex; flex-direction: column; }
+.vtab { display: block; width: 100%; margin: 0 1px 4px 0; padding: 12px 12px 12px 14px; border: 1px solid var(--line); border-right: 0; border-left: 4px solid var(--c); border-radius: 10px 0 0 10px; background: var(--tab-idle); color: #555; font: 700 0.88rem 'Montserrat', sans-serif; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.vtab:hover { background: #e7e3cf; color: var(--ink); }
+.vtab[aria-selected="true"] { margin-right: 0; background: var(--cream); color: var(--maroon); }
+#consultationsPane, #competitionPane { display: contents; }
+.pane { grid-column: 2; margin-left: -1px; display: flex; flex-direction: column; min-height: 320px; padding: 18px 20px 14px; border: 1px solid var(--line); border-top: 5px solid var(--c); border-radius: 0 8px 8px 8px; background: var(--cream); }
+.pane h2 { font: 700 1.5rem 'Montserrat', sans-serif; color: var(--maroon); overflow-wrap: anywhere; }
+.pane .grid { flex: 1; min-height: 160px; margin-top: 16px; }
+
+/* Add tab sits across from the panel title, and only shows on the Consultations tab */
+.panel-head .ic { margin-left: auto; }
+.panel:has(#consulting-tab-reports:checked) #addTabButton { display: none; }
+
+/* Tab form */
+.form { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.row .f { flex: 0 1 190px; }
+.row .form-error { flex: 1 1 220px; align-self: center; }
+.f select, .f textarea { padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
+.f textarea { resize: vertical; }
+.f input:disabled, .f select:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-error { color: var(--danger); font-size: 0.9rem; overflow-wrap: anywhere; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer; }
+.check input { accent-color: var(--teal); }
+.block { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.block h3 { font: 700 1rem 'Montserrat', sans-serif; color: var(--maroon); }
+.block-head { display: flex; align-items: center; gap: 10px; }
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.stack { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
+
+/* Notes: squares like the bookmarks in bookmark-manager.css */
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.notes-grid .empty { grid-column: 1 / -1; color: #777; font-size: 0.92rem; }
+.bm { position: relative; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto; row-gap: 4px; min-height: 200px; padding: 10px 14px 14px; border: 1px solid var(--line); border-top: 5px solid var(--c); border-radius: 6px; background: var(--panel); overflow: hidden; }
+.bm:hover { background: #f2efdf; }
+.bm .copy { grid-column: 1; grid-row: 1; justify-self: start; }
+.bm .view { grid-column: 2; grid-row: 1; justify-self: end; margin: -4px -8px -4px 0; }
+.bm-body { grid-column: 1 / -1; grid-row: 2; align-self: center; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.bm-body h3 { font: 700 0.95rem/1.35 'Montserrat', sans-serif; color: var(--maroon); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.bm-snippet { font-size: 0.85rem; line-height: 1.5; color: #555; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bm .del { grid-column: 1; grid-row: 3; justify-self: start; }
+.bm .edit { grid-column: 2; grid-row: 3; justify-self: end; }
+.mini { font-family: inherit; padding: 3px 6px; margin: 0 -6px; border: 0; background: transparent; color: var(--teal); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.mini:hover { text-decoration: none; }
+.mini.del { color: var(--danger); }
+.ic.bare { border: 0; background: transparent; }
+.ic.bare:hover { background: rgba(46, 45, 43, 0.08); }
+
+/* Note popups */
+.dialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.dialog.wide { max-width: 560px; }
+.head { display: flex; align-items: center; gap: 4px; }
+.head h2 { flex: 1; min-width: 0; margin: 0 8px 0 0; overflow-wrap: anywhere; }
+.vm-field { display: flex; flex-direction: column; gap: 4px; }
+.vm-label { font-size: 0.9rem; font-weight: 700; color: var(--maroon); }
+.vm-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.5; }
+.btn.save { background: var(--save); }
+
+/* Tab header: title on the left; Active/Inactive label and Lock/Unlock button on the right */
+.pane-head { display: flex; align-items: center; gap: 10px; }
+.pane-head h2 { flex: 1; min-width: 0; }
+.pane-tools { display: flex; align-items: center; gap: 8px; }
+.status { font-size: 0.8rem; font-weight: 700; }
+.status.active { color: #43A047; }
+.status.inactive { color: #757575; }
+.row .f.grow { flex: 1 1 220px; }
+.row .f.rate { flex: 0 1 210px; }
+.amount { display: flex; align-items: center; gap: 8px; }
+.amount input { flex: 1; min-width: 0; padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
+.amount input:disabled { opacity: 0.5; cursor: not-allowed; }
+.unit { flex: 0 0 auto; font-size: 0.9rem; color: #555; white-space: nowrap; }
+.pane-head + .form-error { margin-top: 8px; text-align: right; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:disabled:hover { filter: none; }
+.ic:disabled { opacity: 0.4; cursor: not-allowed; }
+.mini:disabled { opacity: 0.4; cursor: not-allowed; text-decoration: none; }
+.btn.unl { background: var(--save); }
+.dialog:has(input:invalid) .btn.unl { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* Delete confirmation popup: centered, with a dimmed page behind it */
+.dialog { margin: auto; width: calc(100% - 32px); max-width: 420px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 8px; background: var(--cream); color: var(--ink); }
+.dialog:popover-open { display: flex; flex-direction: column; gap: 12px; }
+.dialog::backdrop { background: rgba(46, 45, 43, 0.5); }
+.dialog h2 { font: 700 1.1rem 'Montserrat', sans-serif; color: var(--maroon); }
+.f { display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.f input { padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
+.acts { display: flex; justify-content: flex-end; gap: 10px; }
+.btn.plain { background: transparent; color: var(--ink); border: 1px solid var(--field); }
+.btn.dng { background: var(--danger); }
+/* Delete looks dim and cannot be clicked until DELETE is typed exactly */
+.dialog:has(input:invalid) .btn.dng { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* Research & Ideation Support: five tabs share the width equally (they wrap into rows on small screens) */
+.subtabs-5 .subtab { flex: 1 1 0; min-width: 0; }
+#research-tab-ismco:checked ~ .subtabs [for="research-tab-ismco"],
+#research-tab-language:checked ~ .subtabs [for="research-tab-language"],
+#research-tab-keywords:checked ~ .subtabs [for="research-tab-keywords"],
+#research-tab-competition:checked ~ .subtabs [for="research-tab-competition"],
+#research-tab-notes:checked ~ .subtabs [for="research-tab-notes"] {
+  border-bottom-color: var(--c);
+  color: var(--maroon);
+}
+#research-tab-ismco:focus-visible ~ .subtabs [for="research-tab-ismco"],
+#research-tab-language:focus-visible ~ .subtabs [for="research-tab-language"],
+#research-tab-keywords:focus-visible ~ .subtabs [for="research-tab-keywords"],
+#research-tab-competition:focus-visible ~ .subtabs [for="research-tab-competition"],
+#research-tab-notes:focus-visible ~ .subtabs [for="research-tab-notes"] {
+  outline: 3px solid var(--teal);
+  outline-offset: -3px;
+}
+#research-tab-ismco:checked ~ .subpanes .subpane-ismco,
+#research-tab-language:checked ~ .subpanes .subpane-language,
+#research-tab-keywords:checked ~ .subpanes .subpane-keywords,
+#research-tab-competition:checked ~ .subpanes .subpane-competition,
+#research-tab-notes:checked ~ .subpanes .subpane-notes { display: block; }
+
+/* ISMCO templates: squares like the cards in remote-jobhunting.css */
+.panel-head .btn.add { margin-left: auto; background: var(--c); }
+.panel:has(#research-tab-ismco:not(:checked)) #addTemplateButton { display: none; }
+.panel:has(#research-tab-language:not(:checked)) #addLanguageButton { display: none; }
+.panel:has(#research-tab-keywords:not(:checked)) #addKeywordsButton { display: none; }
+.panel:has(#research-tab-competition:not(:checked)) #addCompetitorsButton { display: none; }
+.panel:has(#research-tab-notes:not(:checked)) #addResearchNotesButton { display: none; }
+.grid .empty { grid-column: 1 / -1; color: #777; font-size: 0.92rem; }
+.card { display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1; padding: 16px; border: 1px solid var(--line); border-top: 5px solid var(--c); border-radius: 6px; background: var(--panel); overflow: hidden; cursor: pointer; }
+.card:hover { background: #f2efdf; }
+.card h3 { font: 700 0.95rem/1.35 'Montserrat', sans-serif; color: var(--maroon); overflow-wrap: anywhere; }
+.card p { font-size: 0.88rem; line-height: 1.5; color: #555; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.dl { display: flex; flex-direction: column; gap: 4px; }
+.dl dt { margin-top: 8px; font: 700 0.8rem 'Montserrat', sans-serif; color: var(--teal); }
+.dl dt:first-child { margin-top: 0; }
+.dl dd { font-size: 0.92rem; line-height: 1.6; overflow-wrap: anywhere; white-space: pre-wrap; }
+.sub { font-size: 0.85rem; color: #555; }
+
+/* Keywords popup: groups of text fields */
+.kw-group { border: 0; padding: 0; min-width: 0; }
+.kw-group legend { padding: 0; margin-bottom: 6px; font-size: 0.9rem; font-weight: 700; color: var(--maroon); }
+.kw-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.kw-list input { min-width: 0; padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
+.view-body { display: flex; flex-direction: column; gap: 12px; }
+
+/* Competition Analysis: analyze button and the three states beside it */
+.pane-tools { flex-wrap: wrap; justify-content: flex-end; max-width: 65%; }
+.pane-tools .status, .pane-tools .form-error { text-align: right; }
+.tools-inner { display: contents; }
+.status.todo { color: #E53935; }
+.status.done { color: #43A047; }
+.status.busy { color: #757575; }
+.ic.analyze svg { stroke: #E53935; }
+.linkbtn { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+.linkbtn:hover { text-decoration: none; }
+.bm-for { font-size: 0.78rem; font-weight: 700; color: var(--teal); overflow-wrap: anywhere; }
+.crow { display: flex; align-items: flex-end; gap: 8px; }
+.crow .f { flex: 1; min-width: 0; }
+.f input[readonly] { background: var(--panel); color: #555; }
+
+/* The analysis is written in markdown and shown as simple formatted text */
+.rich h3 { margin: 14px 0 6px; font: 700 1.05rem 'Montserrat', sans-serif; color: var(--maroon); }
+.rich h4 { margin: 14px 0 4px; font: 700 0.95rem 'Montserrat', sans-serif; color: var(--teal); }
+.rich h3:first-child, .rich h4:first-child { margin-top: 0; }
+.rich p { margin: 0 0 8px; font-size: 0.95rem; line-height: 1.6; overflow-wrap: anywhere; }
+.rich ul, .rich ol { margin: 0 0 8px; padding-left: 22px; display: flex; flex-direction: column; gap: 2px; font-size: 0.95rem; line-height: 1.6; overflow-wrap: anywhere; }
+.rich hr { margin: 14px 0 10px; border: 0; border-top: 1px solid var(--line); }
+.rich > :last-child { margin-bottom: 0; }
+
+/* Content & Editorial: two tabs, 50% of the width each (they reuse .subtabs and .subpane) */
+#content-tab-content:checked ~ .subtabs [for="content-tab-content"],
+#content-tab-avoid:checked ~ .subtabs [for="content-tab-avoid"] {
+  border-bottom-color: var(--c);
+  color: var(--maroon);
+}
+#content-tab-content:focus-visible ~ .subtabs [for="content-tab-content"],
+#content-tab-avoid:focus-visible ~ .subtabs [for="content-tab-avoid"] {
+  outline: 3px solid var(--teal);
+  outline-offset: -3px;
+}
+#content-tab-content:checked ~ .subpanes .subpane-content,
+#content-tab-avoid:checked ~ .subpanes .subpane-avoid { display: block; }
+
+#contentPane { display: contents; }
+.panel:has(#content-tab-content:not(:checked)) #addContentButton { display: none; }
+.panel:has(#content-tab-avoid:not(:checked)) #addAvoidButton { display: none; }
+.f textarea[readonly] { background: var(--panel); color: #555; }
+.write-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.write-row .form-error { text-align: right; }
+#communityPane { display: contents; }
+#audiencePane { display: contents; }
+
+/* Events: one section for each month, newest first; the activities are shown as plain text */
+.events { display: flex; flex-direction: column; gap: 24px; min-height: 240px; }
+.events-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.events-head h2 { font: 700 1.2rem 'Montserrat', sans-serif; color: var(--maroon); }
+.events-text { font-size: 0.92rem; line-height: 1.7; }
+.panel:has(#documentation-tab-audience:not(:checked)) #addAnalysisButton { display: none; }
+.panel:has(#documentation-tab-workflow:not(:checked)) #addWorkflowButton { display: none; }
+.wf-range { display: flex; align-items: center; gap: 8px; }
+.wf-range select { flex: 1; min-width: 0; }
+
+/* Documentation & Workflow Support: three tabs share the width equally (they wrap into rows on small screens) */
+.subtabs-3 .subtab { flex: 1 1 0; min-width: 0; }
+#documentation-tab-events:checked ~ .subtabs [for="documentation-tab-events"],
+#documentation-tab-workflow:checked ~ .subtabs [for="documentation-tab-workflow"],
+#documentation-tab-audience:checked ~ .subtabs [for="documentation-tab-audience"] {
+  border-bottom-color: var(--c);
+  color: var(--maroon);
+}
+#documentation-tab-events:focus-visible ~ .subtabs [for="documentation-tab-events"],
+#documentation-tab-workflow:focus-visible ~ .subtabs [for="documentation-tab-workflow"],
+#documentation-tab-audience:focus-visible ~ .subtabs [for="documentation-tab-audience"] {
+  outline: 3px solid var(--teal);
+  outline-offset: -3px;
+}
+#documentation-tab-events:checked ~ .subpanes .subpane-events,
+#documentation-tab-workflow:checked ~ .subpanes .subpane-workflow,
+#documentation-tab-audience:checked ~ .subpanes .subpane-audience { display: block; }
+@media (max-width: 700px) {
+  .subtabs-3 { flex-wrap: wrap; }
+  .subtabs-3 .subtab { flex: 1 1 33%; }
+}
+.head .sub { flex: 1; min-width: 0; margin: 0 8px; }
+.thread { display: flex; flex-direction: column; gap: 12px; }
+.turn { display: flex; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.aud-row { display: flex; align-items: center; gap: 8px; }
+.rhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.f textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.edc { background: var(--content); }
+.dialog:has(input:invalid) .btn.edc { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* Blank workspace, ready for cards later */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; min-height: 240px; }
+
+/* Smaller screens: the tabs sit in a row above the content */
+@media (max-width: 700px) {
+  .layout { flex-direction: column; }
+  .sidebar { flex: 0 0 auto; width: 100%; max-height: 45dvh; border-right: 0; border-bottom: 1px solid var(--line); }
+  .sidebar-title { padding-bottom: 8px; }
+  .sidebar-foot { margin-top: 0; }
+  .tab-buttons { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .tab-btn { flex: 1 1 140px; width: auto; padding: 10px; font-size: 0.85rem; }
+  .panel { --pad: 14px; padding: 12px var(--pad) 20px; }
+  .subtab { font-size: 0.85rem; }
+  .subtabs-5 { flex-wrap: wrap; }
+  .subtabs-5 .subtab { flex: 1 1 33%; }
+  :root { --rail-w: 104px; }
+  .vtab { padding: 10px 8px 10px 10px; font-size: 0.78rem; }
+  .pane { padding: 14px 12px 12px; }
+  .pane h2 { font-size: 1.2rem; }
+  .panel-head h1 { font-size: 1.2rem; }
+}
