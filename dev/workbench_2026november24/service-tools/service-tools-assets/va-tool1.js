@@ -12,16 +12,16 @@
   const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const GOALS = [["goal_traffic", "Driving Traffic"], ["goal_leads", "Generating Leads"], ["goal_sales", "Driving Sales"], ["goal_awareness", "Building Brand Awareness"]];
   const AUDIENCE = [
-    ["aud_role", "Role / title", ""],
-    ["aud_industry", "Industry / context", ""],
-    ["aud_goal", "Main goal", ""],
-    ["aud_pains", "Top 3 pain points", "area"],
-    ["aud_objection", "Biggest objection", ""],
-    ["aud_level", "Knowledge level", "Beginner / Intermediate / Advanced"],
-    ["aud_where", "Where they hang out", ""],
-    ["aud_words", "Words they use", ""],
-    ["aud_content", "Content goal", "Traffic / Leads / Sales / Awareness"],
-    ["aud_next", "Desired next action", ""]
+    ["aud_role", "Role / title", "area"],
+    ["aud_industry", "Industry / context", "area"],
+    ["aud_goal", "Main goal", "area"],
+    ["aud_pains", "Top 3 pain points", "pains"],
+    ["aud_objection", "Biggest objection", "area"],
+    ["aud_level", "Knowledge level", "select", ["Beginner", "Intermediate", "Advanced"]],
+    ["aud_where", "Where they hang out", "area"],
+    ["aud_words", "Words they use", "area"],
+    ["aud_content", "Content goal", "select", ["Traffic", "Leads", "Sales", "Awareness"]],
+    ["aud_next", "Desired next action", "area"]
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -72,11 +72,15 @@
   const monthField = (key, label) => `<label class="f">${label}<select data-f="${key}">${monthOptions}</select></label>`;
   const yearField = (key, label) => `<label class="f">${label}<input data-f="${key}" type="text" inputmode="numeric" maxlength="4" placeholder="${MIN_YEAR} or later" autocomplete="off"></label>`;
 
+  const selectField = (key, label, options) => `<label class="f">${label}<select data-f="${key}"><option value="">Select</option>${options.map((option) => `<option value="${option}">${option}</option>`).join("")}</select></label>`;
+  const painsField = (label) => `<div class="f">${label}${[1, 2, 3].map((n) => `<input data-f="aud_pain${n}" type="text" maxlength="500" autocomplete="off" aria-label="${label} ${n}">`).join("")}</div>`;
+  const audienceField = ([key, label, type, options]) => (type === "pains" ? painsField(label) : type === "select" ? selectField(key, label, options) : areaField(key, label));
+
   function paneHTML(number) {
     return `<div class="pane-head"><h2>#${number}</h2><div class="pane-tools"><span class="status" data-status></span><button class="ic tool" type="button" data-lock></button></div></div>
 <p class="form-error" data-lockerr role="alert" hidden>Fill in the End month and End year before locking an Inactive tab.</p>
 <div class="form">
-  <div class="row">
+  <div class="row" data-raterow>
     <label class="f grow">Client<input data-f="client" type="text" maxlength="500" autocomplete="off"></label>
     <label class="f">Rate type<select data-f="rate_type"><option value="hr">Hourly Rate</option><option value="day">Daily Rate</option><option value="wk">Weekly Rate</option><option value="d15">Every 15 days</option><option value="mo">Monthly Rate</option></select></label>
     <label class="f rate">Rate<span class="amount"><input data-f="rate_amount" type="text" inputmode="decimal" maxlength="12" placeholder="0.00" autocomplete="off"><span class="unit" data-unit>USD/hr</span></span></label>
@@ -102,7 +106,7 @@
 
   <section class="block">
     <h3>Audience Profile</h3>
-    <div class="stack">${AUDIENCE.map(([key, label, hint]) => (hint === "area" ? areaField(key, label) : textField(key, label, hint))).join("")}</div>
+    <div class="stack">${AUDIENCE.map(audienceField).join("")}</div>
   </section>
 </div>
 <div class="pane-foot"><button class="ic tool danger" type="button" data-deltab title="Delete tab" aria-label="Delete tab" popovertarget="deleteTabPopup"><svg aria-hidden="true"><use href="#i-del"/></svg></button></div>`;
@@ -148,6 +152,8 @@
     pane.querySelector("[data-unit]").textContent = UNITS[data.rate_type] || UNITS.hr;
     const amount = data.rate_amount;
     pane.querySelector("[data-rateerr]").hidden = !(amount && Number(amount) <= 0);
+    // An amount below 3.00 turns the text of the Client, Rate type and Rate fields red.
+    pane.querySelector("[data-raterow]").classList.toggle("low-rate", amount !== "" && amount !== undefined && Number(amount) < 3);
   }
 
   /* ---------- Notes ---------- */
@@ -283,14 +289,17 @@
     return state.tabs.reduce((max, tab) => Math.max(max, tab.number), 0) + 1;
   }
 
-  /* Locking an inactive tab moves it: right after the last locked Inactive tab,
-     or, when there is none yet (the first lock), right after the last Active tab. */
+  /* The tabs are kept in three groups, from top to bottom: Active tabs, then locked Inactive tabs, then unlocked Inactive tabs.
+     A tab whose group changes (it is checked or unchecked as "currently working", or an Inactive tab is locked or unlocked)
+     moves to the end of its new group. So an Inactive tab that is locked for the first time lands right after the last Active tab,
+     and later ones land right after the last locked Inactive tab. */
+  const tabGroup = (tab) => (tab.data.working ? 0 : tab.locked ? 1 : 2);
   function moveAfterLock(tab) {
     const others = state.tabs.filter((item) => item !== tab);
-    const lockedInactive = others.filter((item) => item.locked && !item.data.working);
-    const active = others.filter((item) => item.data.working);
-    const anchor = lockedInactive.length ? lockedInactive[lockedInactive.length - 1] : active[active.length - 1];
-    others.splice(anchor ? others.indexOf(anchor) + 1 : 0, 0, tab);
+    const group = tabGroup(tab);
+    let at = 0;
+    others.forEach((item, index) => { if (tabGroup(item) <= group) at = index + 1; });
+    others.splice(at, 0, tab);
     state.tabs = others;
   }
 
@@ -328,6 +337,7 @@
         tab.data[key] = isCheck ? field.checked : field.value;
         pane.querySelector("[data-lockerr]").hidden = true;
         syncDates(pane, tab);
+        if (key === "working") { moveAfterLock(tab); render(); } // Active tabs stay above Inactive tabs
       });
     });
     syncDates(pane, tab);
@@ -368,7 +378,7 @@
     tabset.hidden = !hasTabs;
     rail.replaceChildren();
     paneHost.replaceChildren();
-    if (!hasTabs) { renderCompetition(); renderContent(); renderCommunity(); renderAnalyses(); return; }
+    if (!hasTabs) { renderLanguages(); renderKeywords(); renderCompetition(); renderContent(); renderCommunity(); renderAnalyses(); return; }
 
     const open = state.tabs.find((tab) => tab.id === state.activeId) || state.tabs[0];
     state.activeId = open.id;
@@ -385,6 +395,8 @@
       rail.appendChild(button);
     });
     paneHost.appendChild(buildPane(open));
+    renderLanguages();
+    renderKeywords();
     renderCompetition();
     renderContent();
     renderCommunity();
@@ -427,6 +439,8 @@
     if (target.kind === "tab") {
       state.tabs = state.tabs.filter((tab) => tab.id !== target.tabId);
       if (state.activeId === target.tabId) state.activeId = null;
+      bank.items = bank.items.filter((item) => item.clientId !== target.tabId);
+      kw.items = kw.items.filter((item) => item.clientId !== target.tabId);
     } else if (target.kind === "note" && target.scope === "research") {
       research.items = research.items.filter((note) => note.id !== target.noteId);
     } else if (target.kind === "competitor") {
@@ -456,6 +470,9 @@
     } else if (target.kind === "avoid") {
       avoid.items = avoid.items.filter((item) => item.id !== target.id);
       renderAvoid();
+    } else if (target.kind === "report") {
+      reports.items = reports.items.filter((item) => item.id !== target.id);
+      renderReports();
     } else if (target.kind === "template") {
       ismco.items = ismco.items.filter((item) => item.id !== target.id);
       renderTemplates();
@@ -580,55 +597,93 @@
 
   /* ---------- Language Bank (Research & Ideation Support) ---------- */
 
-  const languageGrid = $("languageGrid");
+  const languageBlank = $("languageBlank");
+  const languageTabset = $("languageTabset");
+  const languageRail = $("languageRail");
+  const languageHost = $("languagePane");
   const languageForm = $("languageFormPopup");
   const languageView = $("languageViewPopup");
   const languageError = $("languageError");
-  const langClient = $("lang-client");
+  const langName = $("lang-name");
   const langText = $("lang-text");
-  const bank = { items: [], nextId: 1, editing: null };
+  const bank = { items: [], nextId: 1, editing: null, tabId: null, activeId: null };
 
   const tabById = (id) => state.tabs.find((tab) => tab.id === id);
   const clientLabel = (tab) => (tab.data.client || "").trim() || `#${tab.number}`;
   // The client's current name; if that tab has been deleted, the name saved with the entry.
   const entryClient = (entry) => { const tab = tabById(entry.clientId); return tab ? clientLabel(tab) : entry.clientName; };
 
-  function renderLanguages() {
-    languageGrid.replaceChildren();
-    if (!bank.items.length) {
-      languageGrid.appendChild(el("p", "empty", "No languages yet. Choose + Add language to save your first one."));
-      return;
-    }
-    bank.items.forEach((entry) => {
-      const card = el("div", "bm");
+  // Cards work like the Content cards: Copy, View, Edit and Delete.
+  function languageCard(tab, entry) {
+    const card = el("div", "bm");
 
-      const copy = el("button", "mini copy", "Copy");
-      copy.type = "button";
-      copy.addEventListener("click", () => copyText(entry.text, copy));
+    const copy = el("button", "mini copy", "Copy");
+    copy.type = "button";
+    copy.addEventListener("click", () => copyText(entry.text, copy));
 
-      const view = iconButton("i-view", "View details");
-      view.classList.add("view");
-      view.addEventListener("click", () => {
-        $("languageViewTitle").textContent = entryClient(entry);
-        $("languageViewText").textContent = entry.text;
-        languageView.showPopover();
-      });
-
-      const body = el("div", "bm-body");
-      body.append(el("h3", "", entryClient(entry)), el("p", "bm-snippet", entry.text));
-
-      const del = el("button", "mini del", "Delete");
-      del.type = "button";
-      del.setAttribute("popovertarget", "deleteTabPopup");
-      del.addEventListener("click", () => { state.deleting = { kind: "language", id: entry.id }; });
-
-      const edit = el("button", "mini edit", "Edit");
-      edit.type = "button";
-      edit.addEventListener("click", () => openLanguageForm(entry));
-
-      card.append(copy, view, body, del, edit);
-      languageGrid.appendChild(card);
+    const view = iconButton("i-view", "View details");
+    view.classList.add("view");
+    view.addEventListener("click", () => {
+      $("languageViewTitle").textContent = entry.title;
+      $("languageViewText").textContent = entry.text;
+      languageView.showPopover();
     });
+
+    const body = el("div", "bm-body");
+    body.append(el("h3", "", entry.title), el("p", "bm-snippet", entry.text));
+
+    const del = el("button", "mini del", "Delete");
+    del.type = "button";
+    del.setAttribute("popovertarget", "deleteTabPopup");
+    del.addEventListener("click", () => { state.deleting = { kind: "language", id: entry.id }; });
+
+    const edit = el("button", "mini edit", "Edit");
+    edit.type = "button";
+    edit.addEventListener("click", () => openLanguageForm(tab, entry));
+    del.disabled = edit.disabled = !tab.data.working; // an Inactive client cannot change its language banks
+
+    card.append(copy, view, body, del, edit);
+    return card;
+  }
+
+  function buildLanguagePane(tab) {
+    const pane = el("div", "pane");
+    pane.setAttribute("aria-label", clientLabel(tab));
+    pane.innerHTML = '<div class="pane-head"><h2 data-title></h2></div><div class="form"><div class="notes-grid" data-items></div></div>'; // static markup only; names are set below as text
+    pane.querySelector("[data-title]").textContent = clientLabel(tab);
+    const grid = pane.querySelector("[data-items]");
+    const items = bank.items.filter((entry) => entry.clientId === tab.id);
+    if (!items.length) grid.appendChild(el("p", "empty", "No languages yet. Use the + Add language button to save your first one."));
+    else items.forEach((entry) => grid.appendChild(languageCard(tab, entry)));
+    return pane;
+  }
+
+  // One subtab for each Consultations tab, in the same order and with the same #numbers.
+  function renderLanguages() {
+    const hasTabs = state.tabs.length > 0;
+    languageBlank.hidden = hasTabs;
+    languageTabset.hidden = !hasTabs;
+    $("addLanguageButton").disabled = !hasTabs;
+    languageRail.replaceChildren();
+    languageHost.replaceChildren();
+    if (!hasTabs) return;
+
+    const open = state.tabs.find((tab) => tab.id === bank.activeId) || state.tabs[0];
+    bank.activeId = open.id;
+    $("addLanguageButton").disabled = !open.data.working; // an Inactive client cannot get new language banks
+    state.tabs.forEach((tab) => {
+      const button = el("button", "vtab", `#${tab.number}`);
+      button.type = "button";
+      const name = (tab.data.client || "").trim();
+      button.title = name ? `#${tab.number} – ${name}` : `#${tab.number}`;
+      button.setAttribute("aria-selected", String(tab.id === open.id));
+      button.addEventListener("click", () => {
+        bank.activeId = tab.id;
+        renderLanguages();
+      });
+      languageRail.appendChild(button);
+    });
+    languageHost.appendChild(buildLanguagePane(open));
   }
 
   // The dropdown lists the clients whose tabs are Active. When editing, the original client stays selectable.
@@ -643,49 +698,56 @@
   }
 
   // Add and edit use the same popup.
-  function openLanguageForm(entry) {
+  function openLanguageForm(tab, entry) {
+    bank.tabId = tab.id;
     bank.editing = entry || null;
     $("languageFormTitle").textContent = entry ? "Edit language" : "Add a language";
-    fillClientSelect(langClient, entry ? entry.clientId : null, bank.editing);
+    langName.value = entry ? entry.title : "";
     langText.value = entry ? entry.text : "";
     languageError.hidden = true;
     languageForm.showPopover();
-    langClient.focus();
+    langName.focus();
   }
 
   languageForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const clientId = Number(langClient.value) || null;
+    const tab = tabById(bank.tabId);
+    if (!tab) return;
+    const title = langName.value.trim();
     const text = langText.value.trim();
-    if (!clientId || !text) {
-      languageError.textContent = !clientId ? "Choose a client. Mark a client as Active in Consultations first." : "Write the language to save.";
+    if (!title || !text) {
+      languageError.textContent = !title ? "Enter what this language bank is for." : "Write the language to save.";
       languageError.hidden = false;
       return;
     }
-    const tab = tabById(clientId);
-    const clientName = tab ? clientLabel(tab) : bank.editing.clientName;
-    if (bank.editing) Object.assign(bank.editing, { clientId, clientName, text });
-    else bank.items.unshift({ id: bank.nextId++, clientId, clientName, text });
+    if (bank.editing) Object.assign(bank.editing, { title, text });
+    else bank.items.unshift({ id: bank.nextId++, clientId: tab.id, title, text });
     bank.editing = null;
     languageForm.hidePopover();
     renderLanguages();
   });
 
-  $("addLanguageButton").addEventListener("click", () => openLanguageForm(null));
-  // Client names can change in Consultations, so the cards are drawn again whenever this tab is opened.
+  $("addLanguageButton").addEventListener("click", () => {
+    const tab = state.tabs.find((item) => item.id === bank.activeId) || state.tabs[0];
+    if (tab) openLanguageForm(tab, null);
+  });
+  // Client names, Active status and tabs change in Consultations, so the subtabs are drawn again whenever this tab is opened.
   $("research-tab-language").addEventListener("change", renderLanguages);
 
   /* ---------- Keyword Research (Research & Ideation Support) ---------- */
 
   // [key, title, how many text fields, label for each field]
   const KW_GROUPS = [["synonyms", "Synonyms", 8, "Synonym"], ["longtail", "Long-tail keywords", 10, "Long-tail keyword"], ["questions", "Questions", 8, "Question"]];
-  const keywordGrid = $("keywordGrid");
+  const keywordBlank = $("keywordBlank");
+  const keywordTabset = $("keywordTabset");
+  const keywordRail = $("keywordRail");
+  const keywordHost = $("keywordPane");
   const keywordForm = $("keywordFormPopup");
   const keywordView = $("keywordViewPopup");
   const keywordError = $("keywordError");
-  const kwClient = $("kw-client");
+  const kwTitle = $("kw-title");
   const kwPrimary = $("kw-primary");
-  const kw = { items: [], nextId: 1, editing: null };
+  const kw = { items: [], nextId: 1, editing: null, tabId: null, activeId: null };
   const kwInputs = {};
 
   // The text fields are made once: 8 synonyms, 10 long-tail keywords, 8 questions.
@@ -693,9 +755,16 @@
     const host = $(`kw-${key}`);
     kwInputs[key] = [];
     for (let i = 0; i < count; i++) {
-      const input = el("input");
-      input.type = "text";
-      input.maxLength = 200;
+      // Synonyms stay short text fields; Long-tail keywords and Questions are paragraph fields.
+      const paragraph = key !== "synonyms";
+      const input = el(paragraph ? "textarea" : "input");
+      if (paragraph) {
+        input.rows = 3;
+        input.maxLength = 2000;
+      } else {
+        input.type = "text";
+        input.maxLength = 200;
+      }
       input.placeholder = `${label} ${i + 1}`;
       input.setAttribute("aria-label", `${label} ${i + 1}`);
       host.appendChild(input);
@@ -725,63 +794,100 @@
     keywordView.showPopover();
   }
 
+  // Cards work like the Language Bank cards: Copy, View, Edit and Delete.
+  function keywordCard(tab, entry) {
+    const card = el("div", "bm");
+
+    const copy = el("button", "mini copy", "Copy");
+    copy.type = "button";
+    copy.addEventListener("click", () => copyText(keywordText(entry), copy));
+
+    const view = iconButton("i-view", "View details");
+    view.classList.add("view");
+    view.addEventListener("click", () => openKeywordView(entry));
+
+    const body = el("div", "bm-body");
+    body.append(el("h3", "", entry.title), el("p", "bm-snippet", entry.primary));
+
+    const del = el("button", "mini del", "Delete");
+    del.type = "button";
+    del.setAttribute("popovertarget", "deleteTabPopup");
+    del.addEventListener("click", () => { state.deleting = { kind: "keywords", id: entry.id }; });
+
+    const edit = el("button", "mini edit", "Edit");
+    edit.type = "button";
+    edit.addEventListener("click", () => openKeywordForm(tab, entry));
+    del.disabled = edit.disabled = !tab.data.working; // an Inactive client cannot change its keywords
+
+    card.append(copy, view, body, del, edit);
+    return card;
+  }
+
+  function buildKeywordPane(tab) {
+    const pane = el("div", "pane");
+    pane.setAttribute("aria-label", clientLabel(tab));
+    pane.innerHTML = '<div class="pane-head"><h2 data-title></h2></div><div class="form"><div class="notes-grid" data-items></div></div>'; // static markup only; names are set below as text
+    pane.querySelector("[data-title]").textContent = clientLabel(tab);
+    const grid = pane.querySelector("[data-items]");
+    const items = kw.items.filter((entry) => entry.clientId === tab.id);
+    if (!items.length) grid.appendChild(el("p", "empty", "No keywords yet. Use the + Add keywords button to save your first set."));
+    else items.forEach((entry) => grid.appendChild(keywordCard(tab, entry)));
+    return pane;
+  }
+
+  // One subtab for each Consultations tab, in the same order and with the same #numbers.
   function renderKeywords() {
-    keywordGrid.replaceChildren();
-    if (!kw.items.length) {
-      keywordGrid.appendChild(el("p", "empty", "No keywords yet. Choose + Add keywords to save your first set."));
-      return;
-    }
-    kw.items.forEach((entry) => {
-      const card = el("div", "bm");
+    const hasTabs = state.tabs.length > 0;
+    keywordBlank.hidden = hasTabs;
+    keywordTabset.hidden = !hasTabs;
+    $("addKeywordsButton").disabled = !hasTabs;
+    keywordRail.replaceChildren();
+    keywordHost.replaceChildren();
+    if (!hasTabs) return;
 
-      const copy = el("button", "mini copy", "Copy");
-      copy.type = "button";
-      copy.addEventListener("click", () => copyText(keywordText(entry), copy));
-
-      const view = iconButton("i-view", "View details");
-      view.classList.add("view");
-      view.addEventListener("click", () => openKeywordView(entry));
-
-      const body = el("div", "bm-body");
-      body.append(el("h3", "", entryClient(entry)), el("p", "bm-snippet", entry.primary));
-
-      const del = el("button", "mini del", "Delete");
-      del.type = "button";
-      del.setAttribute("popovertarget", "deleteTabPopup");
-      del.addEventListener("click", () => { state.deleting = { kind: "keywords", id: entry.id }; });
-
-      const edit = el("button", "mini edit", "Edit");
-      edit.type = "button";
-      edit.addEventListener("click", () => openKeywordForm(entry));
-
-      card.append(copy, view, body, del, edit);
-      keywordGrid.appendChild(card);
+    const open = state.tabs.find((tab) => tab.id === kw.activeId) || state.tabs[0];
+    kw.activeId = open.id;
+    $("addKeywordsButton").disabled = !open.data.working; // an Inactive client cannot get new keywords
+    state.tabs.forEach((tab) => {
+      const button = el("button", "vtab", `#${tab.number}`);
+      button.type = "button";
+      const name = (tab.data.client || "").trim();
+      button.title = name ? `#${tab.number} – ${name}` : `#${tab.number}`;
+      button.setAttribute("aria-selected", String(tab.id === open.id));
+      button.addEventListener("click", () => {
+        kw.activeId = tab.id;
+        renderKeywords();
+      });
+      keywordRail.appendChild(button);
     });
+    keywordHost.appendChild(buildKeywordPane(open));
   }
 
   // Add and edit use the same popup.
-  function openKeywordForm(entry) {
+  function openKeywordForm(tab, entry) {
+    kw.tabId = tab.id;
     kw.editing = entry || null;
     $("keywordFormTitle").textContent = entry ? "Edit keywords" : "Add keywords";
-    fillClientSelect(kwClient, entry ? entry.clientId : null, kw.editing);
+    kwTitle.value = entry ? entry.title : "";
     kwPrimary.value = entry ? entry.primary : "";
     KW_GROUPS.forEach(([key]) => kwInputs[key].forEach((input, i) => { input.value = entry ? entry[key][i] || "" : ""; }));
     keywordError.hidden = true;
     keywordForm.showPopover();
-    kwClient.focus();
+    kwTitle.focus();
   }
 
   keywordForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const clientId = Number(kwClient.value) || null;
+    const tab = tabById(kw.tabId);
+    if (!tab) return;
+    const title = kwTitle.value.trim();
     const primary = kwPrimary.value.trim();
-    if (!clientId || !primary) {
-      keywordError.textContent = !clientId ? "Choose a client. Mark a client as Active in Consultations first." : "Write the primary keyword.";
+    if (!title || !primary) {
+      keywordError.textContent = !title ? "Enter what this primary keyword is for." : "Write the primary keyword.";
       keywordError.hidden = false;
       return;
     }
-    const tab = tabById(clientId);
-    const values = { clientId, clientName: tab ? clientLabel(tab) : kw.editing.clientName, primary };
+    const values = { clientId: tab.id, clientName: clientLabel(tab), title, primary };
     KW_GROUPS.forEach(([key]) => { values[key] = kwInputs[key].map((input) => input.value.trim()).filter(Boolean); });
     if (kw.editing) Object.assign(kw.editing, values);
     else kw.items.unshift({ id: kw.nextId++, ...values });
@@ -790,8 +896,11 @@
     renderKeywords();
   });
 
-  $("addKeywordsButton").addEventListener("click", () => openKeywordForm(null));
-  // Client names can change in Consultations, so the cards are drawn again whenever this tab is opened.
+  $("addKeywordsButton").addEventListener("click", () => {
+    const tab = state.tabs.find((item) => item.id === kw.activeId) || state.tabs[0];
+    if (tab) openKeywordForm(tab, null);
+  });
+  // Client names, Active status and tabs change in Consultations, so the subtabs are drawn again whenever this tab is opened.
   $("research-tab-keywords").addEventListener("change", renderKeywords);
 
   /* ---------- Competition Analysis (Research & Ideation Support) ---------- */
@@ -1482,7 +1591,7 @@
     $("cf-title").value = item ? item.title : "";
     $("cf-kind").value = item ? item.kind : "";
     setOptions($("cf-kw"), kw.items.filter((entry) => entry.clientId === tab.id).map((entry) => [entry.id, entry.primary]), item && item.kwId, "No primary keywords for this client yet", false);
-    setOptions($("cf-lang"), bank.items.filter((entry) => entry.clientId === tab.id).map((entry) => [entry.id, snip(entry.text)]), item && item.langId, "None", true);
+    setOptions($("cf-lang"), bank.items.filter((entry) => entry.clientId === tab.id).map((entry) => [entry.id, entry.title]), item && item.langId, "None", true);
     setOptions($("cf-note"), research.items.map((note) => [note.id, note.title]), item && item.noteId, "None", true);
     setOptions($("cf-template"), contTemplates().map((template) => [template.id, template.title]), item && item.templateId, "No ISMCO template applies to Content & Editorial yet", false);
     cont.draft = item && item.written ? { ...item.written } : null;
@@ -1822,7 +1931,7 @@
     if (item && item.contentId && !contOf(tab).items.some((entry) => entry.id === item.contentId)) contentRows.push([item.contentId, `${item.title} (content deleted)`]);
     setOptions($("cp-title"), contentRows, item && item.contentId, "No content for this client yet. Add one in Content & Editorial first.", false);
     syncPostCaption();
-    setOptions($("cp-lang"), bank.items.filter((entry) => entry.clientId === tab.id).map((entry) => [entry.id, snip(entry.text)]), item && item.langId, "None", true);
+    setOptions($("cp-lang"), bank.items.filter((entry) => entry.clientId === tab.id).map((entry) => [entry.id, entry.title]), item && item.langId, "None", true);
     setOptions($("cp-note"), research.items.map((note) => [note.id, note.title]), item && item.noteId, "None", true);
     setOptions($("cp-template"), ismco.items.filter((entry) => entry.applies === "community").map((entry) => [entry.id, entry.title]), item && item.templateId, "No ISMCO template applies to Community Management & Engagement yet", false);
     syncPostForm();
@@ -2918,6 +3027,138 @@
   $("documentation-tab-workflow").addEventListener("change", renderWorkflows);
   window.addEventListener("hashchange", () => { if (location.hash === "#documentation") renderWorkflows(); });
 
+  /* ---------- Client Reports (Consulting & Client Reporting) ---------- */
+
+  // Cards work like the Research Notes cards: Copy, View, Edit and Delete.
+  // Each report: { id, title, goal, comp, research, community, audience }; a part is null when its checkbox is unchecked.
+  const REPORT_PARTS = [["goal", "Goal"], ["comp", "Competition Analysis"], ["research", "Research Notes"], ["community", "Community Management & Engagement"], ["audience", "Audience Analysis"]];
+  const reports = { items: [], nextId: 1, editing: null };
+  const reportsGrid = $("reportsGrid");
+  const reportForm = $("reportFormPopup");
+  const reportView = $("reportViewPopup");
+  const reportError = $("reportError");
+  const repName = $("rep-name");
+  const repGoal = $("rep-goal");
+
+  GOALS.forEach(([, label]) => {
+    const option = el("option", "", label);
+    option.value = label;
+    repGoal.appendChild(option);
+  });
+
+  // Each checkbox shows or hides its own field.
+  function syncReportFields() {
+    REPORT_PARTS.forEach(([key]) => { $(`rep-${key}-field`).hidden = !$(`rep-${key}-on`).checked; });
+  }
+  REPORT_PARTS.forEach(([key]) => $(`rep-${key}-on`).addEventListener("change", syncReportFields));
+
+  // What Copy puts on the clipboard and what a card shows: only the parts that are checked.
+  function reportText(item) {
+    const lines = [];
+    REPORT_PARTS.forEach(([key, label]) => {
+      if (item[key] === null || item[key] === undefined) return;
+      lines.push(key === "goal" ? `${label}: ${item[key]}` : `${label}:\n${item[key]}`);
+    });
+    return lines.join("\n\n");
+  }
+
+  function openReportView(item) {
+    $("reportViewTitle").textContent = item.title;
+    const body = $("reportViewBody");
+    body.replaceChildren();
+    REPORT_PARTS.forEach(([key, label]) => {
+      if (item[key] === null || item[key] === undefined) return;
+      const field = el("div", "vm-field");
+      field.append(el("span", "vm-label", label), el("p", "vm-text", item[key]));
+      body.appendChild(field);
+    });
+    if (!body.children.length) body.appendChild(el("p", "vm-text", "No details yet."));
+    reportView.showPopover();
+  }
+
+  function renderReports() {
+    reportsGrid.replaceChildren();
+    if (!reports.items.length) {
+      reportsGrid.appendChild(el("p", "empty", "No reports yet. Choose + Add report to save your first one."));
+      return;
+    }
+    reports.items.forEach((item) => {
+      const card = el("div", "bm");
+
+      const copy = el("button", "mini copy", "Copy");
+      copy.type = "button";
+      copy.addEventListener("click", () => copyText(reportText(item) || item.title, copy));
+
+      const view = iconButton("i-view", "View details");
+      view.classList.add("view");
+      view.addEventListener("click", () => openReportView(item));
+
+      const body = el("div", "bm-body");
+      body.append(el("h3", "", item.title), el("p", "bm-snippet", reportText(item) || "No details yet."));
+
+      const del = el("button", "mini del", "Delete");
+      del.type = "button";
+      del.setAttribute("popovertarget", "deleteTabPopup");
+      del.addEventListener("click", () => { state.deleting = { kind: "report", id: item.id }; });
+
+      const edit = el("button", "mini edit", "Edit");
+      edit.type = "button";
+      edit.addEventListener("click", () => openReportForm(item));
+
+      card.append(copy, view, body, del, edit);
+      reportsGrid.appendChild(card);
+    });
+  }
+
+  // Add and edit use the same popup.
+  function openReportForm(item) {
+    reports.editing = item || null;
+    $("reportFormTitle").textContent = item ? "Edit report" : "Add a report";
+    repName.value = item ? item.title : "";
+    REPORT_PARTS.forEach(([key]) => {
+      const value = item ? item[key] : null;
+      const on = value !== null && value !== undefined;
+      $(`rep-${key}-on`).checked = on;
+      $(`rep-${key}`).value = on ? value : "";
+    });
+    if (!repGoal.value) repGoal.selectedIndex = 0;
+    syncReportFields();
+    reportError.hidden = true;
+    reportForm.showPopover();
+    repName.focus();
+  }
+
+  reportForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const title = repName.value.trim();
+    if (!title) {
+      reportError.textContent = "Enter what this report is for.";
+      reportError.hidden = false;
+      return;
+    }
+    const values = { title };
+    for (const [key, label] of REPORT_PARTS) {
+      if (!$(`rep-${key}-on`).checked) {
+        values[key] = null;
+        continue;
+      }
+      const value = $(`rep-${key}`).value.trim();
+      if (!value) {
+        reportError.textContent = `Write the text for ${label}, or uncheck it.`;
+        reportError.hidden = false;
+        return;
+      }
+      values[key] = value;
+    }
+    if (reports.editing) Object.assign(reports.editing, values);
+    else reports.items.push({ id: reports.nextId++, ...values });
+    reports.editing = null;
+    reportForm.hidePopover();
+    renderReports();
+  });
+
+  $("addReportButton").addEventListener("click", () => openReportForm(null));
+
   /* ---------- Unlock popup (Inactive tabs only) ---------- */
 
   unlockPhrase.addEventListener("input", () => {
@@ -2935,6 +3176,7 @@
     const tab = state.tabs.find((item) => item.id === state.unlocking);
     if (unlockPhrase.value !== UNLOCK_PHRASE || !tab) return;
     tab.locked = false;
+    moveAfterLock(tab);
     state.unlocking = null;
     render();
   });
@@ -2944,6 +3186,7 @@
   renderLanguages();
   renderKeywords();
   renderResearchNotes();
+  renderReports();
   renderAvoid();
   renderAnalyses();
   renderWorkflows();

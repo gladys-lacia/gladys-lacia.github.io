@@ -181,6 +181,7 @@ body { background: var(--cream); color: var(--ink); font: 16px/1.4 'Lato', sans-
 /* Add tab sits across from the panel title, and only shows on the Consultations tab */
 .panel-head .ic { margin-left: auto; }
 .panel:has(#consulting-tab-reports:checked) #addTabButton { display: none; }
+.panel:has(#consulting-tab-reports:not(:checked)) #addReportButton { display: none; }
 
 /* Tab form */
 .form { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
@@ -197,6 +198,7 @@ body { background: var(--cream); color: var(--ink); font: 16px/1.4 'Lato', sans-
 .block h3 { font: 700 1rem 'Montserrat', sans-serif; color: var(--maroon); }
 .block-head { display: flex; align-items: center; gap: 10px; }
 .checklist { display: flex; flex-direction: column; gap: 8px; }
+.rep-item { display: flex; flex-direction: column; gap: 8px; }
 .stack { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
 
 /* Notes: squares like the bookmarks in bookmark-manager.css */
@@ -240,6 +242,11 @@ body { background: var(--cream); color: var(--ink); font: 16px/1.4 'Lato', sans-
 .amount input { flex: 1; min-width: 0; padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
 .amount input:disabled { opacity: 0.5; cursor: not-allowed; }
 .unit { flex: 0 0 auto; font-size: 0.9rem; color: #555; white-space: nowrap; }
+/* Rate below 3.00: the text of the Client, Rate type and Rate fields turns red */
+.row.low-rate .f,
+.row.low-rate .f input,
+.row.low-rate .f select,
+.row.low-rate .unit { color: var(--danger); }
 .pane-head + .form-error { margin-top: 8px; text-align: right; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn:disabled:hover { filter: none; }
@@ -308,6 +315,7 @@ body { background: var(--cream); color: var(--ink); font: 16px/1.4 'Lato', sans-
 .kw-group legend { padding: 0; margin-bottom: 6px; font-size: 0.9rem; font-weight: 700; color: var(--maroon); }
 .kw-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
 .kw-list input { min-width: 0; padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; }
+.kw-list textarea { min-width: 0; padding: 9px; border: 1px solid var(--field); border-radius: 4px; background: #fffef9; line-height: 1.4; resize: vertical; }
 .view-body { display: flex; flex-direction: column; gap: 12px; }
 
 /* Competition Analysis: analyze button and the three states beside it */
@@ -349,6 +357,8 @@ body { background: var(--cream); color: var(--ink); font: 16px/1.4 'Lato', sans-
 #content-tab-avoid:checked ~ .subpanes .subpane-avoid { display: block; }
 
 #contentPane { display: contents; }
+#languagePane { display: contents; }
+#keywordPane { display: contents; }
 .panel:has(#content-tab-content:not(:checked)) #addContentButton { display: none; }
 .panel:has(#content-tab-avoid:not(:checked)) #addAvoidButton { display: none; }
 .f textarea[readonly] { background: var(--panel); color: #555; }

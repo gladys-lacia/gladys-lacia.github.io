@@ -36,7 +36,7 @@
     <main class="content">
 
       <section class="panel panel-consulting" id="consulting" aria-label="Consulting &amp; Client Reporting">
-        <header class="panel-head"><h1>Consulting &amp; Client Reporting</h1><button id="addTabButton" class="ic tool" type="button" title="Add tab" aria-label="Add tab"><svg aria-hidden="true"><use href="#i-tabadd"/></svg></button></header>
+        <header class="panel-head"><h1>Consulting &amp; Client Reporting</h1><button id="addTabButton" class="ic tool" type="button" title="Add tab" aria-label="Add tab"><svg aria-hidden="true"><use href="#i-tabadd"/></svg></button><button id="addReportButton" class="btn add" type="button">+ Add report</button></header>
 
         <!-- Two tabs, 50% of the width each. The radio buttons hold the open tab, so it works before any JavaScript exists. -->
         <input class="sr" type="radio" name="consulting-tab" id="consulting-tab-consultations" checked />
@@ -73,7 +73,7 @@
 
           </div>
           <div class="subpane subpane-reports" aria-label="Client Reports">
-            <div class="grid"></div>
+            <div class="grid" id="reportsGrid"></div>
           </div>
         </div>
       </section>
@@ -100,10 +100,20 @@
             <div class="grid" id="ismcoGrid"></div>
           </div>
           <div class="subpane subpane-language" aria-label="Language Bank">
-            <div class="grid" id="languageGrid"></div>
+            <!-- One tab (#1, #2, #3...) for each tab in Consultations, drawn by va-tool1.js -->
+            <div class="grid" id="languageBlank"><p class="empty">No clients yet. Use Add tab in Consultations to add your first client.</p></div>
+            <div class="tabset" id="languageTabset" hidden>
+              <div class="rail" id="languageRail" role="group" aria-label="Language Bank tabs"></div>
+              <div id="languagePane"></div>
+            </div>
           </div>
           <div class="subpane subpane-keywords" aria-label="Keyword Research">
-            <div class="grid" id="keywordGrid"></div>
+            <!-- One tab (#1, #2, #3...) for each tab in Consultations, drawn by va-tool1.js -->
+            <div class="grid" id="keywordBlank"><p class="empty">No clients yet. Use Add tab in Consultations to add your first client.</p></div>
+            <div class="tabset" id="keywordTabset" hidden>
+              <div class="rail" id="keywordRail" role="group" aria-label="Keyword Research tabs"></div>
+              <div id="keywordPane"></div>
+            </div>
           </div>
           <div class="subpane subpane-competition" aria-label="Competition Analysis">
             <!-- One tab (#1, #2, #3...) for each tab in Consultations, drawn by va-tool1.js -->
@@ -213,7 +223,7 @@
   <!-- Language: add and edit use the same popup; the view popup is read-only -->
   <form class="dialog wide" id="languageFormPopup" popover aria-labelledby="languageFormTitle" novalidate>
       <header class="head"><h2 id="languageFormTitle">Add a language</h2><button class="ic bare" type="button" aria-label="Close" popovertarget="languageFormPopup" popovertargetaction="hide"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
-      <label class="f">Which client is this for?<select id="lang-client"></select></label>
+      <label class="f">What is this language bank for?<input id="lang-name" type="text" maxlength="200" placeholder="Write what this language bank is for." /></label>
       <label class="f">Language Bank<textarea id="lang-text" rows="6" maxlength="20000" placeholder="Write the language to save for this client."></textarea></label>
       <p id="languageError" class="form-error" role="alert" hidden></p>
       <div class="acts">
@@ -230,7 +240,7 @@
   <!-- Keywords: add and edit use the same popup; the view popup is read-only and filled in by va-tool1.js -->
   <form class="dialog wide" id="keywordFormPopup" popover aria-labelledby="keywordFormTitle" novalidate>
       <header class="head"><h2 id="keywordFormTitle">Add keywords</h2><button class="ic bare" type="button" aria-label="Close" popovertarget="keywordFormPopup" popovertargetaction="hide"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
-      <label class="f">Which client is this for?<select id="kw-client"></select></label>
+      <label class="f">What is this primary keyword for?<input id="kw-title" type="text" maxlength="200" placeholder="Write what this primary keyword is for." /></label>
       <label class="f">Primary keyword<input id="kw-primary" type="text" maxlength="200" placeholder="Write the main keyword." /></label>
       <fieldset class="kw-group"><legend>Synonyms</legend><div class="kw-list" id="kw-synonyms"></div></fieldset>
       <fieldset class="kw-group"><legend>Long-tail keywords</legend><div class="kw-list" id="kw-longtail"></div></fieldset>
@@ -395,6 +405,44 @@
       <header class="head"><h2 id="wfViewTitle">Workflow analysis</h2><button class="ic bare" type="button" aria-label="Close" popovertarget="wfViewPopup" popovertargetaction="hide"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
       <div class="view-body" id="wfViewBody"></div>
       <div class="acts"><button class="btn plain" type="button" popovertarget="wfViewPopup" popovertargetaction="hide">Close</button></div>
+  </div>
+
+  <!-- Client Reports: add and edit use the same popup; the view popup is read-only and filled in by va-tool1.js -->
+  <form class="dialog wide" id="reportFormPopup" popover aria-labelledby="reportFormTitle" novalidate>
+      <header class="head"><h2 id="reportFormTitle">Add a report</h2><button class="ic bare" type="button" aria-label="Close" popovertarget="reportFormPopup" popovertargetaction="hide"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <label class="f">What is this report for?<input id="rep-name" type="text" maxlength="200" placeholder="Write what this report is for." /></label>
+      <div class="checklist">
+        <div class="rep-item">
+          <label class="check"><input type="checkbox" id="rep-goal-on" /> Goal</label>
+          <div class="f" id="rep-goal-field" hidden><select id="rep-goal" aria-label="Goal"></select></div>
+        </div>
+        <div class="rep-item">
+          <label class="check"><input type="checkbox" id="rep-comp-on" /> Competition Analysis</label>
+          <div class="f" id="rep-comp-field" hidden><textarea id="rep-comp" rows="5" maxlength="20000" aria-label="Competition Analysis" placeholder="Write the Competition Analysis for this report."></textarea></div>
+        </div>
+        <div class="rep-item">
+          <label class="check"><input type="checkbox" id="rep-research-on" /> Research Notes</label>
+          <div class="f" id="rep-research-field" hidden><textarea id="rep-research" rows="5" maxlength="20000" aria-label="Research Notes" placeholder="Write the Research Notes for this report."></textarea></div>
+        </div>
+        <div class="rep-item">
+          <label class="check"><input type="checkbox" id="rep-community-on" /> Community Management &amp; Engagement</label>
+          <div class="f" id="rep-community-field" hidden><textarea id="rep-community" rows="5" maxlength="20000" aria-label="Community Management &amp; Engagement" placeholder="Write the Community Management &amp; Engagement text for this report."></textarea></div>
+        </div>
+        <div class="rep-item">
+          <label class="check"><input type="checkbox" id="rep-audience-on" /> Audience Analysis</label>
+          <div class="f" id="rep-audience-field" hidden><textarea id="rep-audience" rows="5" maxlength="20000" aria-label="Audience Analysis" placeholder="Write the Audience Analysis for this report."></textarea></div>
+        </div>
+      </div>
+      <p id="reportError" class="form-error" role="alert" hidden></p>
+      <div class="acts">
+        <button class="btn plain" type="button" popovertarget="reportFormPopup" popovertargetaction="hide">Cancel</button>
+        <button class="btn save" type="submit">Save</button>
+      </div>
+  </form>
+  <div class="dialog wide" id="reportViewPopup" popover aria-labelledby="reportViewTitle">
+      <header class="head"><h2 id="reportViewTitle">Report</h2><button class="ic bare" type="button" aria-label="Close" popovertarget="reportViewPopup" popovertargetaction="hide"><svg aria-hidden="true"><use href="#i-x"/></svg></button></header>
+      <div class="view-body" id="reportViewBody"></div>
+      <div class="acts"><button class="btn plain" type="button" popovertarget="reportViewPopup" popovertargetaction="hide">Close</button></div>
   </div>
 
   <!-- Notes: add/edit and view popups, shared by Consultations and Competition Analysis -->
