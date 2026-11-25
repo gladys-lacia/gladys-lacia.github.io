@@ -218,3 +218,40 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
 @media print {
   .header .role-list { color: var(--forest); opacity: 1; }
 }
+
+/* Rates & Availability tables */
+.rates-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+.rates-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.rates-table th,
+.rates-table td {
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.rates-table th {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--plum);
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+.rates-table td:nth-child(3),
+.rates-table td:nth-child(4) {
+  white-space: nowrap;
+}
+.rates-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.section .rates-note {
+  margin-top: 16px;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  text-align: left;
+}
