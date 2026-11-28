@@ -255,3 +255,14 @@ a:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-ra
   font-size: 0.85rem;
   text-align: left;
 }
+
+/* Print: allow long cards to split across pages (removes blank gaps) */
+@media print {
+  .section { break-inside: auto; }
+
+  /* Keep small pieces from splitting awkwardly */
+  .section h2,
+  .section h3 { break-after: avoid; }
+  .section li,
+  .rates-table tr { break-inside: avoid; }
+}

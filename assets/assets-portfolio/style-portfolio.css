@@ -645,3 +645,15 @@ body.lightbox-open {
   .section { box-shadow: none; }
   .role-card, .alignment-group, .skill-grid > li { break-inside: avoid; }
 }
+
+/* Print: let long timeline cards split across pages (removes blank gaps) */
+@media print {
+  .role-card { break-inside: auto; }
+
+  /* Keep small pieces from splitting awkwardly */
+  .role-card h4,
+  .section h2,
+  .section h3 { break-after: avoid; }
+  .evidence li,
+  .screenshot-item { break-inside: avoid; }
+}
