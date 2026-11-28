@@ -2572,8 +2572,14 @@
 
   // Base URL of the Cloudflare Worker. It gives the server date (GET /api/events/now) and saves each recording
   // in the D1 database (POST /api/events/record). While it is empty, this device's clock stands in for the preview.
+  // The log records itself: every EVENTS_POLL_MS the tool compares its data with the last recording, and once the
+  // changes have stayed the same for EVENTS_SETTLE_MS (so typing is not recorded letter by letter) they are recorded.
+  // If the server cannot be reached, it tries again after EVENTS_RETRY_MS.
   const EVENTS_API = "";
-  const events = { now: null, records: [], last: new Map(), busy: false, error: "" };
+  const EVENTS_POLL_MS = 2000;
+  const EVENTS_SETTLE_MS = 8000;
+  const EVENTS_RETRY_MS = 30000;
+  const events = { now: null, records: [], last: new Map(), busy: false, error: "", pending: null, retryAt: 0, tools: null };
   const eventsGrid = $("eventsGrid");
 
   async function serverCall(path, options) {
@@ -2617,7 +2623,7 @@
     research.items.forEach((n) => put(`rn:${n.id}`, "Research Notes", null, "note", n.title, [n.title, n.text], { group: "research", full: n.title.trim() || "Untitled" }));
     state.tabs.forEach((tab) => {
       const client = clientLabel(tab);
-      tab.comp.competitors.forEach((c, i) => put(`co:${tab.id}:${c.id}`, "Competition Analysis", client, "competitor", c.name.trim() || `Competitor #${i + 1}`, [c.name], { group: "comp", part: "competitor", full: c.name.trim() || `Competitor #${i + 1}` }));
+      tab.comp.competitors.forEach((c, i) => c.name.trim() && put(`co:${tab.id}:${c.id}`, "Competition Analysis", client, "competitor", c.name.trim() || `Competitor #${i + 1}`, [c.name], { group: "comp", part: "competitor", full: c.name.trim() || `Competitor #${i + 1}` }));
       tab.comp.notes.forEach((n) => put(`cn:${tab.id}:${n.id}`, "Competition Analysis", client, "note", n.title, [n.title, n.text, n.competitorId], { group: "comp", part: "note", full: n.title.trim() || "Untitled", owner: compOwnerName(tab, n) }));
       commOf(tab).items.forEach((p) => {
         put(`po:${tab.id}:${p.id}`, "Community Management & Engagement", client, "post", p.title, [p.title, p.caption, p.langId, p.noteId, p.templateId, p.audiences.map((a) => a.name)]);
@@ -2689,29 +2695,17 @@
     return [...byClient].map(([client, texts]) => ({ client: client || null, text: texts.reduce((all, text) => `${all}${/[.!?]$/.test(all) ? " " : "; "}${text}`) }));
   }
 
-  // Beside the month: the red Record activity button, or "Recorded" once nothing has changed since.
+  // Beside the month: "Recording…" while the server is saving, "Recording soon…" while changes are waiting to settle, or "Recorded" once nothing has changed since.
   function paintEventTools(tools) {
-    tools.replaceChildren();
-    if (events.busy) {
-      tools.appendChild(el("span", "status busy", "Recording…"));
-    } else if (!activityEntries(events.last, activitySnapshot()).length) {
-      tools.appendChild(el("span", "status done", "Recorded"));
-    } else {
-      const button = el("button", "ic tool analyze");
-      button.type = "button";
-      button.title = "Record activity";
-      button.setAttribute("aria-label", "Record activity");
-      button.innerHTML = '<svg aria-hidden="true"><use href="#i-clock"/></svg>'; // static markup only
-      button.addEventListener("click", recordActivity);
-      tools.appendChild(button);
-    }
+    const [label, kind] = events.busy ? ["Recording…", "busy"]
+      : !activityEntries(events.last, activitySnapshot()).length ? ["Recorded", "done"]
+        : ["Recording soon…", "busy"];
+    if (tools.textContent === label) return;
+    tools.replaceChildren(el("span", `status ${kind}`, label));
   }
 
   // The date and time of every recording come from the Cloudflare server, which also saves them in D1.
-  async function recordActivity() {
-    const cur = activitySnapshot();
-    const entries = activityEntries(events.last, cur);
-    if (!entries.length) return;
+  async function recordActivity(cur, entries) {
     events.busy = true;
     events.error = "";
     renderEvents();
@@ -2720,11 +2714,33 @@
       entries.forEach((entry) => events.records.push({ at: result.recorded_at, client: entry.client, text: entry.text }));
       events.last = cur;
       events.now = result.recorded_at;
+      events.pending = null;
+      events.retryAt = 0;
     } catch (failure) {
       events.error = failure.message;
+      events.retryAt = Date.now() + EVENTS_RETRY_MS;
     }
     events.busy = false;
     renderEvents();
+  }
+
+  // Runs every EVENTS_POLL_MS: records the changes once they have stayed the same for EVENTS_SETTLE_MS.
+  async function autoRecord() {
+    if (events.busy) return;
+    const cur = activitySnapshot();
+    const entries = activityEntries(events.last, cur);
+    if (!entries.length) {
+      events.pending = null;
+    } else {
+      const key = JSON.stringify(entries);
+      const now = Date.now();
+      if (!events.pending || events.pending.key !== key) events.pending = { key, since: now };
+      if (now - events.pending.since >= EVENTS_SETTLE_MS && now >= events.retryAt) {
+        await recordActivity(cur, entries);
+        return;
+      }
+    }
+    if (events.tools && events.tools.isConnected) paintEventTools(events.tools);
   }
 
   // One section for each month (newest first); inside, one block for each date with a line for each recording.
@@ -2749,6 +2765,7 @@
       if (key === current) {
         const tools = el("span", "tools-inner");
         head.appendChild(tools);
+        events.tools = tools;
         paintEventTools(tools);
       }
       section.appendChild(head);
@@ -2777,7 +2794,7 @@
     }
     renderEvents();
   }
-  // Activity in the other tabs changes the button, so the Events tab is drawn again whenever it is opened.
+  // New recordings are added by autoRecord, so the Events tab is drawn again whenever it is opened.
   $("documentation-tab-events").addEventListener("change", refreshEvents);
   window.addEventListener("hashchange", () => { if (location.hash === "#documentation") refreshEvents(); });
 
@@ -3191,4 +3208,5 @@
   renderAnalyses();
   renderWorkflows();
   refreshEvents();
+  setInterval(autoRecord, EVENTS_POLL_MS);
 })();
